@@ -1,0 +1,14 @@
+{
+  "name": "Route Fuel Map",
+  "short_name": "Route Fuel",
+  "description": "Cheapest diesel already on your route.",
+  "start_url": "app.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1014",
+  "theme_color": "#0d1014",
+  "icons": [
+    {"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}

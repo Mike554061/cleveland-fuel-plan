@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d1014">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Route Fuel">
+<link rel="manifest" href="manifest.json">
+<title>Route Fuel Map</title>
+<style>
+:root{
+  --bg:#0d1014; --bg-2:#141920; --card:#1a2028; --line:#252d37;
+  --ink:#f2f5f8; --ink-2:#9aa7b4; --ink-3:#66727f;
+  --amber:#f0a03c; --green:#3fbf6a; --red:#e4645f; --blue:#5aa9e6;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);overscroll-behavior-y:none;
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.screen{display:none;min-height:100dvh;padding:0 18px calc(28px + var(--safe-b))}
+.screen.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- splash ---------- */
+#splash{position:fixed;inset:0;z-index:99;background:var(--bg);display:grid;place-items:center;
+  transition:opacity .55s ease,visibility .55s}
+#splash.gone{opacity:0;visibility:hidden}
+.logo{display:grid;place-items:center;gap:16px;text-align:center}
+.logo svg{width:104px;height:104px;overflow:visible}
+.logo .wm{font:700 21px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink);opacity:0;animation:wm .7s ease .45s forwards}
+.logo .sub{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  opacity:0;animation:wm .7s ease .72s forwards}
+@keyframes wm{to{opacity:1}}
+.needle{transform-origin:50px 50px;animation:sweep 1.5s cubic-bezier(.5,0,.2,1) forwards}
+@keyframes sweep{0%{transform:rotate(-118deg)}60%{transform:rotate(38deg)}100%{transform:rotate(20deg)}}
+.arc-fill{stroke-dasharray:190;stroke-dashoffset:190;animation:arc 1.4s cubic-bezier(.5,0,.2,1) forwards}
+@keyframes arc{to{stroke-dashoffset:56}}
+.drop{opacity:0;animation:wm .5s ease .9s forwards}
+
+/* ---------- shared ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 0 8px}
+.kicker{font:600 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+h1{font-size:29px;line-height:1.06;letter-spacing:-.025em;margin:10px 0 0;font-weight:750}
+h2{font:600 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-3);margin:26px 0 10px}
+.sub{color:var(--ink-2);font-size:15px;margin:8px 0 0}
+.back{font:600 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-2);padding:8px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+
+/* ---------- landing ---------- */
+.datechip{display:inline-flex;align-items:center;gap:8px;background:var(--bg-2);border:1px solid var(--line);
+  border-radius:999px;padding:7px 14px;font-size:13px;color:var(--ink-2)}
+.datechip b{color:var(--ink);font-weight:600}
+.drivers{display:grid;gap:12px;margin-top:18px}
+.drv{display:flex;align-items:center;gap:14px;padding:17px 18px;background:var(--card);
+  border:1px solid var(--line);border-radius:16px;text-align:left;width:100%;
+  transition:transform .12s ease,border-color .12s ease}
+.drv:active{transform:scale(.985);border-color:var(--amber)}
+.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;
+  font:700 17px/1 ui-monospace,Menlo,monospace;color:#0d1014}
+.drv .nm{display:block;font-size:19px;font-weight:680;letter-spacing:-.01em}
+.drv .mt{display:block;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.drv .go{margin-left:auto;color:var(--ink-3);font-size:20px}
+
+/* ---------- savings hero ---------- */
+.hero{padding:20px 18px;background:linear-gradient(160deg,#16241b,#141920 60%);
+  border:1px solid #24402c;border-radius:16px;margin-top:14px}
+.hero .lab{font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:#79c992}
+.hero .big{font-size:40px;font-weight:760;letter-spacing:-.035em;color:var(--green);margin-top:6px;line-height:1}
+.hero .cap{font-size:13px;color:var(--ink-2);margin-top:7px}
+.spark{margin-top:14px}
+
+/* ---------- stop cards ---------- */
+.stop{display:block;width:100%;text-align:left;padding:15px 16px;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;margin-bottom:10px;transition:transform .12s,border-color .12s}
+.stop:active{transform:scale(.985);border-color:var(--amber)}
+.stop.best{border-color:#2f5d3d;background:linear-gradient(150deg,#16221a,#1a2028 55%)}
+.srow{display:flex;align-items:baseline;gap:12px}
+.px{font-size:26px;font-weight:730;letter-spacing:-.03em;line-height:1}
+.px.good{color:var(--green)}
+.bd{margin-left:auto;font:600 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
+  padding:5px 8px;border-radius:6px;text-transform:uppercase}
+.bd.best{background:#1e4029;color:#7fd79b}
+.bd.warn{background:#3d2f14;color:var(--amber)}
+.bd.owner{background:#16323f;color:#7cc6e8}
+.snm{font-size:16px;font-weight:640;margin-top:9px}
+.sad{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.smeta{display:flex;gap:14px;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.smeta b{color:var(--ink);font-weight:600}
+
+/* ---------- sheet ---------- */
+#sheet{position:fixed;inset:0;z-index:60;display:none}
+#sheet.on{display:block}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);animation:fade .2s}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg-2);border-top:1px solid var(--line);
+  border-radius:20px 20px 0 0;padding:8px 18px calc(24px + var(--safe-b));max-height:92dvh;overflow:auto;
+  animation:up .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.grab{width:38px;height:4px;border-radius:2px;background:var(--line);margin:6px auto 14px}
+.mathrow{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.mathrow span:first-child{color:var(--ink-2)}
+.mathrow.tot{border-bottom:0;padding-top:14px}
+.mathrow.tot span{font-size:19px;font-weight:700}
+.btn{display:block;width:100%;text-align:center;padding:16px;border-radius:13px;font-size:16px;font-weight:650;margin-top:12px}
+.btn.pri{background:var(--amber);color:#12161b}
+.btn.sec{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn:active{opacity:.85}
+.warnbox{background:#2a2013;border:1px solid #4a3a1c;color:#e8c58c;border-radius:11px;padding:12px 14px;
+  font-size:13px;margin-top:14px}
+.field{display:flex;gap:10px;margin-top:12px}
+.field label{flex:1}
+.field .lb{font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.field input{width:100%;margin-top:6px;padding:13px;border-radius:11px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font:inherit;text-align:center;
+  font-family:ui-monospace,Menlo,monospace;font-size:18px}
+.field input:focus{outline:2px solid var(--amber);outline-offset:0}
+
+/* ---------- history ---------- */
+.hrow{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
+.hrow .hd{font:600 10px/1.3 ui-monospace,Menlo,monospace;color:var(--ink-3);width:52px;flex:none;text-align:center}
+.hrow .hd b{display:block;color:var(--ink);font-size:15px}
+.hrow .hn{font-size:14.5px;font-weight:600}
+.hrow .hm{font-size:12px;color:var(--ink-3);margin-top:2px}
+.hrow .hs{margin-left:auto;text-align:right}
+.hrow .hs .v{color:var(--green);font-weight:680;font-size:15px}
+.hrow .hs .p{font-size:11.5px;color:var(--ink-3)}
+.empty{text-align:center;padding:34px 20px;color:var(--ink-3);font-size:14px}
+.empty .ic{font-size:30px;opacity:.5}
+.toast{position:fixed;left:50%;bottom:calc(26px + var(--safe-b));transform:translateX(-50%) translateY(20px);
+  background:var(--green);color:#08130c;padding:13px 22px;border-radius:11px;font-weight:650;font-size:15px;
+  opacity:0;transition:.28s;z-index:80;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.foot{color:var(--ink-3);font-size:11.5px;text-align:center;margin-top:26px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="logo">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M18 72 A38 38 0 1 1 82 72" fill="none" stroke="#252d37" stroke-width="7" stroke-linecap="round"/>
+      <path class="arc-fill" d="M18 72 A38 38 0 1 1 82 72" fill="none" stroke="#f0a03c" stroke-width="7" stroke-linecap="round"/>
+      <g class="needle"><line x1="50" y1="50" x2="50" y2="22" stroke="#f2f5f8" stroke-width="4" stroke-linecap="round"/></g>
+      <circle cx="50" cy="50" r="6" fill="#f2f5f8"/>
+      <path class="drop" d="M50 78 c0 0 -8 9 -8 14 a8 8 0 0 0 16 0 c0 -5 -8 -14 -8 -14z" fill="#3fbf6a"/>
+    </svg>
+    <div class="wm">Route Fuel</div>
+    <div class="sub">Ring in some savings</div>
+  </div>
+</div>
+
+<!-- LANDING -->
+<section class="screen" id="s-land">
+  <div class="top"><span class="kicker">SupplyNow · Cleveland</span></div>
+  <span class="datechip">📅 <b id="today"></b></span>
+  <h1>Let's ring in<br>some savings.</h1>
+  <p class="sub">Tap your name. We'll show you the cheapest diesel that's already on your run today.</p>
+  <div class="drivers" id="drivers"></div>
+  <p class="foot" id="landfoot"></p>
+</section>
+
+<!-- DRIVER HOME -->
+<section class="screen" id="s-home">
+  <div class="top"><button class="back" id="bHome">← Switch driver</button>
+    <span class="kicker" id="homeDate"></span></div>
+  <h1 id="hiName"></h1>
+  <p class="sub" id="hiSub"></p>
+
+  <div class="hero">
+    <div class="lab">Your savings this year</div>
+    <div class="big mono" id="ytd">$0.00</div>
+    <div class="cap" id="ytdCap"></div>
+    <svg class="spark" id="spark" viewBox="0 0 320 56" preserveAspectRatio="none" aria-hidden="true"></svg>
+  </div>
+
+  <h2>Fill here today</h2>
+  <div id="stops"></div>
+
+  <h2>Your fills</h2>
+  <div id="hist"></div>
+  <p class="foot" id="homefoot"></p>
+</section>
+
+<div id="sheet"><div class="scrim" id="scrim"></div><div class="sheet" id="sheetBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script id="appdata" type="application/json">{"refreshed": "2026-08-21 03:15", "median": 5.46, "yard": 5.49, "eia": {"d": "2026-08-10", "v": 5.181}, "priced_n": 150, "drivers": {"Pete": {"mi": 384.88, "min": 513.1, "stops_n": 12, "onpath": 196, "priced_n": 75, "stops": [{"id": "29474", "brand": "Sunoco", "addr": "2091 Grafton Rd", "city": "Elyria", "zip": "44035", "price": 4.76, "d": 0.59, "lat": 41.327404, "lon": -82.073638, "flag": "disputed", "age_hr": 1, "note": "All four fuel grades were posted by one reporter in a single burst, and the station's own reviews repeatedly allege misreporting here \u2014 \"Someone keeps incorrectly reporting the prices\" and \"Someone does keep reporting the price wrong. Is it the owner???\". Call 440-458-6462 to confirm before you route a truck to it."}, {"id": "89068", "brand": "Sunoco", "addr": "1540 Front St", "city": "Toledo", "zip": "43605", "price": 5.09, "d": 0.1, "lat": 41.654181, "lon": -83.514065, "flag": "", "age_hr": 4, "note": ""}, {"id": "137906", "brand": "CITGO", "addr": "1896 Front St", "city": "Toledo", "zip": "43605", "price": 5.09, "d": 0.13, "lat": 41.659844, "lon": -83.502718, "flag": "", "age_hr": 6, "note": ""}, {"id": "196252", "brand": "Walmart", "addr": "35901 Chester Rd", "city": "Avon", "zip": "44011", "price": 5.13, "d": 0.2, "lat": 41.467411, "lon": -82.016015, "flag": "", "age_hr": 24, "note": ""}, {"id": "211309", "brand": "Sheetz", "addr": "1846 Nagel Rd", "city": "Avon", "zip": "44011", "price": 5.15, "d": 0.02, "lat": 41.462422, "lon": -81.989009, "flag": "owner", "age_hr": 0.8333333333333334, "note": ""}]}, "Shameria": {"mi": 93.19, "min": 138.0, "stops_n": 4, "onpath": 91, "priced_n": 38, "stops": [{"id": "16501", "brand": "Prime Stations", "addr": "3580 Ridge Rd", "city": "Cleveland", "zip": "44102", "price": 5.19, "d": 0.67, "lat": 41.45995, "lon": -81.73841, "flag": "", "age_hr": 19, "note": ""}, {"id": "30982", "brand": "Marathon", "addr": "8177 Brecksville Rd", "city": "Brecksville", "zip": "44141", "price": 5.19, "d": 1.1, "lat": 41.340009, "lon": -81.62821, "flag": "", "age_hr": 48, "note": ""}, {"id": "71657", "brand": "MAPCO", "addr": "11 S Cleveland-Massillon Rd", "city": "Fairlawn", "zip": "44333", "price": 5.24, "d": 0.63, "lat": 41.135599, "lon": -81.63724, "flag": "", "age_hr": 0.21666666666666667, "note": ""}, {"id": "113228", "brand": "BP", "addr": "6501 Denison Ave", "city": "Cleveland", "zip": "44102", "price": 5.29, "d": 0.53, "lat": 41.459554, "lon": -81.731775, "flag": "", "age_hr": 24, "note": ""}, {"id": "1365", "brand": "Sunoco", "addr": "6009 Turney Rd", "city": "Garfield Heights", "zip": "44125", "price": 5.29, "d": 1.29, "lat": 41.400779, "lon": -81.594398, "flag": "", "age_hr": 1, "note": ""}]}, "Vince": {"mi": 154.4, "min": 248.3, "stops_n": 6, "onpath": 102, "priced_n": 29, "stops": [{"id": "103234", "brand": "B.T. Oil", "addr": "15525 West High St", "city": "Middlefield", "zip": "44062", "price": 4.99, "d": 0.13, "lat": 41.462957, "lon": -81.087713, "flag": "verify", "age_hr": 11, "note": "Lowest price on the eastern side of the market. Single reporter, but the same reporter posted a normal $5.39 next door, which reads as a real look at the sign rather than a bad one. Worth a call before counting on it."}, {"id": "1365", "brand": "Sunoco", "addr": "6009 Turney Rd", "city": "Garfield Heights", "zip": "44125", "price": 5.29, "d": 1.0, "lat": 41.400779, "lon": -81.594398, "flag": "", "age_hr": 1, "note": ""}, {"id": "13252", "brand": "Chardon Oil", "addr": "420 Water St", "city": "Chardon", "zip": "44024", "price": 5.29, "d": 0.81, "lat": 41.580934, "lon": -81.212522, "flag": "", "age_hr": 1, "note": ""}, {"id": "92002", "brand": "Sunoco", "addr": "6947 St Clair Ave", "city": "Cleveland", "zip": "44103", "price": 5.39, "d": 0.52, "lat": 41.527205, "lon": -81.641156, "flag": "", "age_hr": 17, "note": ""}, {"id": "28867", "brand": "Marathon", "addr": "3980 St Clair Ave", "city": "Cleveland", "zip": "44103", "price": 5.39, "d": 0.65, "lat": 41.516243, "lon": -81.664516, "flag": "", "age_hr": 24, "note": ""}]}}}</script>
+<script>
+const A=JSON.parse(document.getElementById('appdata').textContent);
+const $=id=>document.getElementById(id);
+const money=n=>'$'+n.toFixed(2);
+const HUES={Pete:'#f0a03c',Shameria:'#5aa9e6',Vince:'#3fbf6a'};
+const GAL_DEFAULT=50;
+let who=null, current=null;
+
+/* ---------- storage ---------- */
+const KEY=d=>'rfm.fills.'+d;
+const load=d=>{try{return JSON.parse(localStorage.getItem(KEY(d))||'[]')}catch(e){return[]}};
+const save=(d,v)=>localStorage.setItem(KEY(d),JSON.stringify(v));
+
+/* ---------- splash ---------- */
+setTimeout(()=>{$('splash').classList.add('gone')},1750);
+setTimeout(()=>{
+  const last=localStorage.getItem('rfm.driver');
+  if(last && A.drivers[last]) openDriver(last); else show('s-land');
+},1500);
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');window.scrollTo(0,0)}
+const fmtDate=d=>d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+$('today').textContent=fmtDate(new Date());
+
+/* ---------- landing ---------- */
+$('drivers').innerHTML=Object.entries(A.drivers).map(([d,v])=>{
+  const n=load(d).length;
+  return `<button class="drv" data-d="${d}">
+    <span class="av" style="background:${HUES[d]||'#f0a03c'}">${d[0]}</span>
+    <span style="min-width:0;flex:1"><span class="nm">${d}</span>
+      <span class="mt">${v.stops_n} stops · ${v.mi.toFixed(0)} mi · ${v.priced_n} priced pumps on route</span></span>
+    <span class="go">›</span></button>`}).join('');
+$('drivers').onclick=e=>{const b=e.target.closest('.drv'); if(b) openDriver(b.dataset.d)};
+$('landfoot').textContent=`Live prices · ${A.priced_n} stations · updated ${A.refreshed||'today'}`;
+$('bHome').onclick=()=>{localStorage.removeItem('rfm.driver');show('s-land')};
+
+/* ---------- driver home ---------- */
+function openDriver(d){
+  who=d; localStorage.setItem('rfm.driver',d);
+  const v=A.drivers[d];
+  $('hiName').textContent='Hey, '+d+'.';
+  $('homeDate').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const best=v.stops.find(s=>s.flag!=='disputed')||v.stops[0];
+  $('hiSub').innerHTML = best
+    ? `Cheapest on your run today is <b>${money(best.price)}</b> at ${best.brand}, ${best.d.toFixed(2)} mi off your path.`
+    : `No priced pumps on your route yet today.`;
+  renderYTD(); renderStops(v); renderHist();
+  show('s-home');
+  $('homefoot').innerHTML=`Prices are crowd-reported and move daily. If the sign says different, you're right —<br>tell dispatch what you actually paid.`;
+}
+
+function savingsOf(price,gal){return (A.yard-price)*gal}
+
+function renderStops(v){
+  if(!v.stops.length){$('stops').innerHTML='<div class="empty">No priced pumps on your route today.</div>';return}
+  const usable=v.stops.filter(s=>s.flag!=='disputed');
+  const bestP=usable.length?usable[0].price:null;
+  $('stops').innerHTML=v.stops.map(s=>{
+    const save=savingsOf(s.price,GAL_DEFAULT);
+    const isBest=bestP!==null&&s.price===bestP&&s.flag!=='disputed';
+    const bd = s.flag==='disputed' ? '<span class="bd warn">check first</span>'
+            : s.flag==='owner'     ? '<span class="bd owner">owner-posted</span>'
+            : isBest               ? '<span class="bd best">best on route</span>'
+            : s.flag==='verify'    ? '<span class="bd warn">worth a call</span>' : '';
+    return `<button class="stop ${isBest?'best':''}" data-id="${s.id}">
+      <span class="srow"><span class="px mono ${isBest?'good':''}">${money(s.price)}</span>${bd}</span>
+      <div class="snm">${s.brand}</div>
+      <div class="sad">${s.addr}, ${s.city}</div>
+      <div class="smeta"><span><b>${s.d.toFixed(2)}</b> mi off path</span>
+        <span>save <b>${money(save)}</b> a fill</span></div></button>`}).join('');
+  $('stops').onclick=e=>{const b=e.target.closest('.stop'); if(b) openSheet(b.dataset.id)};
+}
+
+/* ---------- stop detail ---------- */
+function openSheet(id){
+  const s=A.drivers[who].stops.find(x=>x.id===id); if(!s) return;
+  current=s;
+  const gal=GAL_DEFAULT, save=savingsOf(s.price,gal);
+  const maps=`https://maps.apple.com/?daddr=${encodeURIComponent(s.addr+', '+s.city+', OH '+s.zip)}`;
+  $('sheetBody').innerHTML=`<div class="grab"></div>
+    <div style="display:flex;align-items:baseline;gap:12px">
+      <div class="px mono" style="font-size:34px;color:var(--green)">${money(s.price)}</div>
+      <div style="color:var(--ink-3);font-size:13px">per gallon</div></div>
+    <div class="snm" style="font-size:19px;margin-top:10px">${s.brand}</div>
+    <div class="sad" style="font-size:13.5px">${s.addr}, ${s.city} ${s.zip}</div>
+
+    <h2 style="margin-top:22px">What it saves you</h2>
+    <div class="mathrow"><span>Filling at the yard (44103)</span><span class="mono">${money(A.yard)}</span></div>
+    <div class="mathrow"><span>Here</span><span class="mono">${money(s.price)}</span></div>
+    <div class="mathrow"><span>Difference per gallon</span><span class="mono">${money(A.yard-s.price)}</span></div>
+    <div class="mathrow"><span>On a ${gal}-gallon fill</span><span class="mono">× ${gal}</span></div>
+    <div class="mathrow tot"><span>You keep</span><span class="mono" style="color:var(--green)">${money(save)}</span></div>
+    <div style="font-size:12.5px;color:var(--ink-3);margin-top:8px">
+      ${s.d.toFixed(2)} mi off your path${s.age_hr!=null?' · price posted '+(s.age_hr<1?Math.round(s.age_hr*60)+' min':Math.round(s.age_hr)+' h')+' ago':''}</div>
+    ${s.flag==='disputed'?`<div class="warnbox"><b>Check before you commit.</b> ${s.note||'This station has a history of misreported prices.'}</div>`:''}
+    ${s.flag==='owner'?`<div class="warnbox" style="background:#12262f;border-color:#1d4356;color:#9ad3ee"><b>Posted by the station itself</b> — the most reliable price on here.</div>`:''}
+    ${s.flag==='verify'?`<div class="warnbox"><b>Worth a quick call.</b> ${s.note||'Only one report backing this price so far.'}</div>`:''}
+
+    <a class="btn pri" href="${maps}" target="_blank" rel="noopener">Navigate here</a>
+    <button class="btn sec" id="bLog">I filled up here</button>
+    <button class="btn sec" id="bClose" style="border:0;color:var(--ink-3)">Close</button>`;
+  $('sheet').classList.add('on');
+  $('bClose').onclick=closeSheet; $('bLog').onclick=logForm;
+}
+$('scrim').onclick=closeSheet;
+function closeSheet(){$('sheet').classList.remove('on')}
+
+function logForm(){
+  const s=current;
+  $('sheetBody').innerHTML=`<div class="grab"></div>
+    <h2 style="margin-top:4px">Log your fill</h2>
+    <div class="snm" style="font-size:18px">${s.brand}</div>
+    <div class="sad">${s.addr}, ${s.city}</div>
+    <div class="field">
+      <label><div class="lb">Price / gallon</div><input class="mono" id="fPpg" type="number" inputmode="decimal" step="0.01" value="${s.price.toFixed(2)}"></label>
+      <label><div class="lb">Gallons</div><input class="mono" id="fGal" type="number" inputmode="decimal" step="1" value="${GAL_DEFAULT}"></label>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-3);margin-top:12px">
+      Put in what the pump actually charged — that's what makes your total real, and it tells dispatch when this page is wrong.</p>
+    <button class="btn pri" id="bSave">Save it</button>
+    <button class="btn sec" id="bBack" style="border:0;color:var(--ink-3)">Back</button>`;
+  $('bBack').onclick=()=>openSheet(s.id);
+  $('bSave').onclick=()=>{
+    const ppg=parseFloat($('fPpg').value), gal=parseFloat($('fGal').value);
+    if(!(ppg>0)||!(gal>0)){toast('Enter a price and gallons');return}
+    const fills=load(who);
+    fills.unshift({t:Date.now(),id:s.id,brand:s.brand,addr:s.addr,city:s.city,
+                   ppg:+ppg.toFixed(3),gal:+gal.toFixed(1),saved:+((A.yard-ppg)*gal).toFixed(2)});
+    save(who,fills); closeSheet(); renderYTD(); renderHist();
+    toast('Logged · '+money(Math.max((A.yard-ppg)*gal,0))+' kept');
+  };
+}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2100)}
+
+/* ---------- year to date ---------- */
+function renderYTD(){
+  const yr=new Date().getFullYear();
+  const fills=load(who).filter(f=>new Date(f.t).getFullYear()===yr);
+  const tot=fills.reduce((a,f)=>a+f.saved,0);
+  const gal=fills.reduce((a,f)=>a+f.gal,0);
+  $('ytd').textContent=money(tot);
+  $('ytdCap').textContent = fills.length
+    ? `${fills.length} fill${fills.length>1?'s':''} logged · ${gal.toFixed(0)} gallons · vs filling at the yard`
+    : 'Log your first fill and this starts counting.';
+  const asc=fills.slice().reverse(); let run=0;
+  const pts=asc.map(f=>(run+=f.saved));
+  const W=320,H=56;
+  if(pts.length<2){ $('spark').innerHTML=`<line x1="0" y1="${H-6}" x2="${W}" y2="${H-6}" stroke="#24402c" stroke-width="2" stroke-dasharray="4 5"/>`; return }
+  const mx=Math.max(...pts), X=i=>i/(pts.length-1)*W, Y=v=>H-6-(v/mx)*(H-14);
+  const d=pts.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  $('spark').innerHTML=`<path d="${d} L ${W} ${H} L 0 ${H} Z" fill="#3fbf6a" fill-opacity=".14"/>
+    <path d="${d}" fill="none" stroke="#3fbf6a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${X(pts.length-1).toFixed(1)}" cy="${Y(pts[pts.length-1]).toFixed(1)}" r="4" fill="#3fbf6a"/>`;
+}
+
+/* ---------- history ---------- */
+function renderHist(){
+  const fills=load(who);
+  if(!fills.length){$('hist').innerHTML=
+    `<div class="empty"><div class="ic">⛽</div>No fills logged yet.<br>Tap a stop above, then "I filled up here".</div>`;return}
+  $('hist').innerHTML=fills.slice(0,30).map(f=>{
+    const d=new Date(f.t);
+    return `<div class="hrow">
+      <div class="hd">${d.toLocaleDateString('en-US',{month:'short'})}<b>${d.getDate()}</b></div>
+      <div><div class="hn">${f.brand}</div>
+        <div class="hm">${d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})} · ${f.gal} gal · ${f.city}</div></div>
+      <div class="hs"><div class="v mono">${f.saved>=0?'+':''}${money(f.saved)}</div>
+        <div class="p mono">${money(f.ppg)}/gal</div></div></div>`}).join('');
+}
+</script>
+</body>
+</html>
