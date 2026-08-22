@@ -85,19 +85,19 @@ for row in ws.iter_rows(min_row=r,max_row=ws.max_row):
 ws=wb.create_sheet("3 Route Preview")
 cols=["Seq","School","Address","ZIP","Leg mi","Cum mi","Drive min","Arrive","Depart","Service min"]
 r=head(ws,cols,[6,30,30,8,10,10,11,10,10,12],"TAB 3 - ROUTE PREVIEW","Distance and time breakdown. Highway factor 1.1751 at 51 mph, calibrated on the 8/29/25 Toledo run. City legs 1.32 at 22 mph.")
-ws.append(["","DEADHEAD OUT - SNAP E 55th Cleveland to west Toledo","I-90 W / I-80-90 Turnpike W / I-475 N","",122.1,122.1,144,"04:36","07:00",""])
+ws.append(["","TRANSIT OUT (billable) - SNAP E 55th Cleveland to west Toledo","I-90 W / I-80-90 Turnpike W / I-475 N","",122.1,122.1,144,"04:36","07:00",""])
 for c in ws[ws.max_row]: c.fill=PatternFill("solid",fgColor=SOFT)
 for x in sorted(R,key=lambda y:y[6]):
     ws.append([x[6],x[0],f"{x[1]}, Toledo, OH",x[2],x[9],x[10],x[11],x[7],x[8],20])
 ws.append([13,"SLA Toledo Prep 6th St","824 6th St, Toledo, OH","43605",6.8,143.2,19,"11:58","12:18",20])
 ws.append([14,"SLA Toledo Prep Consaul","2014 Consaul St, Toledo, OH","43605",1.6,144.8,4,"12:22","12:42",20])
-ws.append(["","DEADHEAD BACK - east Toledo to SNAP E 55th","",""  ,113.1,257.8,133,"12:42","14:55",""])
+ws.append(["","TRANSIT BACK (billable) - east Toledo to SNAP E 55th","",""  ,113.1,257.8,133,"12:42","14:55",""])
 for c in ws[ws.max_row]: c.fill=PatternFill("solid",fgColor=SOFT)
 for row in ws.iter_rows(min_row=r,max_row=ws.max_row):
     for c in row: c.border=BD
 ws.append([]); rr=ws.max_row+1
-summ=[("Outbound deadhead","122.1 mi","2 h 24 min"),("In-Toledo stop to stop, 13 legs","22.7 mi","62 min"),
- ("Return deadhead","113.1 mi","2 h 13 min"),("TOTAL MILES","257.8 mi",""),
+summ=[("Transit out, billable","122.1 mi","2 h 24 min"),("In-Toledo stop to stop, 13 legs","22.7 mi","62 min"),
+ ("Transit back, billable","113.1 mi","2 h 13 min"),("TOTAL MILES","257.8 mi",""),
  ("Drive time","","5.64 h"),("Stop time, 14 x 20 min","","4.67 h"),("Load-out","","1.00 h"),
  ("TOTAL ON-DUTY / BILLABLE","","11.31 h"),("Yard out","","03:36"),("First delivery","","07:00"),
  ("Last delivery complete","","12:42"),("Back at SNAP","","14:55")]
@@ -144,18 +144,16 @@ for row in ws.iter_rows(min_row=ws.max_row-len(notes)+1,max_row=ws.max_row):
 
 # ---------- 5. Price Comp ----------
 ws=wb.create_sheet("5 Price Comp")
-r=head(ws,["Line","Basis","Amount","% of revenue","Note"],[34,30,14,14,52],
-  "TAB 5 - INTERNAL PRICE COMP","Contracted $86/hr on ALL clock time - drive, stop, load, unload. No per-stop fee. 3 stops = 1 hr = $86. Run covers 12 TPS schools + 2 SLA Toledo stops.")
+r=head(ws,["Line","Basis","Amount","% of charge","Note"],[34,30,14,14,52],
+  "TAB 5 - PRICE VS COST","Charge vs the cost of putting a truck and a driver on the road. $86/hr on ALL clock time - drive, stop, load, unload. Truck note, insurance, plates and office are paid whether this truck rolls or not and are not charged to the run.")
 ctrl=[("Fuel",f"{MILES} mi / {MPG:.0f} mpg x ${DIESEL}",MILES/MPG*DIESEL,"PADD 2 on-highway, week of 8/10/26"),
  ("Reefer fuel",f"{ONDUTY:.2f} h x {REEF} gal/h x ${DIESEL}",ONDUTY*REEF*DIESEL,"Running refrigerated the whole shift"),
  ("Driver wages + burden",f"{ONDUTY:.2f} h x ${WAGE:.0f} x {BURD}",ONDUTY*WAGE*BURD,"On-duty hours - load-out, drive and stop time in one line"),
  ("Tolls","Ohio Turnpike round trip",52.0,"Estimate - replace with actual"),
- ("Maintenance & tire reserve",f"{MILES} mi x ${MAINT}",MILES*MAINT,"Fleet reserve, not a cash cost on the day"),
+ ("Tires & maintenance",f"{MILES} mi x ${MAINT}",MILES*MAINT,"Accrues with the miles"),
  ("Per diem","Driver meal",30.0,"")]
-fx=[("Truck lease / depreciation","1 day",67.0,"~$1,400/mo over 21 working days"),
- ("Insurance","1 day",85.0,"Liability, cargo, physical damage"),
- ("ELD & telematics","1 day",6.0,""),("Admin overhead","1 day",45.0,"Dispatch, billing, phone")]
-C=sum(x[2] for x in ctrl); F=sum(x[2] for x in fx); TOT=C+F
+fx=[]
+C=sum(x[2] for x in ctrl); F=0.0; TOT=C
 def line(a,b,v,n,bold=False,fill=None):
     ws.append([a,b,round(v,2),round(v/GROSS,4) if GROSS else 0,n])
     row=ws[ws.max_row]
@@ -165,28 +163,23 @@ def line(a,b,v,n,bold=False,fill=None):
         for c in row: c.font=B
     if fill:
         for c in row: c.fill=PatternFill("solid",fgColor=fill)
-line("GROSS SALES",f"{ONDUTY:.2f} billable h x ${HR:.0f}/hr",GROSS,"All clock time. Load-out 1.00 + drive 5.38 + stop 4.00.",True,SOFT)
-line("  of which stop time",f"{STOPS} stops x 20 min = {stopH:.2f} h",stopH*HR,"3 stops = 1 hour = $86",False)
-line("Less allowances","",0,"None")
-line("NET SALES","",GROSS,"",True)
+line("CHARGE",f"{ONDUTY:.2f} billable h x ${HR:.0f}/hr",GROSS,f"All clock time: {LOAD:.2f} load + {DRIVE:.2f} drive + {stopH:.2f} stop",True,SOFT)
+line("  of which stop time",f"{STOPS} stops x 20 min = {stopH:.2f} h",stopH*HR,"3 stops = 1 hour = $86 - the cheapest hours on the run",False)
+
 ws.append([]); ws.cell(ws.max_row+0,1)
-ws.append(["CONTROLLABLES"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
+ws.append(["COST TO PUT THE TRUCK AND DRIVER OUT"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
 for a,b,v,n in ctrl: line("  "+a,b,v,n)
-line("Total controllables","",C,"Costs that move with the run",True)
-line("CONTRIBUTION MARGIN","",GROSS-C,"What a marginal load is worth taking for",True,SOFT)
-ws.append(["FIXED & ALLOCATED"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
-for a,b,v,n in fx: line("  "+a,b,v,n)
-line("Total fixed","",F,"",True)
-line("TOTAL COST","",TOT,"",True)
-line("OPERATING PROFIT","",GROSS-TOT,"After the truck, insurance and overhead carry their share",True,SOFT)
+line("Total cost out","",C,"Wages, fuel, tolls, tires, per diem",True)
+line("MARGIN","",GROSS-C,"Charge less the cost of putting a truck and a driver out",True,SOFT)
+
 ws.append([])
 ws.append(["UNIT ECONOMICS"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
-for a,v,n in [("Effective $/mile",GROSS/MILES,"255.1 miles, 94% of them deadhead"),
- ("Effective $/stop",GROSS/STOPS,"Revenue per stop across 14 stops"),
- ("Marginal profit per added stop",19.49,"On a run already going to Toledo: +$32.54 revenue, +$13.05 cost"),
- ("Effective $/case",GROSS/308,"294 TPS + 14 SLA cases"),("Effective $/meal",GROSS/3230,"3,230 estimated meals"),
- ("Cost per billable hour",TOT/ONDUTY,"Break-even hourly rate"),
- ("Margin of safety on rate",HR-TOT/ONDUTY,"$ per hour the rate can drop before the run loses money")]:
+for a,v,n in [("Charged $/mile",GROSS/MILES,f"{MILES} miles, all of them on the clock"),
+ ("Charged $/stop",GROSS/STOPS,"Across 14 stops"),
+ ("Margin per added stop",19.0,"On a truck already going to Toledo: +$28.67 charged, about $10 of cost"),
+ ("Charged $/case",GROSS/308,"294 TPS + 14 SLA cases"),("Charged $/meal",GROSS/3230,"3,230 estimated meals"),
+ ("Cost per billable hour",TOT/ONDUTY,"What it costs to have the truck out, per hour"),
+ ("Margin per billable hour",(GROSS-TOT)/ONDUTY,"What each billable hour keeps")]:
     ws.append([a,"",round(v,2),"",n]); ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][4].alignment=WRAP
 
 # ---- SLA standalone breakout on the price comp tab ----
@@ -196,37 +189,35 @@ SLA_MI=228.9; SLA_DR=(134+4+133)/60; SLA_ST=2
 sh=SLA_ST*20/60; son=LOAD+SLA_DR+sh; sg=son*HR
 sctrl={"Fuel":SLA_MI/MPG*DIESEL,"Reefer fuel":son*REEF*DIESEL,"Driver wages + burden":son*WAGE*BURD,
        "Tolls":52.0,"Maintenance & tire reserve":SLA_MI*MAINT,"Per diem":30.0}
-sC=sum(sctrl.values()); sT=sC+F
-for a,b,v in [("Gross sales",f"{son:.2f} h x ${HR:.0f} (1.00 load + {SLA_DR:.2f} drive + {sh:.2f} stop)",sg),
-              ("Total controllables","",sC),("Contribution margin","",sg-sC),
-              ("Fixed & allocated","1 day",F),("Total cost","",sT),("OPERATING PROFIT","",sg-sT)]:
+sC=sum(sctrl.values()); sT=sC
+for a,b,v in [("Charge",f"{son:.2f} h x ${HR:.0f} (1.00 load + {SLA_DR:.2f} drive + {sh:.2f} stop)",sg),
+              ("Total cost out","",sC),("MARGIN","",sg-sT)]:
     ws.append([a,b,round(v,2),round(v/sg,4),""])
     ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][3].number_format='0.0%'
     if a.isupper() or a.startswith("Contribution"):
         for c in ws[ws.max_row]: c.font=B
-ws.append(["Break-even hourly rate","",round(sT/son,2),"",f"${sT/son-HR:.2f}/hr above the contracted rate"])
+ws.append(["Margin per billable hour","",round((sg-sT)/son,2),"","vs $%.2f/h on the 14-stop run"%((972.37-624.81)/11.31)])
 ws[ws.max_row][2].number_format='"$"#,##0.00'
-for a,v,n in [("Shortfall per run",sg-sT,"Two stops cannot carry the Cleveland deadhead"),
-  ("Mon/Wed/Fri standalone, per week",(sg-sT)*3,"Three runs"),
-  ("Mon+Fri only, Wed rides with the school run",(sg-sT)*2,"What the 8/26 combine already saves"),
-  ("Consolidated to one delivery a week",(sg-sT),"Sean floated this and said they have not got it together")]:
+for a,v,n in [("Margin per run",sg-sT,"Two stops carry the whole road themselves"),
+  ("Mon/Wed/Fri, per week",(sg-sT)*3,"Three runs"),
+  ("Same two stops added to a school run",58.0,"+0.67 h and +2.7 mi on a truck already going, against about $21 of cost")]:
     ws.append([a,"",round(v,2),"",n]); ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][4].alignment=WRAP
 ws.append([])
-ws.append(["STOPS NEEDED FOR A TOLEDO RUN TO PAY"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
-ws.append(["Stops","Miles","Billable h","Gross","Total cost","Operating profit","Margin"])
+ws.append(["STOPS AGAINST MARGIN ON A TOLEDO RUN"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
+ws.append(["Stops","Miles","Billable h","Charge","Cost out","Margin","Margin %"])
 for c in ws[ws.max_row]: c.font=H; c.fill=HF
 for n in range(2,15):
     mi=SLA_MI+(n-2)*1.3; dr=SLA_DR+(n-2)*0.045
     hh=n*20/60; o=LOAD+dr+hh; g=o*HR
     cc=mi/MPG*DIESEL+o*REEF*DIESEL+o*WAGE*BURD+52.0+mi*MAINT+30.0
-    t=cc+F; op=g-t
+    t=cc; op=g-t
     ws.append([n,round(mi,1),round(o,2),round(g,2),round(t,2),round(op,2),round(op/g,4)])
     r2=ws[ws.max_row]
     for cix in (3,4,5): r2[cix].number_format='"$"#,##0.00'
     r2[6].number_format='0.0%'
     fill="FFE0F0E8" if op>0 else ("FFFBE7E3" if op<0 else AMB)
     for c in r2: c.fill=PatternFill("solid",fgColor=fill)
-ws.append(["Marginal stop on a Toledo-bound run","","","+$32.54 revenue","+$13.05 cost","+$19.49 profit",""])
+ws.append(["Each stop added to a Toledo truck","","","+$28.67 charged","~$10 cost","about +$19 margin",""])
 for c in ws[ws.max_row]: c.font=B
 
 # ---------- 6. Discovery ----------
