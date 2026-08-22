@@ -1,49 +1,39 @@
-DIESEL=5.181; MPG=10.0; WAGE=25.0; BURD=0.18; MAINT=0.18
+HR=86.0; STOPFEE=20.0; LOAD=1.0
+DIESEL=5.181; MPG=10.0; WAGE=25.0; BURD=1.18; MAINT=0.18; REEF=0.5
 
-def run(name, miles, hours, drive_h, stops, linehaul_rate, stop_fee, tolls,
-        lodging=0, perdiem=30, loadout_h=0, days=1):
-    fuel=miles/MPG*DIESEL
-    reefer=hours*0.5*DIESEL
-    drv=hours*WAGE*(1+BURD)
-    lo=loadout_h*WAGE*(1+BURD)
-    mnt=miles*MAINT
-    ctrl=dict(Fuel=fuel,**{"Reefer fuel":reefer,"Driver wages":drv,"Load-out labor":lo,
-        "Tolls":tolls,"Maint & tire reserve":mnt,"Per diem":perdiem,"Lodging":lodging})
+def lane(name, miles, drive_h, stops, tolls, perdiem, lodging=0, days=1, svc_min=20):
+    stop_h=stops*svc_min/60
+    onduty=LOAD+drive_h+stop_h
+    ctrl={"Fuel":miles/MPG*DIESEL,"Reefer fuel":onduty*REEF*DIESEL,
+          "Driver wages + burden":onduty*WAGE*BURD,"Tolls":tolls,
+          "Maintenance & tire reserve":miles*MAINT,"Per diem":perdiem,"Lodging":lodging}
     C=sum(ctrl.values())
-    fx={"Truck lease/depr":67.0*days,"Insurance":85.0*days,"ELD/telematics":6.0*days,"Admin overhead":45.0*days}
-    F=sum(fx.values())
-    gross=miles*linehaul_rate+max(0,stops-1)*stop_fee
-    print("="*70); print(f"{name}  |  {miles:.0f} mi, {hours:.1f} h, {stops} stops, {days} day(s)"); print("="*70)
-    print(f"{'Gross sales':32}{gross:>12,.2f}")
-    print(f"  linehaul {miles:.0f} mi @ ${linehaul_rate:.2f}{miles*linehaul_rate:>16,.2f}")
-    print(f"  {max(0,stops-1)} extra stops @ ${stop_fee:.0f}{max(0,stops-1)*stop_fee:>18,.2f}")
-    print(f"{'Net sales':32}{gross:>12,.2f}")
-    print("  -- controllables --")
+    fx={"Lease/depr":67*days,"Insurance":85*days,"Telematics":6*days,"Admin":45*days}
+    F=sum(fx.values()); TOT=C+F
+    print("="*74); print(f"{name}"); print("="*74)
+    print(f"  on-duty {onduty:.2f} h  = load {LOAD:.1f} + drive {drive_h:.2f} + stop {stop_h:.2f}")
     for k,v in ctrl.items():
-        if v: print(f"  {k:30}{v:>12,.2f}")
-    print(f"{'Total controllables':32}{C:>12,.2f}")
-    cm=gross-C
-    print(f"{'CONTRIBUTION MARGIN':32}{cm:>12,.2f}   {cm/gross*100 if gross else 0:>6.1f}%")
-    print("  -- fixed / allocated --")
-    for k,v in fx.items(): print(f"  {k:30}{v:>12,.2f}")
-    print(f"{'Total fixed':32}{F:>12,.2f}")
-    op=gross-C-F
-    print(f"{'OPERATING PROFIT':32}{op:>12,.2f}   {op/gross*100 if gross else 0:>6.1f}%")
-    print(f"{'Total cost':32}{C+F:>12,.2f}")
-    print(f"{'Break-even revenue':32}{C+F:>12,.2f}  = ${(C+F)/miles:.2f}/mi")
-    print(f"{'Cost per stop':32}{(C+F)/stops:>12,.2f}")
-    return dict(gross=gross,ctrl=C,cm=cm,fixed=F,op=op,total=C+F)
+        if v: print(f"    {k:28}{v:>10,.2f}")
+    print(f"    {'Total controllables':28}{C:>10,.2f}")
+    print(f"    {'Fixed (allocated)':28}{F:>10,.2f}")
+    print(f"    {'TOTAL COST':28}{TOT:>10,.2f}")
+    opts=[("A  as quoted: load+drive hrs, $20/stop", (LOAD+drive_h)*HR+stops*STOPFEE),
+          ("B  portal-to-portal hrs, no stop fee",   onduty*HR),
+          ("C  portal-to-portal hrs + $20/stop",     onduty*HR+stops*STOPFEE)]
+    print()
+    for lab,rev in opts:
+        print(f"  {lab:42} rev {rev:>9,.2f}  CM {rev-C:>9,.2f}  OP {rev-TOT:>9,.2f}  {(rev-TOT)/rev*100:>6.1f}%")
+    a=opts[0][1]
+    print()
+    print(f"  Break-even hourly rate at $20/stop : ${(TOT-stops*STOPFEE)/(LOAD+drive_h):.2f}/hr")
+    print(f"  Break-even stop fee at $86/hr      : ${(TOT-(LOAD+drive_h)*HR)/stops:.2f}/stop")
+    print(f"  A 20-min stop is worth {20/60*HR:.2f} at $86/hr; you bill ${STOPFEE:.0f} -> gap ${20/60*HR-STOPFEE:.2f}/stop, ${(20/60*HR-STOPFEE)*stops:.2f} over {stops} stops")
+    return TOT,a
 
-t=run("TOLEDO — 12 TPS schools, Wed 8/26",255.1,10.4,5.38,12,2.40,50.0,52.0,loadout_h=1.5)
+lane("TOLEDO — 12 TPS schools, Cleveland->Toledo, 26ft reefer",255.1,5.383,12,52,30)
 print()
-p=run("PHILADELPHIA — proposed lane",864,20.0,16.9,1,2.40,0,180.0,lodging=140,perdiem=70,days=2)
+t,_=lane("PHILADELPHIA — proposed lane, round trip",864,16.94,1,180,70,lodging=140,days=2)
 print()
-print("PHILLY NEGOTIATION vs FULLY-LOADED COST")
-for label,rev in [("Sean opener",1500),("Sean ceiling / customer pays",1800),("Mike ask",2300)]:
-    print(f"  {label:32}${rev:>6,}   op profit {rev-p['total']:>9,.2f}   margin {(rev-p['total'])/rev*100:>6.1f}%   ${rev/864:.2f}/mi")
-print(f"  Mike's Cincinnati benchmark: $1,200 / ~500 mi RT = $2.40/mi")
-print()
-print("TOLEDO BARTER — 'one truck for one week in lieu of payment'")
-for tv in (0,1000,2500,5000):
-    print(f"  truck valued at ${tv:>5,}  ->  operating profit {tv-t['total']:>9,.2f}")
-print(f"  cash-equivalent needed just to break even on the single run: ${t['total']:,.2f}")
+print("PHILLY flat-rate positions vs cost")
+for lab,rev in [("Sean opener",1500),("Customer ceiling",1800),("Mike ask",2300)]:
+    print(f"  {lab:20} ${rev:>6,}   OP {rev-t:>9,.2f}   {(rev-t)/rev*100:>6.1f}%")
