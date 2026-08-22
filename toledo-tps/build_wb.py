@@ -4,8 +4,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-HR=86.0; LOAD=1.0; DRIVE=5.383; SVC=20/60; STOPS=12
-DIESEL=5.181; MPG=10.0; WAGE=25.0; BURD=1.18; MAINT=0.18; REEF=0.5; MILES=255.1
+HR=86.0; LOAD=1.0; DRIVE=5.64; SVC=20/60; STOPS=14
+DIESEL=5.181; MPG=10.0; WAGE=25.0; BURD=1.18; MAINT=0.18; REEF=0.5; MILES=257.8
 CL,CW,CH=16.0,13.33,9.0; PERLAYER=9; CVOL=CL*CW*CH/1728
 stopH=STOPS*SVC; ONDUTY=LOAD+DRIVE+stopH; GROSS=ONDUTY*HR
 
@@ -74,7 +74,10 @@ ws.append(["","0","-- START DEPOT --","2275 E 55th St, Cleveland, OH 44103","03:
 for x in sorted(R,key=lambda y:y[6]):
     nm,st,zp,enr,meal,cs,seq,t1,t2=x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8]
     ws.append([f"TPS{nm.split()[0]}",seq,nm,f"{st}, Toledo, OH {zp}",t1,t2,20,cs,"TBD","SNAP","100","Refrigerated","School","Wed 8/26 only","SNAP 2275 E 55th St","6","Customer Delivery","Verify","2026-08-21"])
-ws.append(["","999","-- RETURN --","2275 E 55th St, Cleveland, OH 44103","13:59","","","0","TBD","SNAP","100","","Return","","SNAP 2275 E 55th St","2","Return / End","Valid","2026-08-21"])
+for n,(nm,ad,cs,t1,t2) in enumerate([("SLA Toledo Prep 6th St","824 6th St, Toledo, OH 43605",9,"11:58","12:18"),
+                                      ("SLA Toledo Prep Consaul","2014 Consaul St, Toledo, OH 43605",5,"12:22","12:42")],13):
+    ws.append([f"SLA{n}",n,nm,ad,t1,t2,20,cs,"TBD","SNAP","100","Refrigerated","School","Wed 8/26 only","SNAP 2275 E 55th St","6","Customer Delivery","Valid","2026-08-21"])
+ws.append(["","999","-- RETURN --","2275 E 55th St, Cleveland, OH 44103","14:55","","","0","TBD","SNAP","100","","Return","","SNAP 2275 E 55th St","2","Return / End","Valid","2026-08-21"])
 for row in ws.iter_rows(min_row=r,max_row=ws.max_row):
     for c in row: c.border=BD
 
@@ -86,16 +89,18 @@ ws.append(["","DEADHEAD OUT - SNAP E 55th Cleveland to west Toledo","I-90 W / I-
 for c in ws[ws.max_row]: c.fill=PatternFill("solid",fgColor=SOFT)
 for x in sorted(R,key=lambda y:y[6]):
     ws.append([x[6],x[0],f"{x[1]}, Toledo, OH",x[2],x[9],x[10],x[11],x[7],x[8],20])
-ws.append(["","DEADHEAD BACK - south Toledo to SNAP E 55th","",""  ,118.7,255.1,140,"11:39","13:59",""])
+ws.append([13,"SLA Toledo Prep 6th St","824 6th St, Toledo, OH","43605",6.8,143.2,19,"11:58","12:18",20])
+ws.append([14,"SLA Toledo Prep Consaul","2014 Consaul St, Toledo, OH","43605",1.6,144.8,4,"12:22","12:42",20])
+ws.append(["","DEADHEAD BACK - east Toledo to SNAP E 55th","",""  ,113.1,257.8,133,"12:42","14:55",""])
 for c in ws[ws.max_row]: c.fill=PatternFill("solid",fgColor=SOFT)
 for row in ws.iter_rows(min_row=r,max_row=ws.max_row):
     for c in row: c.border=BD
 ws.append([]); rr=ws.max_row+1
-summ=[("Outbound deadhead","122.1 mi","2 h 24 min"),("In-Toledo stop to stop, 11 legs","14.3 mi","39 min"),
- ("Return deadhead","118.7 mi","2 h 20 min"),("TOTAL MILES","255.1 mi",""),
- ("Drive time","","5.38 h"),("Stop time, 12 x 20 min","","4.00 h"),("Load-out","","1.00 h"),
- ("TOTAL ON-DUTY / BILLABLE","","10.38 h"),("Yard out","","03:36"),("First delivery","","07:00"),
- ("Last delivery complete","","11:39"),("Back at SNAP","","13:59")]
+summ=[("Outbound deadhead","122.1 mi","2 h 24 min"),("In-Toledo stop to stop, 13 legs","22.7 mi","62 min"),
+ ("Return deadhead","113.1 mi","2 h 13 min"),("TOTAL MILES","257.8 mi",""),
+ ("Drive time","","5.64 h"),("Stop time, 14 x 20 min","","4.67 h"),("Load-out","","1.00 h"),
+ ("TOTAL ON-DUTY / BILLABLE","","11.31 h"),("Yard out","","03:36"),("First delivery","","07:00"),
+ ("Last delivery complete","","12:42"),("Back at SNAP","","14:55")]
 for a,b,c in summ:
     ws.append([a,"","","",b,"",c]); 
     if a.isupper(): 
@@ -105,23 +110,25 @@ ws.cell(rr-1,1,"SUMMARY").font=Font(bold=True,color=COLD)
 # ---------- 4. Manifest & Pallet Build ----------
 ws=wb.create_sheet("4 Manifest & Pallet Build")
 cols=["Stop","School","Address","Cases","Layers @9","Pallet ht in","Volume cu ft","Meals est","Pallet label"]
-r=head(ws,cols,[7,32,34,9,11,13,13,11,34],"TAB 4 - MANIFEST & PALLET BUILD","Leave this with the SNAP team. One school per pallet - do not mix schools on a pallet.")
+r=head(ws,cols,[7,32,34,9,11,13,13,11,34],"TAB 4 - MANIFEST & PALLET BUILD","Leave this with the SNAP team. One school per pallet - do not mix schools on a pallet. 12 TPS pallets plus the SLA Toledo pallet.")
 ws.cell(r-1,1)
 for x in sorted(R,key=lambda y:y[6]):
     cs=x[5]; lay=math.ceil(cs/PERLAYER)
     ws.append([x[6],x[0],f"{x[1]}, Toledo, OH {x[2]}",cs,lay,round(lay*CH+6),round(cs*CVOL,1),x[4],f"STOP {x[6]} / {x[0]} / {cs} CS"])
 for row in ws.iter_rows(min_row=r,max_row=ws.max_row):
     for c in row: c.border=BD
-ws.append(["","TOTAL","",294,"", "",round(294*CVOL,1),3230,"12 pallets"])
+ws.append([13,"SLA Toledo Prep 6th St","824 6th St, Toledo, OH 43605",9,1,15,round(9*CVOL,1),"-","STOP 13 / SLA 6TH ST / 9 CS"])
+ws.append([14,"SLA Toledo Prep Consaul","2014 Consaul St, Toledo, OH 43605",5,1,15,round(5*CVOL,1),"-","STOP 14 / SLA CONSAUL / 5 CS"])
+ws.append(["","TOTAL","",308,"", "",round(308*CVOL,1),3230,"13 pallets"])
 for c in ws[ws.max_row]: c.font=B; c.fill=PatternFill("solid",fgColor=GREY)
 ws.append([])
 notes=[("BUILD RULES",""),
  ("One school per pallet","Agreed on the 8/21 call. Do not consolidate or cross-load - the driver must not break down a pallet at a stop."),
  ("Label every pallet","School number and name, case count, stop number. Marked and wrapped by SNAP."),
- ("Load reverse stop order","Stop 12 loads first, stop 1 last and nearest the door."),
+ ("Load reverse stop order","Stop 14 loads first, stop 1 last and nearest the door. The SLA pallet double-stacks on a 33 in school pallet."),
  ("Temperature","REFRIGERATED, not frozen. Product is pulled to thaw for Thursday 8/27 service."),
  ("Case geometry","16.0 x 13.3 x 9.0 in, 9 per layer on a 48x40 pallet (3 across x 3 deep), 1.11 cu ft per case."),
- ("Truck fit","12 pallets = all 12 floor positions in a 26 ft reefer. Tallest pallet 51 in. No room for a 13th pallet."),
+ ("Truck fit","12 school pallets on the floor plus the SLA pallet double-stacked. Ten school pallets are 33 in, SLA is 24 in - 57 in stacked against ~90 in interior. Total cube 342 cu ft of ~1,600."),
  ("MEAL BUILD - confirm all six components ship together",""),
  (" ".join(["1. Beef Patty","2. Hamburger Bun","3. Tater Tots"]),""),
  (" ".join(["4. Baked Beans","5. Watermelon Applesauce","6. Ketchup & Mustard PC"]),""),
@@ -138,7 +145,7 @@ for row in ws.iter_rows(min_row=ws.max_row-len(notes)+1,max_row=ws.max_row):
 # ---------- 5. Price Comp ----------
 ws=wb.create_sheet("5 Price Comp")
 r=head(ws,["Line","Basis","Amount","% of revenue","Note"],[34,30,14,14,52],
-  "TAB 5 - INTERNAL PRICE COMP","Rate is $86/hr on ALL clock time - drive, stop, load, unload. No per-stop fee. 3 stops = 1 hr = $86.")
+  "TAB 5 - INTERNAL PRICE COMP","Contracted $86/hr on ALL clock time - drive, stop, load, unload. No per-stop fee. 3 stops = 1 hr = $86. Run covers 12 TPS schools + 2 SLA Toledo stops.")
 ctrl=[("Fuel",f"{MILES} mi / {MPG:.0f} mpg x ${DIESEL}",MILES/MPG*DIESEL,"PADD 2 on-highway, week of 8/10/26"),
  ("Reefer fuel",f"{ONDUTY:.2f} h x {REEF} gal/h x ${DIESEL}",ONDUTY*REEF*DIESEL,"Running refrigerated the whole shift"),
  ("Driver wages + burden",f"{ONDUTY:.2f} h x ${WAGE:.0f} x {BURD}",ONDUTY*WAGE*BURD,"On-duty hours - load-out, drive and stop time in one line"),
@@ -159,7 +166,7 @@ def line(a,b,v,n,bold=False,fill=None):
     if fill:
         for c in row: c.fill=PatternFill("solid",fgColor=fill)
 line("GROSS SALES",f"{ONDUTY:.2f} billable h x ${HR:.0f}/hr",GROSS,"All clock time. Load-out 1.00 + drive 5.38 + stop 4.00.",True,SOFT)
-line("  of which stop time","12 stops x 20 min = 4.00 h",stopH*HR,"3 stops = 1 hour = $86",False)
+line("  of which stop time",f"{STOPS} stops x 20 min = {stopH:.2f} h",stopH*HR,"3 stops = 1 hour = $86",False)
 line("Less allowances","",0,"None")
 line("NET SALES","",GROSS,"",True)
 ws.append([]); ws.cell(ws.max_row+0,1)
@@ -175,8 +182,8 @@ line("OPERATING PROFIT","",GROSS-TOT,"After the truck, insurance and overhead ca
 ws.append([])
 ws.append(["UNIT ECONOMICS"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
 for a,v,n in [("Effective $/mile",GROSS/MILES,"255.1 miles, 94% of them deadhead"),
- ("Effective $/stop",GROSS/STOPS,"Revenue per school served"),
- ("Effective $/case",GROSS/294,"294 cases"),("Effective $/meal",GROSS/3230,"3,230 estimated meals"),
+ ("Effective $/stop",GROSS/STOPS,"Revenue per stop across 14 stops"),
+ ("Effective $/case",GROSS/308,"294 TPS + 14 SLA cases"),("Effective $/meal",GROSS/3230,"3,230 estimated meals"),
  ("Cost per billable hour",TOT/ONDUTY,"Break-even hourly rate"),
  ("Margin of safety on rate",HR-TOT/ONDUTY,"$ per hour the rate can drop before the run loses money")]:
     ws.append([a,"",round(v,2),"",n]); ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][4].alignment=WRAP
@@ -189,13 +196,12 @@ D=[("Blocking","BJ / SNAP","Per-school split of the 294 cases","Sean gave the to
 ("Blocking","BJ / Sean","Eleven schools or twelve","Morgan's 8/14 list names 12 and Ed said 12 on the call, but Sean and Mike both said 11 while sizing the load and the notes recorded 11. If 294 was counted against 11, a twelfth pallet is unbuilt.","Mon 8/24"),
 ("Blocking","Mike / Ed","Physical site survey at all 12 buildings","Dock vs ground level, approach and truck turnaround, stairs, liftgate need, which door receives. Nothing is verified. Sat and street view links are in Tab 1.","Tue 8/25"),
 ("Blocking","BJ","Receiving contact and phone for 5 schools","McTigue, Reynolds, Keyser, Burroughs and Escuela SMART have no phone on file. The other seven are captured.","Mon 8/24"),
-("Blocking","Sean","Rate agreed in writing","$86/hr on all clock time is SupplyNow's structure. Nothing is agreed with SNAP. At 10.38 billable hours that is $892.94.","Before Wed"),
 ("Open","BJ","Confirmed receiving windows","The schedule assumes kitchens take product from 07:00. If the first school cannot receive until 08:00 the whole day shifts and the 13:59 return moves with it.","Mon 8/24"),
 ("Open","BJ / Sean","Does the TPS order include breakfast items","The 8/21 production form carries Blueberry Chex, Berry Juice, Goldfish Graham and Pop Tart alongside the burger meal. Sean said no milk and no secondary items for TPS - confirm breakfast is excluded or the case count changes.","Mon 8/24"),
 ("Open","BJ","All six meal components ship complete","Production form shows patty, bun, tots, baked beans, watermelon applesauce and ketchup/mustard PC. An incomplete meal at a school is a failed delivery.","Mon 8/24"),
 ("Open","Sean","TPS district delivery pass or vendor check-in","Some districts require a pass or badge before a driver can enter a building. Unknown for TPS.","Tue 8/25"),
 ("Open","Mike","Tuesday-night load-out window","Sean offered a Tuesday night load with overnight hold in the reefer. Need the window and who opens the building.","Mon 8/24"),
-("Open","Mike / Sean","SLA Toledo coverage on 8/26","SLA has its own delivery that morning and the school truck has no thirteenth floor position. It needs a second vehicle or its cases move to the Monday or Thursday SLA runs.","Mon 8/24"),
+("Verified","-","SLA Toledo rides on the same truck","14 SLA cases build a 24 in pallet; school pallets are 33 in. Double-stacked that is 57 in against ~90 in of interior. Combining costs 2.7 mi and 56 min and returns $47.91 more profit than a second truck.","Done"),
 ("Open","Mike","Driver assignment","Twelve POD-required school drops in an unfamiliar city on a 10.38 hour day. The truck is not the constraint; the driver is.","Tue 8/25"),
 ("Verified","-","No duplicate addresses","All 12 street addresses are distinct and no two schools share a building. Checked across street number, street and ZIP.","Done"),
 ("Verified","-","Byrnedale vs Glendale-Feilbach name collision","Byrnedale is AT 3635 Glendale Ave. Glendale-Feilbach is at 2317 Cass Rd. Both in 43614. High risk of a driver or a pallet going to the wrong one - label by school number.","Done"),

@@ -135,10 +135,10 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
   <header class="mast">
     <span class="eyebrow">SupplyNow 3PL &middot; SNAP Gourmet Foods &middot; Lane P&amp;L</span>
     <h1>Toledo Lane Economics</h1>
-    <p class="sub">Full financial scope of the Wednesday 8/26 Toledo run &mdash; gross sales through operating profit. Priced at <b>$86/hr on all clock time</b>: drive, stop, load and unload alike. No per-stop fee. Twenty minutes a stop, so three stops is an hour is $86. Every driver below is editable and the statement recalculates as you type.</p>
+    <p class="sub">Full financial scope of the Wednesday 8/26 Toledo run &mdash; gross sales through operating profit. Priced at the contracted <b>$86/hr on all clock time</b>: drive, stop, load and unload alike. No per-stop fee. Twenty minutes a stop, so three stops is an hour is $86. Every driver below is editable and the statement recalculates as you type.</p>
     <div class="mast-meta" style="display:flex;flex-wrap:wrap;gap:10px 26px;padding-top:14px;border-top:1px solid var(--line-2);font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-2)">
-      <span>LOAD-OUT <b>1.00 h</b></span><span>DRIVE <b>5.38 h</b></span><span>STOP <b>4.00 h</b></span>
-      <span>BILLABLE <b>10.38 h</b></span><span>RATE <b>$86/hr &mdash; not yet agreed</b></span>
+      <span>LOAD-OUT <b>1.00 h</b></span><span>DRIVE <b>5.64 h</b></span><span>STOP <b>4.67 h</b></span>
+      <span>BILLABLE <b>11.31 h</b></span><span>RATE <b>$86/hr, contracted</b></span>
     </div>
   </header>
 
@@ -153,7 +153,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
 
   <div class="grid2">
     <section>
-      <div class="sec-h"><h2>Statement</h2><p class="sub">Toledo &mdash; 12 TPS schools, Cleveland to Toledo, 26&prime; reefer</p></div>
+      <div class="sec-h"><h2>Statement</h2><p class="sub">Toledo &mdash; 12 TPS schools + 2 SLA, Cleveland to Toledo, 26&prime; reefer</p></div>
       <div class="panel"><div class="pnl" id="pnl"></div></div>
       <div class="panel"><h3>Where the money goes</h3><div class="bars" id="bars"></div></div>
     </section>
@@ -165,8 +165,8 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
         <div class="fields">
           <div class="f"><label for="iHourly">Rate $/hr</label><input id="iHourly" type="number" step="1" value="86"></div>
           <div class="f"><label for="iLoadHrs">Load-out hrs</label><input id="iLoadHrs" type="number" step="0.25" value="1"></div>
-          <div class="f"><label for="iDriveHrs">Drive hrs</label><input id="iDriveHrs" type="number" step="0.01" value="5.38"></div>
-          <div class="f"><label for="iStops">Stops</label><input id="iStops" type="number" step="1" value="12"></div>
+          <div class="f"><label for="iDriveHrs">Drive hrs</label><input id="iDriveHrs" type="number" step="0.01" value="5.64"></div>
+          <div class="f"><label for="iStops">Stops</label><input id="iStops" type="number" step="1" value="14"></div>
           <div class="f"><label for="iSvcMin">Min per stop</label><input id="iSvcMin" type="number" step="5" value="20"></div>
           <div class="f"><label for="iAllow">Allowances $</label><input id="iAllow" type="number" step="10" value="0"></div>
         </div>
@@ -175,7 +175,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
       <div class="panel">
         <h3>Cost drivers</h3>
         <div class="fields">
-          <div class="f"><label for="iMiles">Miles</label><input id="iMiles" type="number" step="1" value="255.1"></div>
+          <div class="f"><label for="iMiles">Miles</label><input id="iMiles" type="number" step="1" value="257.8"></div>
           <div class="f"><label for="iDiesel">Diesel $/gal</label><input id="iDiesel" type="number" step="0.001" value="5.181"></div>
           <div class="f"><label for="iMpg">Truck MPG</label><input id="iMpg" type="number" step="0.5" value="10"></div>
           <div class="f"><label for="iWage">Driver $/hr</label><input id="iWage" type="number" step="0.5" value="25"></div>
@@ -213,12 +213,12 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
     <div class="cols">
       <div class="card">
         <h3>Three stops buy an hour</h3>
-        <p>Twenty minutes a stop means the twelve drops are <b class="mono">4.00 h</b> &mdash; <b class="mono" id="stopRev">&mdash;</b> of the invoice, and 39% of it.</p>
-        <p>Under a flat $20 stop fee those same four hours would have returned $240. The hourly structure is worth <b class="mono" id="stopDelta">&mdash;</b> more on this run.</p>
+        <p>Twenty minutes a stop means the fourteen drops are <b class="mono">4.67 h</b> &mdash; <b class="mono" id="stopRev">&mdash;</b> of the invoice, and 39% of it.</p>
+        <p>Under a flat $20 stop fee those same hours would have returned $280. The hourly structure is worth <b class="mono" id="stopDelta">&mdash;</b> more on this run.</p>
       </div>
       <div class="card">
         <h3>Deadhead is most of the clock</h3>
-        <p>Cleveland to Toledo and back is <b class="mono">240.8</b> of the 255.1 miles and <b class="mono">4.73</b> of the 5.38 drive hours.</p>
+        <p>Cleveland to Toledo and back is <b class="mono">240.8</b> of the 257.8 miles and <b class="mono">4.62</b> of the 5.64 drive hours.</p>
         <p>The hourly rate covers it, which a per-mile linehaul on a 12-stop day would not. That is the structural argument for billing this way.</p>
       </div>
       <div class="card">
@@ -231,18 +231,18 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
 
   <section>
     <div class="sec-h"><h2>Rate card this supports</h2>
-      <p class="sub">Built on $86/hr and the real cost of the Cleveland&ndash;Toledo day. Nothing here is agreed with SNAP yet.</p></div>
+      <p class="sub">Built on $86/hr and the real cost of the Cleveland&ndash;Toledo day. Rate is per the signed annual agreement.</p></div>
     <div class="tbox">
       <table>
         <thead><tr><th>Line</th><th class="n">Basis</th><th class="n">Toledo run</th><th>Why</th></tr></thead>
         <tbody>
-          <tr class="good"><td class="lab">All clock time</td><td class="n">$86 &times; 10.38 h</td><td class="n">$893</td><td>Drive, stop, load and unload bill identically &mdash; the truck and driver are committed yard-out to yard-in</td></tr>
+          <tr class="good"><td class="lab">All clock time</td><td class="n">$86 &times; 11.31 h</td><td class="n">$972</td><td>Drive, stop, load and unload bill identically &mdash; the truck and driver are committed yard-out to yard-in</td></tr>
           <tr><td class="lab">&nbsp;&nbsp;of which load-out</td><td class="n">1.00 h</td><td class="n">$86</td><td>Tuesday-night staging or Wednesday pre-trip</td></tr>
-          <tr><td class="lab">&nbsp;&nbsp;of which drive</td><td class="n">5.38 h</td><td class="n">$463</td><td>240.8 mi of it is deadhead</td></tr>
-          <tr><td class="lab">&nbsp;&nbsp;of which stop</td><td class="n">4.00 h</td><td class="n">$344</td><td>12 drops at 20 min &mdash; three stops to the hour</td></tr>
+          <tr><td class="lab">&nbsp;&nbsp;of which drive</td><td class="n">5.64 h</td><td class="n">$485</td><td>240.8 mi of it is deadhead</td></tr>
+          <tr><td class="lab">&nbsp;&nbsp;of which stop</td><td class="n">4.67 h</td><td class="n">$401</td><td>14 drops at 20 min &mdash; three stops to the hour</td></tr>
           <tr><td class="lab">Fuel surcharge</td><td class="n">above $4.50/gal</td><td class="n">float</td><td>Diesel is $5.181 and you told Sean the rate moves with fuel &mdash; make it a clause, not a conversation</td></tr>
           <tr><td class="lab">Detention</td><td class="n">$86/hr</td><td class="n">&mdash;</td><td>Already the rate &mdash; waiting bills the same as driving, no separate schedule needed</td></tr>
-          <tr class="hl"><td class="lab">Second vehicle for SLA 8/26</td><td class="n">quote separately</td><td class="n">&mdash;</td><td>The school truck fills all 12 floor positions; SLA cannot ride along</td></tr>
+          <tr class="good"><td class="lab">SLA rides on the same truck</td><td class="n">2 stops</td><td class="n">+$80</td><td>+2.7 mi and +56 min for $79 more revenue and $48 more profit than a second truck</td></tr>
         </tbody>
       </table>
     </div>
@@ -256,7 +256,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
 
 <script>
 (function(){
-  var DEF={iHourly:86,iLoadHrs:1,iDriveHrs:5.38,iStops:12,iSvcMin:20,iAllow:0,iMiles:255.1,
+  var DEF={iHourly:86,iLoadHrs:1,iDriveHrs:5.64,iStops:14,iSvcMin:20,iAllow:0,iMiles:257.8,
     iDiesel:5.181,iMpg:10,iWage:25,iBurden:18,iTolls:52,iMaint:0.18,iPerDiem:30,iReefer:0.5,
     iLease:67,iIns:85,iEld:6,iAdmin:45};
   var ids=Object.keys(DEF);
@@ -317,7 +317,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
     }).join("");
 
     var comp=[["Load-out",r.load,"Staging and pre-trip"],
-      ["Drive",r.drive,"240.8 mi of the 255.1 is deadhead"],
+      ["Drive",r.drive,"240.8 mi of the 257.8 is deadhead"],
       ["Stop &mdash; "+r.stops+" drops",r.stopH,"Three stops to the hour"]];
     $("compBody").innerHTML=comp.map(function(c){
       return '<tr><td class="lab">'+c[0]+'</td><td class="n">'+hrs(c[1])+'</td><td class="n">'+money2(c[1]*r.rate)+
