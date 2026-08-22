@@ -229,6 +229,57 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
     </div>
   </section>
 
+
+  <section>
+    <div class="sec-h">
+      <h2>SLA Toledo as a standalone run</h2>
+      <p class="sub">Two stops &mdash; 6th Street and Consaul &mdash; Monday, Wednesday and Friday. Same Cleveland deadhead out and back, same $86/hr. Broken out because it behaves nothing like the school run.</p>
+    </div>
+    <div class="strip">
+      <div class="met"><span class="k">Miles</span><span class="v">228.9</span><span class="u">round trip, 2 stops</span></div>
+      <div class="met"><span class="k">Billable</span><span class="v">6.18</span><span class="u">1.00 load + 4.52 drive + 0.67 stop</span></div>
+      <div class="met hi"><span class="k">Gross</span><span class="v">$532</span><span class="u">6.18 h &times; $86</span></div>
+      <div class="met"><span class="k">Total cost</span><span class="v">$643</span><span class="u">$440 controllable + $203 fixed</span></div>
+      <div class="met neg"><span class="k">Operating</span><span class="v">-$111</span><span class="u">-21.0% margin</span></div>
+      <div class="met"><span class="k">Break-even rate</span><span class="v">$104</span><span class="u">per hour, vs $86 contracted</span></div>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <h3>Two stops cannot carry the deadhead</h3>
+        <p>Cleveland to Toledo and back is <b class="mono">4.52</b> of the <b class="mono">6.18</b> billable hours whether you make two drops or fourteen. Two stops add only <b class="mono">0.67 h</b> &mdash; <b class="mono">$57</b> of the invoice.</p>
+        <p>The run still clears <b class="mono">$91.55</b> of contribution, so it pays its own fuel, wages and tolls. What it cannot pay for is the day of truck, insurance and overhead.</p>
+      </div>
+      <div class="card">
+        <h3>What it costs across a week</h3>
+        <ul>
+          <li>Monday, Wednesday, Friday standalone: <b class="mono">-$334.36</b> a week</li>
+          <li>If Wednesday rides with the school run, Monday and Friday only: <b class="mono">-$222.91</b></li>
+          <li>Consolidated to one delivery a week: <b class="mono">-$111.45</b></li>
+        </ul>
+        <p>Sean already floated the weekly consolidation and said &ldquo;we haven&rsquo;t got it together.&rdquo; It is worth <b class="mono">$222.91</b> a week.</p>
+      </div>
+      <div class="card">
+        <h3>The rule this gives you</h3>
+        <p>On a Toledo-bound run every extra stop is worth <b class="mono">+$32.54</b> of revenue against <b class="mono">+$13.05</b> of cost &mdash; <b class="mono">+$19.49</b> straight to the bottom line.</p>
+        <p>A Toledo run turns profitable at <b>eight stops</b>. Below that the deadhead is carrying the day, and at two stops it is carrying almost all of it.</p>
+      </div>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead><tr><th>Stops on a Toledo run</th><th class="n">Miles</th><th class="n">Billable h</th><th class="n">Gross</th><th class="n">Total cost</th><th class="n">Operating profit</th><th class="n">Margin</th></tr></thead>
+        <tbody>
+          <tr class="bad"><td class="lab">2 &mdash; SLA standalone</td><td class="n">228.9</td><td class="n">6.18</td><td class="n">$532</td><td class="n">$643</td><td class="n">-$111</td><td class="n">-21.0%</td></tr>
+          <tr class="bad"><td class="lab">4</td><td class="n">231.5</td><td class="n">6.94</td><td class="n">$597</td><td class="n">$669</td><td class="n">-$72</td><td class="n">-12.1%</td></tr>
+          <tr class="bad"><td class="lab">6</td><td class="n">234.1</td><td class="n">7.70</td><td class="n">$662</td><td class="n">$695</td><td class="n">-$34</td><td class="n">-5.1%</td></tr>
+          <tr class="hl"><td class="lab">8 &mdash; break-even</td><td class="n">236.7</td><td class="n">8.45</td><td class="n">$727</td><td class="n">$722</td><td class="n">$5</td><td class="n">0.8%</td></tr>
+          <tr class="good"><td class="lab">10</td><td class="n">239.3</td><td class="n">9.21</td><td class="n">$792</td><td class="n">$748</td><td class="n">$44</td><td class="n">5.6%</td></tr>
+          <tr class="good"><td class="lab">12 &mdash; TPS schools alone</td><td class="n">241.9</td><td class="n">9.97</td><td class="n">$857</td><td class="n">$774</td><td class="n">$83</td><td class="n">9.7%</td></tr>
+          <tr class="good"><td class="lab">14 &mdash; TPS + SLA, the 8/26 plan</td><td class="n">257.8</td><td class="n">11.31</td><td class="n">$972</td><td class="n">$828</td><td class="n">$145</td><td class="n">14.9%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <section>
     <div class="sec-h"><h2>Rate card this supports</h2>
       <p class="sub">Built on $86/hr and the real cost of the Cleveland&ndash;Toledo day. Rate is per the signed annual agreement.</p></div>
@@ -240,7 +291,6 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
           <tr><td class="lab">&nbsp;&nbsp;of which load-out</td><td class="n">1.00 h</td><td class="n">$86</td><td>Tuesday-night staging or Wednesday pre-trip</td></tr>
           <tr><td class="lab">&nbsp;&nbsp;of which drive</td><td class="n">5.64 h</td><td class="n">$485</td><td>240.8 mi of it is deadhead</td></tr>
           <tr><td class="lab">&nbsp;&nbsp;of which stop</td><td class="n">4.67 h</td><td class="n">$401</td><td>14 drops at 20 min &mdash; three stops to the hour</td></tr>
-          <tr><td class="lab">Fuel surcharge</td><td class="n">above $4.50/gal</td><td class="n">float</td><td>Diesel is $5.181 and you told Sean the rate moves with fuel &mdash; make it a clause, not a conversation</td></tr>
           <tr><td class="lab">Detention</td><td class="n">$86/hr</td><td class="n">&mdash;</td><td>Already the rate &mdash; waiting bills the same as driving, no separate schedule needed</td></tr>
           <tr class="good"><td class="lab">SLA rides on the same truck</td><td class="n">2 stops</td><td class="n">+$80</td><td>+2.7 mi and +56 min for $79 more revenue and $48 more profit than a second truck</td></tr>
         </tbody>

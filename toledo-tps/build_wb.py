@@ -183,10 +183,51 @@ ws.append([])
 ws.append(["UNIT ECONOMICS"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
 for a,v,n in [("Effective $/mile",GROSS/MILES,"255.1 miles, 94% of them deadhead"),
  ("Effective $/stop",GROSS/STOPS,"Revenue per stop across 14 stops"),
+ ("Marginal profit per added stop",19.49,"On a run already going to Toledo: +$32.54 revenue, +$13.05 cost"),
  ("Effective $/case",GROSS/308,"294 TPS + 14 SLA cases"),("Effective $/meal",GROSS/3230,"3,230 estimated meals"),
  ("Cost per billable hour",TOT/ONDUTY,"Break-even hourly rate"),
  ("Margin of safety on rate",HR-TOT/ONDUTY,"$ per hour the rate can drop before the run loses money")]:
     ws.append([a,"",round(v,2),"",n]); ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][4].alignment=WRAP
+
+# ---- SLA standalone breakout on the price comp tab ----
+ws.append([]); ws.append(["SLA TOLEDO AS A STANDALONE RUN - Mon / Wed / Fri, 2 stops"])
+ws[ws.max_row][0].font=Font(bold=True,color=COLD)
+SLA_MI=228.9; SLA_DR=(134+4+133)/60; SLA_ST=2
+sh=SLA_ST*20/60; son=LOAD+SLA_DR+sh; sg=son*HR
+sctrl={"Fuel":SLA_MI/MPG*DIESEL,"Reefer fuel":son*REEF*DIESEL,"Driver wages + burden":son*WAGE*BURD,
+       "Tolls":52.0,"Maintenance & tire reserve":SLA_MI*MAINT,"Per diem":30.0}
+sC=sum(sctrl.values()); sT=sC+F
+for a,b,v in [("Gross sales",f"{son:.2f} h x ${HR:.0f} (1.00 load + {SLA_DR:.2f} drive + {sh:.2f} stop)",sg),
+              ("Total controllables","",sC),("Contribution margin","",sg-sC),
+              ("Fixed & allocated","1 day",F),("Total cost","",sT),("OPERATING PROFIT","",sg-sT)]:
+    ws.append([a,b,round(v,2),round(v/sg,4),""])
+    ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][3].number_format='0.0%'
+    if a.isupper() or a.startswith("Contribution"):
+        for c in ws[ws.max_row]: c.font=B
+ws.append(["Break-even hourly rate","",round(sT/son,2),"",f"${sT/son-HR:.2f}/hr above the contracted rate"])
+ws[ws.max_row][2].number_format='"$"#,##0.00'
+for a,v,n in [("Shortfall per run",sg-sT,"Two stops cannot carry the Cleveland deadhead"),
+  ("Mon/Wed/Fri standalone, per week",(sg-sT)*3,"Three runs"),
+  ("Mon+Fri only, Wed rides with the school run",(sg-sT)*2,"What the 8/26 combine already saves"),
+  ("Consolidated to one delivery a week",(sg-sT),"Sean floated this and said they have not got it together")]:
+    ws.append([a,"",round(v,2),"",n]); ws[ws.max_row][2].number_format='"$"#,##0.00'; ws[ws.max_row][4].alignment=WRAP
+ws.append([])
+ws.append(["STOPS NEEDED FOR A TOLEDO RUN TO PAY"]); ws[ws.max_row][0].font=Font(bold=True,color=COLD)
+ws.append(["Stops","Miles","Billable h","Gross","Total cost","Operating profit","Margin"])
+for c in ws[ws.max_row]: c.font=H; c.fill=HF
+for n in range(2,15):
+    mi=SLA_MI+(n-2)*1.3; dr=SLA_DR+(n-2)*0.045
+    hh=n*20/60; o=LOAD+dr+hh; g=o*HR
+    cc=mi/MPG*DIESEL+o*REEF*DIESEL+o*WAGE*BURD+52.0+mi*MAINT+30.0
+    t=cc+F; op=g-t
+    ws.append([n,round(mi,1),round(o,2),round(g,2),round(t,2),round(op,2),round(op/g,4)])
+    r2=ws[ws.max_row]
+    for cix in (3,4,5): r2[cix].number_format='"$"#,##0.00'
+    r2[6].number_format='0.0%'
+    fill="FFE0F0E8" if op>0 else ("FFFBE7E3" if op<0 else AMB)
+    for c in r2: c.fill=PatternFill("solid",fgColor=fill)
+ws.append(["Marginal stop on a Toledo-bound run","","","+$32.54 revenue","+$13.05 cost","+$19.49 profit",""])
+for c in ws[ws.max_row]: c.font=B
 
 # ---------- 6. Discovery ----------
 ws=wb.create_sheet("6 Discovery")
