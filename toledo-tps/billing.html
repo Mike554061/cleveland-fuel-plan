@@ -1,0 +1,471 @@
+<title>SNAP Lane Economics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+
+<style>
+:root{
+  --ink:#0F1922; --ink-2:#3A4A56; --ink-3:#6B7C88;
+  --ground:#F4F7F8; --card:#FFFFFF; --line:#DCE4E8; --line-2:#EDF2F4;
+  --cold:#0E7C8A; --cold-soft:#E2F1F3;
+  --amber:#B26A00; --amber-soft:#FBEFDC;
+  --green:#16714B; --green-soft:#E0F0E8;
+  --red:#A32E1F; --red-soft:#FBE7E3;
+  --field:#FFFFFF; --field-line:#C4D2D8;
+  --shadow:0 1px 2px rgba(15,25,34,.06),0 8px 24px -12px rgba(15,25,34,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E8EFF2; --ink-2:#A8BAC4; --ink-3:#788B96;
+    --ground:#0C141A; --card:#141F27; --line:#25343E; --line-2:#1C2A33;
+    --cold:#5CC5D2; --cold-soft:#123039;
+    --amber:#E8A54A; --amber-soft:#33270F;
+    --green:#5FC493; --green-soft:#102C21;
+    --red:#F08A75; --red-soft:#3A1712;
+    --field:#0E1920; --field-line:#33454F;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8EFF2; --ink-2:#A8BAC4; --ink-3:#788B96;
+  --ground:#0C141A; --card:#141F27; --line:#25343E; --line-2:#1C2A33;
+  --cold:#5CC5D2; --cold-soft:#123039;
+  --amber:#E8A54A; --amber-soft:#33270F;
+  --green:#5FC493; --green-soft:#102C21;
+  --red:#F08A75; --red-soft:#3A1712;
+  --field:#0E1920; --field-line:#33454F;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 24px 80px;display:flex;flex-direction:column;gap:32px}
+h1,h2,h3{font-family:"Barlow Condensed",ui-sans-serif,system-ui,sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(2.3rem,5vw,3.5rem);line-height:.98;font-weight:700;text-transform:uppercase}
+h2{font-size:1.55rem;font-weight:600;text-transform:uppercase;letter-spacing:.045em}
+h3{font-size:1.12rem;font-weight:600}
+p{margin:0}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.17em;text-transform:uppercase;color:var(--cold);font-weight:600}
+.sub{color:var(--ink-2);max-width:68ch}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:14px}
+.sec-h{display:flex;flex-direction:column;gap:5px;border-bottom:1px solid var(--line);padding-bottom:9px}
+
+.mast{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--cold);border-radius:3px;
+  padding:30px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:13px}
+
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.met{background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:3px}
+.met .k{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.met .v{font-family:"Barlow Condensed",sans-serif;font-size:2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.met .u{font-size:.75rem;color:var(--ink-3)}
+.met.pos .v{color:var(--green)} .met.neg .v{color:var(--red)} .met.hi .v{color:var(--cold)}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:20px 22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:13px}
+
+/* P&L ladder */
+.pnl{display:flex;flex-direction:column;font-family:"IBM Plex Mono",monospace;font-size:.85rem;font-variant-numeric:tabular-nums}
+.pnl .row{display:flex;justify-content:space-between;gap:14px;padding:6px 0;border-bottom:1px solid var(--line-2)}
+.pnl .row.ind{padding-left:16px;color:var(--ink-2);font-size:.8rem}
+.pnl .row.head{border-bottom:1px solid var(--line);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.65rem;color:var(--ink-3);padding-top:12px}
+.pnl .row.sum{border-top:1px solid var(--line);border-bottom:none;font-weight:600;margin-top:2px}
+.pnl .row.big{border-top:2px solid var(--cold);border-bottom:none;font-weight:700;font-size:1rem;padding:10px 0;margin-top:4px}
+.pnl .row.big .lab{font-family:"Barlow Condensed",sans-serif;font-size:1.25rem;text-transform:uppercase;letter-spacing:.03em}
+.pos{color:var(--green)} .neg{color:var(--red)}
+.pct{color:var(--ink-3);font-size:.75rem;margin-left:8px}
+
+/* inputs */
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.f input,.f select{font-family:"IBM Plex Mono",monospace;font-size:.87rem;font-variant-numeric:tabular-nums;
+  padding:7px 9px;border:1px solid var(--field-line);border-radius:2px;background:var(--field);color:var(--ink);width:100%}
+.f input:focus,.f select:focus{outline:2px solid var(--cold);outline-offset:1px;border-color:var(--cold)}
+.seg{display:flex;gap:0;border:1px solid var(--field-line);border-radius:2px;overflow:hidden;width:fit-content;max-width:100%;flex-wrap:wrap}
+.seg button{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:8px 14px;border:none;background:var(--field);color:var(--ink-2);cursor:pointer;border-right:1px solid var(--field-line)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--cold);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--cold);outline-offset:-2px}
+button.reset{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 12px;border:1px solid var(--field-line);background:var(--field);color:var(--ink-2);border-radius:2px;cursor:pointer;width:fit-content}
+button.reset:hover{border-color:var(--cold);color:var(--cold)}
+
+/* tables */
+.tbox{border:1px solid var(--line);border-radius:3px;overflow-x:auto;background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.87rem}
+thead th{background:var(--ground);text-align:left;padding:10px 12px;font-family:"IBM Plex Mono",monospace;
+  font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--line-2)}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.lab{font-weight:600}
+tr.hl td{background:var(--amber-soft)}
+tr.good td{background:var(--green-soft)}
+tr.bad td{background:var(--red-soft)}
+
+.note{border-left:3px solid var(--amber);background:var(--card);border:1px solid var(--line);border-left-width:3px;
+  border-radius:3px;padding:15px 18px;display:flex;flex-direction:column;gap:5px}
+.note.danger{border-left-color:var(--red)}
+.note.good{border-left-color:var(--green)}
+.note p{font-size:.93rem;color:var(--ink-2)}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:.61rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  padding:3px 7px;border-radius:2px;background:var(--amber-soft);color:var(--amber);white-space:nowrap}
+.tag.r{background:var(--red-soft);color:var(--red)}
+.tag.g{background:var(--green-soft);color:var(--green)}
+.tag.c{background:var(--cold-soft);color:var(--cold)}
+.note-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:118px 1fr 92px;gap:11px;align-items:center;font-size:.83rem}
+.bar .bl{font-family:"IBM Plex Mono",monospace;font-size:.73rem;color:var(--ink-2)}
+.bar .track{height:20px;background:var(--line-2);border-radius:2px;overflow:hidden;position:relative}
+.bar .fill{height:100%;background:var(--cold);border-radius:2px}
+.bar .fill.neg{background:var(--red)} .bar .fill.pos{background:var(--green)}
+.bar .bv{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:.8rem}
+
+footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font-size:.8rem;display:flex;flex-direction:column;gap:7px}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <span class="eyebrow">SupplyNow 3PL &middot; SNAP Gourmet Foods &middot; Lane P&amp;L</span>
+    <h1>SNAP Lane Economics</h1>
+    <p class="sub">Full financial scope of the SNAP lift &mdash; gross sales through operating profit, on the Toledo 12-school run and the open Philadelphia lane. Every cost driver below is editable; the statement recalculates as you type and your numbers are remembered on this device. <a href="https://claude.ai/code/artifact/61eac174-3835-4217-8d36-2f0dfe361971">Run scope and manifest &rarr;</a></p>
+    <div class="seg" role="group" aria-label="Lane">
+      <button id="tabTOL" aria-pressed="true">Toledo &mdash; 12 schools</button>
+      <button id="tabPHI" aria-pressed="false">Philadelphia lane</button>
+    </div>
+  </header>
+
+  <div class="strip">
+    <div class="met hi"><span class="k">Gross sales</span><span class="v" id="mGross">$0</span><span class="u" id="mGrossU">&mdash;</span></div>
+    <div class="met"><span class="k">Net sales</span><span class="v" id="mNet">$0</span><span class="u">after allowances</span></div>
+    <div class="met"><span class="k">Controllables</span><span class="v" id="mCtrl">$0</span><span class="u" id="mCtrlU">&mdash;</span></div>
+    <div class="met"><span class="k">Contribution</span><span class="v" id="mCM">$0</span><span class="u" id="mCMU">&mdash;</span></div>
+    <div class="met"><span class="k">Operating profit</span><span class="v" id="mOP">$0</span><span class="u" id="mOPU">&mdash;</span></div>
+    <div class="met"><span class="k">Break-even</span><span class="v" id="mBE">$0</span><span class="u" id="mBEU">&mdash;</span></div>
+  </div>
+
+  <div class="grid2">
+    <section>
+      <div class="sec-h"><h2>Statement</h2><p class="sub" id="stmtSub">&mdash;</p></div>
+      <div class="panel">
+        <div class="pnl" id="pnl"></div>
+      </div>
+      <div class="panel">
+        <h3>Where the money goes</h3>
+        <div class="bars" id="bars"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-h"><h2>Assumptions</h2><p class="sub">Defaults come from the run scope and the 8/21 call. Change anything.</p></div>
+      <div class="panel">
+        <h3>Revenue</h3>
+        <div class="fields">
+          <div class="f"><label for="iRate">Linehaul $/mi</label><input id="iRate" type="number" step="0.05" value="2.40"></div>
+          <div class="f"><label for="iStopFee">Per extra stop $</label><input id="iStopFee" type="number" step="5" value="50"></div>
+          <div class="f"><label for="iAllow">Allowances $</label><input id="iAllow" type="number" step="10" value="0"></div>
+          <div class="f"><label for="iFlat">Flat rate override $</label><input id="iFlat" type="number" step="50" value="0"></div>
+        </div>
+        <p class="sub" style="font-size:.82rem">Flat rate override replaces the linehaul + stop build when set above zero. Use it to test a quoted number.</p>
+      </div>
+      <div class="panel">
+        <h3>Operating inputs</h3>
+        <div class="fields">
+          <div class="f"><label for="iMiles">Miles</label><input id="iMiles" type="number" step="1" value="255.1"></div>
+          <div class="f"><label for="iHours">Paid hours</label><input id="iHours" type="number" step="0.1" value="10.4"></div>
+          <div class="f"><label for="iStops">Stops</label><input id="iStops" type="number" step="1" value="12"></div>
+          <div class="f"><label for="iDays">Days</label><input id="iDays" type="number" step="1" value="1"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Cost drivers</h3>
+        <div class="fields">
+          <div class="f"><label for="iDiesel">Diesel $/gal</label><input id="iDiesel" type="number" step="0.001" value="5.181"></div>
+          <div class="f"><label for="iMpg">Truck MPG</label><input id="iMpg" type="number" step="0.5" value="10"></div>
+          <div class="f"><label for="iWage">Driver $/hr</label><input id="iWage" type="number" step="0.5" value="25"></div>
+          <div class="f"><label for="iBurden">Payroll burden %</label><input id="iBurden" type="number" step="1" value="18"></div>
+          <div class="f"><label for="iTolls">Tolls $</label><input id="iTolls" type="number" step="5" value="52"></div>
+          <div class="f"><label for="iMaint">Maint $/mi</label><input id="iMaint" type="number" step="0.01" value="0.18"></div>
+          <div class="f"><label for="iLoadout">Load-out hrs</label><input id="iLoadout" type="number" step="0.5" value="1.5"></div>
+          <div class="f"><label for="iPerDiem">Per diem $</label><input id="iPerDiem" type="number" step="5" value="30"></div>
+          <div class="f"><label for="iLodging">Lodging $</label><input id="iLodging" type="number" step="10" value="0"></div>
+          <div class="f"><label for="iReefer">Reefer gal/hr</label><input id="iReefer" type="number" step="0.1" value="0.5"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Fixed, per day</h3>
+        <div class="fields">
+          <div class="f"><label for="iLease">Lease / depr $</label><input id="iLease" type="number" step="5" value="67"></div>
+          <div class="f"><label for="iIns">Insurance $</label><input id="iIns" type="number" step="5" value="85"></div>
+          <div class="f"><label for="iEld">Telematics $</label><input id="iEld" type="number" step="1" value="6"></div>
+          <div class="f"><label for="iAdmin">Admin $</label><input id="iAdmin" type="number" step="5" value="45"></div>
+        </div>
+        <button class="reset" id="reset">Reset to scope defaults</button>
+      </div>
+    </section>
+  </div>
+
+  <section>
+    <div class="sec-h">
+      <h2>The barter problem</h2>
+      <p class="sub">On the 8/21 call the agreed compensation for the Toledo week was <b>one SNAP truck in lieu of payment</b>, not cash. That makes the truck's realizable value the entire revenue line.</p>
+    </div>
+    <div class="note danger">
+      <div class="note-h"><span class="tag r">Highest financial risk in the deal</span><h3>You are paid in an asset you have already called a lemon</h3></div>
+      <p>Your own words on the call: the previous units were &ldquo;dusty lemons,&rdquo; the F350 lost a wheel after one use, and the 26-footer &ldquo;cost us everything.&rdquo; Sean's framing was &ldquo;there's just two lemons back there.&rdquo; If the truck nets to zero after repairs, the Toledo run does not break even &mdash; it books a <b class="mono" id="barterZero">&mdash;</b> loss, because the costs are cash and the revenue is not.</p>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead><tr><th>Truck valued at</th><th class="n">Revenue recognized</th><th class="n">Total cost</th><th class="n">Operating profit</th><th class="n">Margin</th><th>Read</th></tr></thead>
+        <tbody id="barterBody"></tbody>
+      </table>
+    </div>
+    <div class="note">
+      <div class="note-h"><span class="tag">Unresolved</span><h3>&ldquo;One week&rdquo; was never defined</h3></div>
+      <p>The trade covers &ldquo;one week,&rdquo; but the week contains the Wednesday TPS run <em>and</em> the continuing SLA Toledo deliveries. If the truck buys only the TPS run, it needs to clear <b class="mono" id="beOne">&mdash;</b>. If it buys every SNAP mile that week, the bar is several times that. Pin the scope of the trade before Wednesday.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Philadelphia &mdash; the live negotiation</h2>
+      <p class="sub">You asked $2,300, Sean opened at $1,500 and said his customer will only pay $1,800, with SNAP eating anything above. Here is what each number does against fully-loaded cost.</p>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead><tr><th>Position</th><th class="n">Rate</th><th class="n">$/mi</th><th class="n">Contribution</th><th class="n">Operating profit</th><th class="n">Margin</th></tr></thead>
+        <tbody id="phiBody"></tbody>
+      </table>
+    </div>
+    <div class="note danger">
+      <div class="note-h"><span class="tag r">Hold your number</span><h3>$1,800 is below your cost, not just below your ask</h3></div>
+      <p>Philadelphia round trip breaks even at <b class="mono" id="phiBE">&mdash;</b>, or <b class="mono" id="phiBEmi">&mdash;</b> per mile. Your own Cincinnati lane prices at $2.40/mi &mdash; $1,800 to Philly is <b class="mono" id="phiUnder">&mdash;</b> per mile, under-market by your own book and under cost by the numbers above. The two-day driver, lodging and Pennsylvania tolls are what separate this lane from Cincinnati, and a $1,500 or $1,800 rate absorbs none of it.</p>
+    </div>
+    <div class="note good">
+      <div class="note-h"><span class="tag g">The move</span><h3>Sell the backhaul, not the discount</h3></div>
+      <p>Sean already conceded the gap is his customer's budget, not your price. The lane only works below $2,300 if the return leg earns. He mentioned SNAP just started moving vegetables with US Foods and spends $50k every two weeks &mdash; that is the backhaul conversation, and it is worth more than the $500 you would give up on rate.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Rate card this supports</h2></div>
+    <div class="tbox">
+      <table>
+        <thead><tr><th>Line</th><th class="n">Basis</th><th class="n">Toledo run</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td class="lab">Linehaul</td><td class="n">$2.40 / mi</td><td class="n">$612</td><td>Matches the Cincinnati lane you already sold at $1,200</td></tr>
+          <tr><td class="lab">Multi-stop</td><td class="n">$50 &times; 11</td><td class="n">$550</td><td>4 hours of stop time is 38% of the driver day and no linehaul rate covers it</td></tr>
+          <tr class="good"><td class="lab">Gross</td><td class="n">&mdash;</td><td class="n">$1,162</td><td>27.6% operating margin at scope cost</td></tr>
+          <tr><td class="lab">Fuel surcharge</td><td class="n">above $4.50/gal</td><td class="n">float</td><td>Diesel is $5.181 and you told Sean the rate moves with fuel &mdash; make that a clause, not a conversation</td></tr>
+          <tr><td class="lab">Detention</td><td class="n">$45/hr after 30 min</td><td class="n">&mdash;</td><td>12 school kitchens, no confirmed receiving contacts yet</td></tr>
+          <tr class="hl"><td class="lab">Rounding premium</td><td class="n">note only</td><td class="n">&mdash;</td><td>One-school-per-pallet fills all 12 floor positions &mdash; no room for a 13th drop</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Sources.</b> Case counts, pallet method, hamburger meal, no milk, Tuesday-night staging and the truck-in-lieu-of-payment agreement all come from the SNAP (Toledo Schools) &times; SupplyNow call, 8/21/26. Philadelphia positions ($2,300 ask, $1,500 opener, $1,800 customer ceiling) and the Cincinnati $1,200 benchmark are from the same call. Miles, hours and fuel carry over from the run scope.</p>
+    <p><b>Method.</b> Controllables are costs that move with the run; fixed costs are day-allocated. Contribution margin is net sales less controllables &mdash; the number that tells you whether a marginal load is worth taking. Operating profit is after fixed allocation. Wage, burden, insurance, lease, admin and maintenance reserve are planning defaults, not your books &mdash; replace them with actuals and every figure updates.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var LANES={
+    TOL:{miles:255.1,hours:10.4,stops:12,days:1,tolls:52,lodging:0,perDiem:30,loadout:1.5,
+         label:"Toledo — 12 TPS schools, Wed 8/26",flat:0},
+    PHI:{miles:864,hours:20,stops:1,days:2,tolls:180,lodging:140,perDiem:70,loadout:0,
+         label:"Philadelphia — proposed lane, round trip",flat:0}
+  };
+  var SHARED={rate:2.40,stopFee:50,allow:0,diesel:5.181,mpg:10,wage:25,burden:18,
+              maint:0.18,reefer:0.5,lease:67,ins:85,eld:6,admin:45};
+  var lane="TOL";
+  var ids=["iRate","iStopFee","iAllow","iFlat","iMiles","iHours","iStops","iDays","iDiesel","iMpg",
+           "iWage","iBurden","iTolls","iMaint","iLoadout","iPerDiem","iLodging","iReefer",
+           "iLease","iIns","iEld","iAdmin"];
+  function $(id){return document.getElementById(id);}
+  function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:0;}
+  function money(v){return (v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0});}
+  function money2(v){return (v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function pct(v){return (v*100).toFixed(1)+"%";}
+
+  function load(){
+    try{
+      var raw=localStorage.getItem("snapLaneEcon");
+      if(!raw) return;
+      var s=JSON.parse(raw);
+      ids.forEach(function(k){ if(s[k]!==undefined && $(k)) $(k).value=s[k]; });
+      if(s.lane) lane=s.lane;
+    }catch(e){}
+  }
+  function save(){
+    try{
+      var s={lane:lane};
+      ids.forEach(function(k){ s[k]=$(k).value; });
+      localStorage.setItem("snapLaneEcon",JSON.stringify(s));
+    }catch(e){}
+  }
+
+  function applyLane(){
+    var L=LANES[lane];
+    $("iMiles").value=L.miles; $("iHours").value=L.hours; $("iStops").value=L.stops;
+    $("iDays").value=L.days; $("iTolls").value=L.tolls; $("iLodging").value=L.lodging;
+    $("iPerDiem").value=L.perDiem; $("iLoadout").value=L.loadout; $("iFlat").value=L.flat;
+    $("tabTOL").setAttribute("aria-pressed",lane==="TOL");
+    $("tabPHI").setAttribute("aria-pressed",lane==="PHI");
+  }
+
+  function calc(o){
+    o=o||{};
+    var miles=o.miles!==undefined?o.miles:num("iMiles");
+    var hours=o.hours!==undefined?o.hours:num("iHours");
+    var stops=o.stops!==undefined?o.stops:num("iStops");
+    var days=o.days!==undefined?o.days:num("iDays");
+    var flat=o.flat!==undefined?o.flat:num("iFlat");
+    var gross=flat>0?flat:(miles*num("iRate")+Math.max(0,stops-1)*num("iStopFee"));
+    if(o.gross!==undefined) gross=o.gross;
+    var allow=num("iAllow");
+    var net=gross-allow;
+    var burd=1+num("iBurden")/100;
+    var c={
+      "Fuel":miles/(num("iMpg")||1)*num("iDiesel"),
+      "Reefer fuel":hours*num("iReefer")*num("iDiesel"),
+      "Driver wages + burden":hours*num("iWage")*burd,
+      "Load-out labor":num("iLoadout")*num("iWage")*burd,
+      "Tolls":num("iTolls"),
+      "Maintenance & tire reserve":miles*num("iMaint"),
+      "Per diem":num("iPerDiem"),
+      "Lodging":num("iLodging")
+    };
+    var C=0; for(var k in c) C+=c[k];
+    var f={"Truck lease / depreciation":num("iLease")*days,"Insurance":num("iIns")*days,
+           "ELD & telematics":num("iEld")*days,"Admin overhead":num("iAdmin")*days};
+    var F=0; for(var k2 in f) F+=f[k2];
+    return {gross:gross,allow:allow,net:net,ctrl:c,C:C,fx:f,F:F,cm:net-C,op:net-C-F,
+            total:C+F,miles:miles,stops:stops};
+  }
+
+  function renderPnl(r){
+    var h="";
+    h+='<div class="row head"><span>Revenue</span><span></span></div>';
+    var flat=num("iFlat");
+    if(flat>0){
+      h+='<div class="row ind"><span>Flat rate override</span><span>'+money2(flat)+'</span></div>';
+    }else{
+      h+='<div class="row ind"><span>Linehaul '+r.miles.toFixed(0)+' mi @ $'+num("iRate").toFixed(2)+'</span><span>'+money2(r.miles*num("iRate"))+'</span></div>';
+      h+='<div class="row ind"><span>'+Math.max(0,r.stops-1)+' extra stops @ $'+num("iStopFee").toFixed(0)+'</span><span>'+money2(Math.max(0,r.stops-1)*num("iStopFee"))+'</span></div>';
+    }
+    h+='<div class="row sum"><span>Gross sales</span><span>'+money2(r.gross)+'</span></div>';
+    h+='<div class="row ind"><span>Less allowances</span><span>'+(r.allow?"-"+money2(r.allow):money2(0))+'</span></div>';
+    h+='<div class="row sum"><span>Net sales</span><span>'+money2(r.net)+'</span></div>';
+    h+='<div class="row head"><span>Controllables</span><span></span></div>';
+    for(var k in r.ctrl){ if(r.ctrl[k]) h+='<div class="row ind"><span>'+k+'</span><span>'+money2(r.ctrl[k])+'</span></div>'; }
+    h+='<div class="row sum"><span>Total controllables</span><span>'+money2(r.C)+'</span></div>';
+    h+='<div class="row big"><span class="lab">Contribution margin</span><span class="'+(r.cm>=0?"pos":"neg")+'">'+money2(r.cm)+'<span class="pct">'+(r.net?pct(r.cm/r.net):"—")+'</span></span></div>';
+    h+='<div class="row head"><span>Fixed &amp; allocated</span><span></span></div>';
+    for(var k2 in r.fx){ h+='<div class="row ind"><span>'+k2+'</span><span>'+money2(r.fx[k2])+'</span></div>'; }
+    h+='<div class="row sum"><span>Total fixed</span><span>'+money2(r.F)+'</span></div>';
+    h+='<div class="row big"><span class="lab">Operating profit</span><span class="'+(r.op>=0?"pos":"neg")+'">'+money2(r.op)+'<span class="pct">'+(r.net?pct(r.op/r.net):"—")+'</span></span></div>';
+    $("pnl").innerHTML=h;
+  }
+
+  function renderBars(r){
+    var items=[];
+    for(var k in r.ctrl){ if(r.ctrl[k]) items.push([k,r.ctrl[k],"cost"]); }
+    items.push(["Fixed & allocated",r.F,"cost"]);
+    items.push(["Operating profit",r.op,r.op>=0?"pos":"neg"]);
+    var max=0; items.forEach(function(i){ max=Math.max(max,Math.abs(i[1])); });
+    $("bars").innerHTML=items.map(function(i){
+      var w=max?Math.abs(i[1])/max*100:0;
+      var cls=i[2]==="pos"?"fill pos":(i[2]==="neg"?"fill neg":"fill");
+      return '<div class="bar"><span class="bl">'+i[0]+'</span>'+
+             '<span class="track"><span class="'+cls+'" style="width:'+w.toFixed(1)+'%"></span></span>'+
+             '<span class="bv">'+money(i[1])+'</span></div>';
+    }).join("");
+  }
+
+  function renderBarter(){
+    // cost is computed from Toledo's own operating params regardless of the active lane
+    var burd=1+num("iBurden")/100, L=LANES.TOL;
+    var C=L.miles/(num("iMpg")||1)*num("iDiesel") + L.hours*num("iReefer")*num("iDiesel")
+        + L.hours*num("iWage")*burd + L.loadout*num("iWage")*burd + L.tolls
+        + L.miles*num("iMaint") + L.perDiem + L.lodging;
+    var F=(num("iLease")+num("iIns")+num("iEld")+num("iAdmin"))*L.days;
+    var total=C+F;
+    $("barterZero").textContent=money2(total);
+    $("beOne").textContent=money2(total);
+    var reads={0:"Costs are cash, revenue is not",1000:"Roughly a wash after repairs",
+               2500:"Works only if the unit is roadworthy",5000:"Only if it needs nothing"};
+    $("barterBody").innerHTML=[0,1000,2500,5000].map(function(v){
+      var op=v-total, cls=op>=0?"good":"bad";
+      return '<tr class="'+cls+'"><td class="lab">'+money(v)+'</td><td class="n">'+money(v)+'</td>'+
+        '<td class="n">'+money2(total)+'</td><td class="n">'+money2(op)+'</td>'+
+        '<td class="n">'+(v?pct(op/v):"—")+'</td><td>'+reads[v]+'</td></tr>';
+    }).join("");
+  }
+
+  function renderPhi(){
+    var L=LANES.PHI, burd=1+num("iBurden")/100;
+    var C=L.miles/(num("iMpg")||1)*num("iDiesel") + L.hours*num("iReefer")*num("iDiesel")
+        + L.hours*num("iWage")*burd + L.loadout*num("iWage")*burd + L.tolls
+        + L.miles*num("iMaint") + L.perDiem + L.lodging;
+    var F=(num("iLease")+num("iIns")+num("iEld")+num("iAdmin"))*L.days;
+    var total=C+F;
+    $("phiBE").textContent=money2(total);
+    $("phiBEmi").textContent="$"+(total/L.miles).toFixed(2);
+    $("phiUnder").textContent="$"+(1800/L.miles).toFixed(2);
+    var rows=[["Sean's opener",1500],["Customer ceiling / Sean's cap",1800],["Your ask",2300],["Break-even",Math.ceil(total)]];
+    $("phiBody").innerHTML=rows.map(function(x){
+      var rev=x[1], op=rev-total, cm=rev-C, cls=op>0?"good":(op<0?"bad":"hl");
+      return '<tr class="'+cls+'"><td class="lab">'+x[0]+'</td><td class="n">'+money(rev)+'</td>'+
+        '<td class="n">$'+(rev/L.miles).toFixed(2)+'</td><td class="n">'+money2(cm)+'</td>'+
+        '<td class="n">'+money2(op)+'</td><td class="n">'+pct(op/rev)+'</td></tr>';
+    }).join("");
+  }
+
+  function render(){
+    var r=calc();
+    $("stmtSub").textContent=LANES[lane].label;
+    $("mGross").textContent=money(r.gross);
+    $("mGrossU").textContent=r.miles?("$"+(r.gross/r.miles).toFixed(2)+" / mi"):"—";
+    $("mNet").textContent=money(r.net);
+    $("mCtrl").textContent=money(r.C);
+    $("mCtrlU").textContent=r.net?pct(r.C/r.net)+" of net":"—";
+    var cm=$("mCM"), op=$("mOP");
+    cm.textContent=money(r.cm);
+    cm.parentElement.className="met "+(r.cm>=0?"pos":"neg");
+    $("mCMU").textContent=r.net?pct(r.cm/r.net)+" margin":"—";
+    op.textContent=money(r.op);
+    op.parentElement.className="met "+(r.op>=0?"pos":"neg");
+    $("mOPU").textContent=r.net?pct(r.op/r.net)+" margin":"—";
+    $("mBE").textContent=money(r.total);
+    $("mBEU").textContent=r.miles?("$"+(r.total/r.miles).toFixed(2)+" / mi to break even"):"—";
+    renderPnl(r); renderBars(r); renderBarter(); renderPhi();
+    save();
+  }
+
+  ids.forEach(function(k){ $(k).addEventListener("input",render); });
+  $("tabTOL").addEventListener("click",function(){lane="TOL";applyLane();render();});
+  $("tabPHI").addEventListener("click",function(){lane="PHI";applyLane();render();});
+  $("reset").addEventListener("click",function(){
+    for(var k in SHARED){ var el=$("i"+k.charAt(0).toUpperCase()+k.slice(1)); if(el) el.value=SHARED[k]; }
+    applyLane(); render();
+  });
+
+  load(); applyLane();
+  // reapply any saved shared overrides after lane defaults land
+  try{
+    var raw=localStorage.getItem("snapLaneEcon");
+    if(raw){ var s=JSON.parse(raw); ids.forEach(function(k){ if(s[k]!==undefined && $(k)) $(k).value=s[k]; }); }
+  }catch(e){}
+  render();
+})();
+</script>
