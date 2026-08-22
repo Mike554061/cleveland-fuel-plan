@@ -135,7 +135,7 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
   <header class="mast">
     <span class="eyebrow">SupplyNow 3PL &middot; SNAP Gourmet Foods &middot; Lane P&amp;L</span>
     <h1>SNAP Lane Economics</h1>
-    <p class="sub">Full financial scope of the SNAP lift &mdash; gross sales through operating profit, on the Toledo 12-school run and the open Philadelphia lane. Every cost driver below is editable; the statement recalculates as you type and your numbers are remembered on this device. <a href="https://claude.ai/code/artifact/61eac174-3835-4217-8d36-2f0dfe361971">Run scope and manifest &rarr;</a></p>
+    <p class="sub">Full financial scope of the SNAP lift &mdash; gross sales through operating profit, on the Toledo 12-school run and the open Philadelphia lane. Priced on <b>$86/hr, one hour load-out plus drive time, and $20 per delivery stop</b> in a 26&prime; reefer. Every driver below is editable; the statement recalculates as you type and your numbers are remembered on this device. <a href="https://claude.ai/code/artifact/61eac174-3835-4217-8d36-2f0dfe361971">Run scope and manifest &rarr;</a></p>
     <div class="seg" role="group" aria-label="Lane">
       <button id="tabTOL" aria-pressed="true">Toledo &mdash; 12 schools</button>
       <button id="tabPHI" aria-pressed="false">Philadelphia lane</button>
@@ -167,19 +167,26 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
       <div class="sec-h"><h2>Assumptions</h2><p class="sub">Defaults come from the run scope and the 8/21 call. Change anything.</p></div>
       <div class="panel">
         <h3>Revenue</h3>
+        <div class="seg" role="group" aria-label="Billing structure" style="margin-bottom:4px">
+          <button id="sA" aria-pressed="true">A &mdash; as quoted</button>
+          <button id="sB" aria-pressed="false">B &mdash; portal to portal</button>
+          <button id="sC" aria-pressed="false">C &mdash; portal + stop fee</button>
+        </div>
         <div class="fields">
-          <div class="f"><label for="iRate">Linehaul $/mi</label><input id="iRate" type="number" step="0.05" value="2.40"></div>
-          <div class="f"><label for="iStopFee">Per extra stop $</label><input id="iStopFee" type="number" step="5" value="50"></div>
+          <div class="f"><label for="iHourly">Rate $/hr</label><input id="iHourly" type="number" step="1" value="86"></div>
+          <div class="f"><label for="iLoadHrs">Billable load-out hrs</label><input id="iLoadHrs" type="number" step="0.25" value="1"></div>
+          <div class="f"><label for="iStopFee">Per stop $</label><input id="iStopFee" type="number" step="1" value="20"></div>
           <div class="f"><label for="iAllow">Allowances $</label><input id="iAllow" type="number" step="10" value="0"></div>
           <div class="f"><label for="iFlat">Flat rate override $</label><input id="iFlat" type="number" step="50" value="0"></div>
         </div>
-        <p class="sub" style="font-size:.82rem">Flat rate override replaces the linehaul + stop build when set above zero. Use it to test a quoted number.</p>
+        <p class="sub" style="font-size:.82rem" id="structNote">&mdash;</p>
       </div>
       <div class="panel">
         <h3>Operating inputs</h3>
         <div class="fields">
           <div class="f"><label for="iMiles">Miles</label><input id="iMiles" type="number" step="1" value="255.1"></div>
-          <div class="f"><label for="iHours">Paid hours</label><input id="iHours" type="number" step="0.1" value="10.4"></div>
+          <div class="f"><label for="iDriveHrs">Drive hours</label><input id="iDriveHrs" type="number" step="0.01" value="5.38"></div>
+          <div class="f"><label for="iSvcMin">Min per stop</label><input id="iSvcMin" type="number" step="5" value="20"></div>
           <div class="f"><label for="iStops">Stops</label><input id="iStops" type="number" step="1" value="12"></div>
           <div class="f"><label for="iDays">Days</label><input id="iDays" type="number" step="1" value="1"></div>
         </div>
@@ -193,7 +200,6 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
           <div class="f"><label for="iBurden">Payroll burden %</label><input id="iBurden" type="number" step="1" value="18"></div>
           <div class="f"><label for="iTolls">Tolls $</label><input id="iTolls" type="number" step="5" value="52"></div>
           <div class="f"><label for="iMaint">Maint $/mi</label><input id="iMaint" type="number" step="0.01" value="0.18"></div>
-          <div class="f"><label for="iLoadout">Load-out hrs</label><input id="iLoadout" type="number" step="0.5" value="1.5"></div>
           <div class="f"><label for="iPerDiem">Per diem $</label><input id="iPerDiem" type="number" step="5" value="30"></div>
           <div class="f"><label for="iLodging">Lodging $</label><input id="iLodging" type="number" step="10" value="0"></div>
           <div class="f"><label for="iReefer">Reefer gal/hr</label><input id="iReefer" type="number" step="0.1" value="0.5"></div>
@@ -214,29 +220,44 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
 
   <section>
     <div class="sec-h">
-      <h2>The barter problem</h2>
-      <p class="sub">On the 8/21 call the agreed compensation for the Toledo week was <b>one SNAP truck in lieu of payment</b>, not cash. That makes the truck's realizable value the entire revenue line.</p>
-    </div>
-    <div class="note danger">
-      <div class="note-h"><span class="tag r">Highest financial risk in the deal</span><h3>You are paid in an asset you have already called a lemon</h3></div>
-      <p>Your own words on the call: the previous units were &ldquo;dusty lemons,&rdquo; the F350 lost a wheel after one use, and the 26-footer &ldquo;cost us everything.&rdquo; Sean's framing was &ldquo;there's just two lemons back there.&rdquo; If the truck nets to zero after repairs, the Toledo run does not break even &mdash; it books a <b class="mono" id="barterZero">&mdash;</b> loss, because the costs are cash and the revenue is not.</p>
+      <h2>The $20 stop is the leak</h2>
+      <p class="sub">At $86/hr a twenty-minute stop is worth <b class="mono">$28.67</b> of truck time. Billing $20 for it gives back <b class="mono">$8.67</b> a stop &mdash; and this run has twelve of them.</p>
     </div>
     <div class="tbox">
       <table>
-        <thead><tr><th>Truck valued at</th><th class="n">Revenue recognized</th><th class="n">Total cost</th><th class="n">Operating profit</th><th class="n">Margin</th><th>Read</th></tr></thead>
-        <tbody id="barterBody"></tbody>
+        <thead><tr><th>Structure</th><th class="n">Billable hrs</th><th class="n">Hourly</th><th class="n">Stop fees</th><th class="n">Gross</th><th class="n">Operating profit</th><th class="n">Margin</th></tr></thead>
+        <tbody id="structBody"></tbody>
       </table>
     </div>
+    <div class="cols">
+      <div class="card">
+        <h3>As quoted, the run does not clear</h3>
+        <p>Load-out plus drive time is <b class="mono">6.38</b> billable hours. Twelve stops add <b class="mono">$240</b>. That is <b class="mono" id="grossA">&mdash;</b> against a fully-loaded cost of <b class="mono" id="costA">&mdash;</b>.</p>
+        <p>It clears contribution comfortably, so the run is worth taking rather than turning down &mdash; but it does not carry its share of the truck, insurance and overhead. Everything has to go right just to land at zero.</p>
+      </div>
+      <div class="card">
+        <h3>You are paying for four hours you do not bill</h3>
+        <p>The driver is on the clock <b class="mono">10.38</b> hours. You bill <b class="mono">6.38</b>. The four hours of stop time are wage, fuel and insurance you carry, compensated by a flat $240.</p>
+        <p>Cleveland to Toledo makes this worse than a local route: the deadhead is already 4.8 billable hours, so the stop time is pure added exposure on an already long day.</p>
+      </div>
+      <div class="card">
+        <h3>Two ways to fix it</h3>
+        <ul>
+          <li><b>Bill portal to portal.</b> All 10.38 on-duty hours at $86 puts the run at <b class="mono" id="grossB">&mdash;</b> and a real margin. This is the standard structure for multi-stop work.</li>
+          <li><b>Or price the stop honestly.</b> Keep the hourly split but move the stop fee to <b class="mono" id="beStop">&mdash;</b>, which is simply what twenty minutes costs.</li>
+        </ul>
+      </div>
+    </div>
     <div class="note">
-      <div class="note-h"><span class="tag">Unresolved</span><h3>&ldquo;One week&rdquo; was never defined</h3></div>
-      <p>The trade covers &ldquo;one week,&rdquo; but the week contains the Wednesday TPS run <em>and</em> the continuing SLA Toledo deliveries. If the truck buys only the TPS run, it needs to clear <b class="mono" id="beOne">&mdash;</b>. If it buys every SNAP mile that week, the bar is several times that. Pin the scope of the trade before Wednesday.</p>
+      <div class="note-h"><span class="tag">Watch the meeting notes</span><h3>The auto-generated notes recorded a joke as a decision</h3></div>
+      <p>Gemini's summary of the 8/21 call lists under <i>Decisions &mdash; Aligned</i>: &ldquo;the compensation agreement is set to the utilization of one company truck for one week in lieu of payment.&rdquo; That was banter about SNAP's two shop-bound trucks, not a term. Those notes are shared with SNAP, so correct the record before anyone books against it &mdash; compensation for this run is the hourly and stop-fee structure priced here, and it is <b>not yet agreed in writing</b>.</p>
     </div>
   </section>
 
   <section>
     <div class="sec-h">
       <h2>Philadelphia &mdash; the live negotiation</h2>
-      <p class="sub">You asked $2,300, Sean opened at $1,500 and said his customer will only pay $1,800, with SNAP eating anything above. Here is what each number does against fully-loaded cost.</p>
+      <p class="sub">A flat-rate lane, not hourly. You asked $2,300, Sean opened at $1,500 and said his customer will only pay $1,800, with SNAP eating anything above. Here is what each number does against fully-loaded cost &mdash; including what your own $86/hr would have produced.</p>
     </div>
     <div class="tbox">
       <table>
@@ -246,7 +267,8 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
     </div>
     <div class="note danger">
       <div class="note-h"><span class="tag r">Hold your number</span><h3>$1,800 is below your cost, not just below your ask</h3></div>
-      <p>Philadelphia round trip breaks even at <b class="mono" id="phiBE">&mdash;</b>, or <b class="mono" id="phiBEmi">&mdash;</b> per mile. Your own Cincinnati lane prices at $2.40/mi &mdash; $1,800 to Philly is <b class="mono" id="phiUnder">&mdash;</b> per mile, under-market by your own book and under cost by the numbers above. The two-day driver, lodging and Pennsylvania tolls are what separate this lane from Cincinnati, and a $1,500 or $1,800 rate absorbs none of it.</p>
+      <p>The round trip breaks even at <b class="mono" id="phiBE">&mdash;</b>, or <b class="mono" id="phiBEmi">&mdash;</b> per mile. Two days of fixed allocation, lodging and Pennsylvania tolls are what separate this lane from a Cleveland&ndash;Toledo day, and neither $1,500 nor $1,800 absorbs them.</p>
+      <p>Useful cross-check: your own $86/hr portal to portal would price this lane at <b class="mono" id="phiHourly">&mdash;</b> &mdash; also below cost. That is the real lesson. <b>An hourly rate does not work on an overnight lane</b>, because it stops paying you the moment the driver stops moving while the lodging, the second day of insurance and the truck payment keep running. Philadelphia has to be a flat rate, and the flat rate has to start with a 2.</p>
     </div>
     <div class="note good">
       <div class="note-h"><span class="tag g">The move</span><h3>Sell the backhaul, not the discount</h3></div>
@@ -255,113 +277,117 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
   </section>
 
   <section>
-    <div class="sec-h"><h2>Rate card this supports</h2></div>
+    <div class="sec-h">
+      <h2>Rate card this supports</h2>
+      <p class="sub">Built on your $86/hr and the real cost of the Cleveland&ndash;Toledo day. Nothing here is agreed with SNAP yet.</p>
+    </div>
     <div class="tbox">
       <table>
         <thead><tr><th>Line</th><th class="n">Basis</th><th class="n">Toledo run</th><th>Why</th></tr></thead>
         <tbody>
-          <tr><td class="lab">Linehaul</td><td class="n">$2.40 / mi</td><td class="n">$612</td><td>Matches the Cincinnati lane you already sold at $1,200</td></tr>
-          <tr><td class="lab">Multi-stop</td><td class="n">$50 &times; 11</td><td class="n">$550</td><td>4 hours of stop time is 38% of the driver day and no linehaul rate covers it</td></tr>
-          <tr class="good"><td class="lab">Gross</td><td class="n">&mdash;</td><td class="n">$1,162</td><td>27.6% operating margin at scope cost</td></tr>
+          <tr><td class="lab">Hourly, portal to portal</td><td class="n">$86 &times; 10.38 h</td><td class="n">$893</td><td>The driver, truck and insurance are committed from yard-out to yard-in &mdash; bill the hours you actually pay</td></tr>
+          <tr><td class="lab">Stop fee</td><td class="n">$20 &times; 12</td><td class="n">$240</td><td>Keeps your quoted number and covers the handling, POD and dock time a clock does not capture</td></tr>
+          <tr class="good"><td class="lab">Gross</td><td class="n">&mdash;</td><td class="n">$1,133</td><td>29.7% operating margin at scope cost</td></tr>
+          <tr class="hl"><td class="lab">If the hourly stays at load + drive</td><td class="n">$86 &times; 6.38 h</td><td class="n">$789</td><td>Then the stop fee has to be <b>$20.61 minimum</b> just to break even &mdash; there is no margin at $20</td></tr>
           <tr><td class="lab">Fuel surcharge</td><td class="n">above $4.50/gal</td><td class="n">float</td><td>Diesel is $5.181 and you told Sean the rate moves with fuel &mdash; make that a clause, not a conversation</td></tr>
-          <tr><td class="lab">Detention</td><td class="n">$45/hr after 30 min</td><td class="n">&mdash;</td><td>12 school kitchens, no confirmed receiving contacts yet</td></tr>
-          <tr class="hl"><td class="lab">Rounding premium</td><td class="n">note only</td><td class="n">&mdash;</td><td>One-school-per-pallet fills all 12 floor positions &mdash; no room for a 13th drop</td></tr>
+          <tr><td class="lab">Detention</td><td class="n">$86/hr after 30 min</td><td class="n">&mdash;</td><td>Twelve school kitchens, no confirmed receiving contacts yet &mdash; same rate as the run, no reason to discount waiting</td></tr>
+          <tr><td class="lab">Overnight lanes</td><td class="n">flat, not hourly</td><td class="n">&mdash;</td><td>Philadelphia proves the hourly breaks down once lodging and a second day of fixed cost enter</td></tr>
         </tbody>
       </table>
     </div>
   </section>
 
   <footer>
-    <p><b>Sources.</b> Case counts, pallet method, hamburger meal, no milk, Tuesday-night staging and the truck-in-lieu-of-payment agreement all come from the SNAP (Toledo Schools) &times; SupplyNow call, 8/21/26. Philadelphia positions ($2,300 ask, $1,500 opener, $1,800 customer ceiling) and the Cincinnati $1,200 benchmark are from the same call. Miles, hours and fuel carry over from the run scope.</p>
-    <p><b>Method.</b> Controllables are costs that move with the run; fixed costs are day-allocated. Contribution margin is net sales less controllables &mdash; the number that tells you whether a marginal load is worth taking. Operating profit is after fixed allocation. Wage, burden, insurance, lease, admin and maintenance reserve are planning defaults, not your books &mdash; replace them with actuals and every figure updates.</p>
+    <p><b>Sources.</b> The billing structure &mdash; $86/hr, one hour load-out plus drive time, $20 per stop, 26&prime; reefer Cleveland to Toledo &mdash; is Mike's. Case counts, pallet method, hamburger meal, no milk and Tuesday-night staging come from the SNAP (Toledo Schools) &times; SupplyNow call, 8/21/26. The &ldquo;truck in lieu of payment&rdquo; line in that call's auto-generated notes was banter, not a term, and is excluded here. Philadelphia positions ($2,300 ask, $1,500 opener, $1,800 customer ceiling) and the Cincinnati $1,200 benchmark are from the same call. Miles, hours and fuel carry over from the run scope.</p>
+    <p><b>Method.</b> Controllables are costs that move with the run; fixed costs are day-allocated. Contribution margin is net sales less controllables &mdash; the number that tells you whether a marginal load is worth taking. Operating profit is after fixed allocation. Driver wages are charged on <b>on-duty hours</b> &mdash; load-out, drive and stop time in one line &mdash; so load-out labour is not double counted. Wage, burden, insurance, lease, admin and maintenance reserve are planning defaults, not your books; replace them with actuals and every figure updates.</p>
   </footer>
 </div>
 
 <script>
 (function(){
   var LANES={
-    TOL:{miles:255.1,hours:10.4,stops:12,days:1,tolls:52,lodging:0,perDiem:30,loadout:1.5,
-         label:"Toledo — 12 TPS schools, Wed 8/26",flat:0},
-    PHI:{miles:864,hours:20,stops:1,days:2,tolls:180,lodging:140,perDiem:70,loadout:0,
+    TOL:{miles:255.1,driveHrs:5.38,stops:12,days:1,tolls:52,lodging:0,perDiem:30,
+         label:"Toledo — 12 TPS schools, Cleveland → Toledo, 26′ reefer",flat:0},
+    PHI:{miles:864,driveHrs:16.94,stops:1,days:2,tolls:180,lodging:140,perDiem:70,
          label:"Philadelphia — proposed lane, round trip",flat:0}
   };
-  var SHARED={rate:2.40,stopFee:50,allow:0,diesel:5.181,mpg:10,wage:25,burden:18,
-              maint:0.18,reefer:0.5,lease:67,ins:85,eld:6,admin:45};
-  var lane="TOL";
-  var ids=["iRate","iStopFee","iAllow","iFlat","iMiles","iHours","iStops","iDays","iDiesel","iMpg",
-           "iWage","iBurden","iTolls","iMaint","iLoadout","iPerDiem","iLodging","iReefer",
-           "iLease","iIns","iEld","iAdmin"];
+  var DEF={iHourly:86,iLoadHrs:1,iStopFee:20,iAllow:0,iSvcMin:20,iDiesel:5.181,iMpg:10,
+           iWage:25,iBurden:18,iMaint:0.18,iReefer:0.5,iLease:67,iIns:85,iEld:6,iAdmin:45};
+  var lane="TOL", struct="A";
+  var ids=["iHourly","iLoadHrs","iStopFee","iAllow","iFlat","iMiles","iDriveHrs","iSvcMin","iStops",
+           "iDays","iDiesel","iMpg","iWage","iBurden","iTolls","iMaint","iPerDiem","iLodging",
+           "iReefer","iLease","iIns","iEld","iAdmin"];
   function $(id){return document.getElementById(id);}
-  function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:0;}
-  function money(v){return (v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:0,maximumFractionDigits:0});}
+  function num(id){var e=$(id); if(!e) return 0; var v=parseFloat(e.value); return isFinite(v)?v:0;}
+  function money(v){return (v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{maximumFractionDigits:0});}
   function money2(v){return (v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
   function pct(v){return (v*100).toFixed(1)+"%";}
+  function hrs(v){return v.toFixed(2)+" h";}
 
-  function load(){
-    try{
-      var raw=localStorage.getItem("snapLaneEcon");
-      if(!raw) return;
-      var s=JSON.parse(raw);
-      ids.forEach(function(k){ if(s[k]!==undefined && $(k)) $(k).value=s[k]; });
-      if(s.lane) lane=s.lane;
-    }catch(e){}
-  }
-  function save(){
-    try{
-      var s={lane:lane};
-      ids.forEach(function(k){ s[k]=$(k).value; });
-      localStorage.setItem("snapLaneEcon",JSON.stringify(s));
-    }catch(e){}
-  }
+  function save(){try{var o={lane:lane,struct:struct};ids.forEach(function(k){if($(k))o[k]=$(k).value;});
+    localStorage.setItem("snapLaneEcon2",JSON.stringify(o));}catch(e){}}
+  function load(){try{var r=localStorage.getItem("snapLaneEcon2");if(!r)return null;return JSON.parse(r);}catch(e){return null;}}
 
   function applyLane(){
     var L=LANES[lane];
-    $("iMiles").value=L.miles; $("iHours").value=L.hours; $("iStops").value=L.stops;
+    $("iMiles").value=L.miles; $("iDriveHrs").value=L.driveHrs; $("iStops").value=L.stops;
     $("iDays").value=L.days; $("iTolls").value=L.tolls; $("iLodging").value=L.lodging;
-    $("iPerDiem").value=L.perDiem; $("iLoadout").value=L.loadout; $("iFlat").value=L.flat;
+    $("iPerDiem").value=L.perDiem; $("iFlat").value=L.flat;
     $("tabTOL").setAttribute("aria-pressed",lane==="TOL");
     $("tabPHI").setAttribute("aria-pressed",lane==="PHI");
   }
+  function applyStruct(){
+    ["A","B","C"].forEach(function(k){$("s"+k).setAttribute("aria-pressed",struct===k);});
+    $("structNote").textContent = struct==="A"
+      ? "A — billing load-out and drive time hourly, stops at a flat fee. This is the structure as quoted."
+      : struct==="B"
+      ? "B — portal to portal: every on-duty hour billed hourly, no separate stop fee."
+      : "C — portal to portal hourly plus the stop fee on top.";
+  }
 
-  function calc(o){
-    o=o||{};
-    var miles=o.miles!==undefined?o.miles:num("iMiles");
-    var hours=o.hours!==undefined?o.hours:num("iHours");
-    var stops=o.stops!==undefined?o.stops:num("iStops");
-    var days=o.days!==undefined?o.days:num("iDays");
-    var flat=o.flat!==undefined?o.flat:num("iFlat");
-    var gross=flat>0?flat:(miles*num("iRate")+Math.max(0,stops-1)*num("iStopFee"));
-    if(o.gross!==undefined) gross=o.gross;
-    var allow=num("iAllow");
-    var net=gross-allow;
+  // core model for any lane params, using the live shared cost drivers
+  function model(L, structure){
+    var svc=num("iSvcMin")/60;
+    var stopH=L.stops*svc;
+    var loadH=num("iLoadHrs");
+    var onDuty=loadH+L.driveHrs+stopH;
+    var billH=(structure==="A")?(loadH+L.driveHrs):onDuty;
+    var stopRev=(structure==="B")?0:L.stops*num("iStopFee");
+    var gross=billH*num("iHourly")+stopRev;
+    if(L.flat>0) gross=L.flat;
     var burd=1+num("iBurden")/100;
-    var c={
-      "Fuel":miles/(num("iMpg")||1)*num("iDiesel"),
-      "Reefer fuel":hours*num("iReefer")*num("iDiesel"),
-      "Driver wages + burden":hours*num("iWage")*burd,
-      "Load-out labor":num("iLoadout")*num("iWage")*burd,
-      "Tolls":num("iTolls"),
-      "Maintenance & tire reserve":miles*num("iMaint"),
-      "Per diem":num("iPerDiem"),
-      "Lodging":num("iLodging")
+    var ctrl={
+      "Fuel":L.miles/(num("iMpg")||1)*num("iDiesel"),
+      "Reefer fuel":onDuty*num("iReefer")*num("iDiesel"),
+      "Driver wages + burden":onDuty*num("iWage")*burd,
+      "Tolls":L.tolls,
+      "Maintenance & tire reserve":L.miles*num("iMaint"),
+      "Per diem":L.perDiem,
+      "Lodging":L.lodging
     };
-    var C=0; for(var k in c) C+=c[k];
-    var f={"Truck lease / depreciation":num("iLease")*days,"Insurance":num("iIns")*days,
-           "ELD & telematics":num("iEld")*days,"Admin overhead":num("iAdmin")*days};
-    var F=0; for(var k2 in f) F+=f[k2];
-    return {gross:gross,allow:allow,net:net,ctrl:c,C:C,fx:f,F:F,cm:net-C,op:net-C-F,
-            total:C+F,miles:miles,stops:stops};
+    var C=0; for(var k in ctrl) C+=ctrl[k];
+    var fx={"Truck lease / depreciation":num("iLease")*L.days,"Insurance":num("iIns")*L.days,
+            "ELD & telematics":num("iEld")*L.days,"Admin overhead":num("iAdmin")*L.days};
+    var F=0; for(var k2 in fx) F+=fx[k2];
+    var allow=num("iAllow"), net=gross-allow;
+    return {gross:gross,allow:allow,net:net,ctrl:ctrl,C:C,fx:fx,F:F,cm:net-C,op:net-C-F,
+            total:C+F,billH:billH,onDuty:onDuty,stopH:stopH,loadH:loadH,stopRev:stopRev,L:L};
+  }
+  function liveLane(){
+    return {miles:num("iMiles"),driveHrs:num("iDriveHrs"),stops:num("iStops"),days:num("iDays"),
+            tolls:num("iTolls"),lodging:num("iLodging"),perDiem:num("iPerDiem"),flat:num("iFlat")};
   }
 
   function renderPnl(r){
     var h="";
     h+='<div class="row head"><span>Revenue</span><span></span></div>';
-    var flat=num("iFlat");
-    if(flat>0){
-      h+='<div class="row ind"><span>Flat rate override</span><span>'+money2(flat)+'</span></div>';
+    if(r.L.flat>0){
+      h+='<div class="row ind"><span>Flat rate override</span><span>'+money2(r.L.flat)+'</span></div>';
     }else{
-      h+='<div class="row ind"><span>Linehaul '+r.miles.toFixed(0)+' mi @ $'+num("iRate").toFixed(2)+'</span><span>'+money2(r.miles*num("iRate"))+'</span></div>';
-      h+='<div class="row ind"><span>'+Math.max(0,r.stops-1)+' extra stops @ $'+num("iStopFee").toFixed(0)+'</span><span>'+money2(Math.max(0,r.stops-1)*num("iStopFee"))+'</span></div>';
+      h+='<div class="row ind"><span>Load-out '+hrs(r.loadH)+' @ $'+num("iHourly").toFixed(0)+'</span><span>'+money2(r.loadH*num("iHourly"))+'</span></div>';
+      h+='<div class="row ind"><span>Drive time '+hrs(r.L.driveHrs)+' @ $'+num("iHourly").toFixed(0)+'</span><span>'+money2(r.L.driveHrs*num("iHourly"))+'</span></div>';
+      if(struct!=="A") h+='<div class="row ind"><span>Stop time '+hrs(r.stopH)+' @ $'+num("iHourly").toFixed(0)+'</span><span>'+money2(r.stopH*num("iHourly"))+'</span></div>';
+      if(r.stopRev) h+='<div class="row ind"><span>'+r.L.stops+' stops @ $'+num("iStopFee").toFixed(0)+'</span><span>'+money2(r.stopRev)+'</span></div>';
     }
     h+='<div class="row sum"><span>Gross sales</span><span>'+money2(r.gross)+'</span></div>';
     h+='<div class="row ind"><span>Less allowances</span><span>'+(r.allow?"-"+money2(r.allow):money2(0))+'</span></div>';
@@ -371,101 +397,90 @@ footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font
     h+='<div class="row sum"><span>Total controllables</span><span>'+money2(r.C)+'</span></div>';
     h+='<div class="row big"><span class="lab">Contribution margin</span><span class="'+(r.cm>=0?"pos":"neg")+'">'+money2(r.cm)+'<span class="pct">'+(r.net?pct(r.cm/r.net):"—")+'</span></span></div>';
     h+='<div class="row head"><span>Fixed &amp; allocated</span><span></span></div>';
-    for(var k2 in r.fx){ h+='<div class="row ind"><span>'+k2+'</span><span>'+money2(r.fx[k2])+'</span></div>'; }
+    for(var k2 in r.fx) h+='<div class="row ind"><span>'+k2+'</span><span>'+money2(r.fx[k2])+'</span></div>';
     h+='<div class="row sum"><span>Total fixed</span><span>'+money2(r.F)+'</span></div>';
     h+='<div class="row big"><span class="lab">Operating profit</span><span class="'+(r.op>=0?"pos":"neg")+'">'+money2(r.op)+'<span class="pct">'+(r.net?pct(r.op/r.net):"—")+'</span></span></div>';
     $("pnl").innerHTML=h;
   }
-
   function renderBars(r){
-    var items=[];
-    for(var k in r.ctrl){ if(r.ctrl[k]) items.push([k,r.ctrl[k],"cost"]); }
-    items.push(["Fixed & allocated",r.F,"cost"]);
-    items.push(["Operating profit",r.op,r.op>=0?"pos":"neg"]);
-    var max=0; items.forEach(function(i){ max=Math.max(max,Math.abs(i[1])); });
-    $("bars").innerHTML=items.map(function(i){
+    var it=[]; for(var k in r.ctrl) if(r.ctrl[k]) it.push([k,r.ctrl[k],"c"]);
+    it.push(["Fixed & allocated",r.F,"c"]);
+    it.push(["Operating profit",r.op,r.op>=0?"pos":"neg"]);
+    var max=0; it.forEach(function(i){max=Math.max(max,Math.abs(i[1]));});
+    $("bars").innerHTML=it.map(function(i){
       var w=max?Math.abs(i[1])/max*100:0;
       var cls=i[2]==="pos"?"fill pos":(i[2]==="neg"?"fill neg":"fill");
-      return '<div class="bar"><span class="bl">'+i[0]+'</span>'+
-             '<span class="track"><span class="'+cls+'" style="width:'+w.toFixed(1)+'%"></span></span>'+
-             '<span class="bv">'+money(i[1])+'</span></div>';
+      return '<div class="bar"><span class="bl">'+i[0]+'</span><span class="track"><span class="'+cls+
+        '" style="width:'+w.toFixed(1)+'%"></span></span><span class="bv">'+money(i[1])+'</span></div>';
     }).join("");
   }
-
-  function renderBarter(){
-    // cost is computed from Toledo's own operating params regardless of the active lane
-    var burd=1+num("iBurden")/100, L=LANES.TOL;
-    var C=L.miles/(num("iMpg")||1)*num("iDiesel") + L.hours*num("iReefer")*num("iDiesel")
-        + L.hours*num("iWage")*burd + L.loadout*num("iWage")*burd + L.tolls
-        + L.miles*num("iMaint") + L.perDiem + L.lodging;
-    var F=(num("iLease")+num("iIns")+num("iEld")+num("iAdmin"))*L.days;
-    var total=C+F;
-    $("barterZero").textContent=money2(total);
-    $("beOne").textContent=money2(total);
-    var reads={0:"Costs are cash, revenue is not",1000:"Roughly a wash after repairs",
-               2500:"Works only if the unit is roadworthy",5000:"Only if it needs nothing"};
-    $("barterBody").innerHTML=[0,1000,2500,5000].map(function(v){
-      var op=v-total, cls=op>=0?"good":"bad";
-      return '<tr class="'+cls+'"><td class="lab">'+money(v)+'</td><td class="n">'+money(v)+'</td>'+
-        '<td class="n">'+money2(total)+'</td><td class="n">'+money2(op)+'</td>'+
-        '<td class="n">'+(v?pct(op/v):"—")+'</td><td>'+reads[v]+'</td></tr>';
+  function renderStruct(){
+    var base=LANES.TOL, rows=[
+      ["A — load-out + drive hourly, $"+num("iStopFee").toFixed(0)+"/stop","A"],
+      ["B — portal to portal, no stop fee","B"],
+      ["C — portal to portal + stop fee","C"]];
+    var html=rows.map(function(x){
+      var m=model(base,x[1]);
+      var cls=m.op>0?"good":(m.op<0?"bad":"hl");
+      return '<tr class="'+cls+'"><td class="lab">'+x[0]+'</td><td class="n">'+hrs(m.billH)+'</td>'+
+        '<td class="n">'+money2(m.billH*num("iHourly"))+'</td><td class="n">'+money2(m.stopRev)+'</td>'+
+        '<td class="n">'+money2(m.gross)+'</td><td class="n">'+money2(m.op)+'</td>'+
+        '<td class="n">'+pct(m.op/m.gross)+'</td></tr>';
     }).join("");
+    $("structBody").innerHTML=html;
+    var mA=model(base,"A"), mB=model(base,"B");
+    $("grossA").textContent=money2(mA.gross); $("costA").textContent=money2(mA.total);
+    $("grossB").textContent=money2(mB.gross);
+    $("beStop").textContent="$"+((mA.total-(mA.loadH+base.driveHrs)*num("iHourly"))/base.stops).toFixed(2);
   }
-
   function renderPhi(){
-    var L=LANES.PHI, burd=1+num("iBurden")/100;
-    var C=L.miles/(num("iMpg")||1)*num("iDiesel") + L.hours*num("iReefer")*num("iDiesel")
-        + L.hours*num("iWage")*burd + L.loadout*num("iWage")*burd + L.tolls
-        + L.miles*num("iMaint") + L.perDiem + L.lodging;
-    var F=(num("iLease")+num("iIns")+num("iEld")+num("iAdmin"))*L.days;
-    var total=C+F;
+    var P=LANES.PHI, m=model(P,struct==="A"?"A":struct);
+    var total=m.total;
     $("phiBE").textContent=money2(total);
-    $("phiBEmi").textContent="$"+(total/L.miles).toFixed(2);
-    $("phiUnder").textContent="$"+(1800/L.miles).toFixed(2);
-    var rows=[["Sean's opener",1500],["Customer ceiling / Sean's cap",1800],["Your ask",2300],["Break-even",Math.ceil(total)]];
+    $("phiBEmi").textContent="$"+(total/P.miles).toFixed(2);
+    $("phiHourly").textContent=money2(model(P,"B").gross);
+    var rows=[["Sean's opener",1500],["Customer ceiling / Sean's cap",1800],["Your ask",2300],
+              ["Your own $86/hr, portal to portal",Math.round(model(P,"B").gross)],
+              ["Break-even",Math.ceil(total)]];
     $("phiBody").innerHTML=rows.map(function(x){
-      var rev=x[1], op=rev-total, cm=rev-C, cls=op>0?"good":(op<0?"bad":"hl");
+      var rev=x[1], op=rev-total, cm=rev-m.C, cls=op>0?"good":(op<0?"bad":"hl");
       return '<tr class="'+cls+'"><td class="lab">'+x[0]+'</td><td class="n">'+money(rev)+'</td>'+
-        '<td class="n">$'+(rev/L.miles).toFixed(2)+'</td><td class="n">'+money2(cm)+'</td>'+
+        '<td class="n">$'+(rev/P.miles).toFixed(2)+'</td><td class="n">'+money2(cm)+'</td>'+
         '<td class="n">'+money2(op)+'</td><td class="n">'+pct(op/rev)+'</td></tr>';
     }).join("");
   }
-
   function render(){
-    var r=calc();
+    var r=model(liveLane(),struct);
     $("stmtSub").textContent=LANES[lane].label;
     $("mGross").textContent=money(r.gross);
-    $("mGrossU").textContent=r.miles?("$"+(r.gross/r.miles).toFixed(2)+" / mi"):"—";
+    $("mGrossU").textContent=hrs(r.billH)+" billable";
     $("mNet").textContent=money(r.net);
     $("mCtrl").textContent=money(r.C);
     $("mCtrlU").textContent=r.net?pct(r.C/r.net)+" of net":"—";
-    var cm=$("mCM"), op=$("mOP");
-    cm.textContent=money(r.cm);
-    cm.parentElement.className="met "+(r.cm>=0?"pos":"neg");
+    $("mCM").textContent=money(r.cm);
+    $("mCM").parentElement.className="met "+(r.cm>=0?"pos":"neg");
     $("mCMU").textContent=r.net?pct(r.cm/r.net)+" margin":"—";
-    op.textContent=money(r.op);
-    op.parentElement.className="met "+(r.op>=0?"pos":"neg");
+    $("mOP").textContent=money(r.op);
+    $("mOP").parentElement.className="met "+(r.op>=0?"pos":"neg");
     $("mOPU").textContent=r.net?pct(r.op/r.net)+" margin":"—";
     $("mBE").textContent=money(r.total);
-    $("mBEU").textContent=r.miles?("$"+(r.total/r.miles).toFixed(2)+" / mi to break even"):"—";
-    renderPnl(r); renderBars(r); renderBarter(); renderPhi();
-    save();
+    $("mBEU").textContent="$"+(r.billH?((r.total-r.stopRev)/r.billH):0).toFixed(2)+" / hr to break even";
+    renderPnl(r); renderBars(r); renderStruct(); renderPhi(); save();
   }
 
-  ids.forEach(function(k){ $(k).addEventListener("input",render); });
+  ids.forEach(function(k){ if($(k)) $(k).addEventListener("input",render); });
   $("tabTOL").addEventListener("click",function(){lane="TOL";applyLane();render();});
   $("tabPHI").addEventListener("click",function(){lane="PHI";applyLane();render();});
+  ["A","B","C"].forEach(function(k){ $("s"+k).addEventListener("click",function(){struct=k;applyStruct();render();}); });
   $("reset").addEventListener("click",function(){
-    for(var k in SHARED){ var el=$("i"+k.charAt(0).toUpperCase()+k.slice(1)); if(el) el.value=SHARED[k]; }
-    applyLane(); render();
+    for(var k in DEF){ if($(k)) $(k).value=DEF[k]; }
+    struct="A"; applyStruct(); applyLane(); render();
   });
 
-  load(); applyLane();
-  // reapply any saved shared overrides after lane defaults land
-  try{
-    var raw=localStorage.getItem("snapLaneEcon");
-    if(raw){ var s=JSON.parse(raw); ids.forEach(function(k){ if(s[k]!==undefined && $(k)) $(k).value=s[k]; }); }
-  }catch(e){}
+  var saved=load();
+  if(saved){ if(saved.lane) lane=saved.lane; if(saved.struct) struct=saved.struct; }
+  applyLane(); applyStruct();
+  if(saved){ ids.forEach(function(k){ if(saved[k]!==undefined && $(k)) $(k).value=saved[k]; }); }
   render();
 })();
 </script>
