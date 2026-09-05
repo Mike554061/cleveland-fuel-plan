@@ -76,6 +76,10 @@ h2{font:600 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-tran
 .hero .big{font-size:40px;font-weight:760;letter-spacing:-.035em;color:var(--green);margin-top:6px;line-height:1}
 .hero .cap{font-size:13px;color:var(--ink-2);margin-top:7px}
 .spark{margin-top:14px}
+.stalebar{display:flex;gap:10px;align-items:flex-start;background:#2a2013;border:1px solid #4a3a1c;
+  color:#e8c58c;border-radius:12px;padding:13px 15px;margin-top:14px;font-size:13.5px;line-height:1.45}
+.stalebar b{color:var(--amber)}
+.bd.stale{background:#33291a;color:#d6a765}
 
 /* ---------- stop cards ---------- */
 .stop{display:block;width:100%;text-align:left;padding:15px 16px;background:var(--card);
@@ -85,6 +89,7 @@ h2{font:600 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-tran
 .srow{display:flex;align-items:baseline;gap:12px}
 .px{font-size:26px;font-weight:730;letter-spacing:-.03em;line-height:1}
 .px.good{color:var(--green)}
+.srow .bd+.bd{margin-left:6px}
 .bd{margin-left:auto;font:600 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
   padding:5px 8px;border-radius:6px;text-transform:uppercase}
 .bd.best{background:#1e4029;color:#7fd79b}
@@ -173,6 +178,7 @@ h2{font:600 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-tran
   <h1 id="hiName"></h1>
   <p class="sub" id="hiSub"></p>
 
+  <div id="staleBanner"></div>
   <div class="hero">
     <div class="lab">Your savings this year</div>
     <div class="big mono" id="ytd">$0.00</div>
@@ -191,7 +197,7 @@ h2{font:600 10.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-tran
 <div id="sheet"><div class="scrim" id="scrim"></div><div class="sheet" id="sheetBody"></div></div>
 <div class="toast" id="toast"></div>
 
-<script id="appdata" type="application/json">{"refreshed": "2026-08-31 08:47", "median": 5.79, "yard": 5.49, "eia": {"d": "2026-08-10", "v": 5.181}, "priced_n": 163, "drivers": {"Pete": {"mi": 384.88, "min": 513.1, "stops_n": 12, "onpath": 196, "priced_n": 80, "stops": [{"id": "29474", "brand": "Sunoco", "addr": "2091 Grafton Rd", "city": "Elyria", "zip": "44035", "price": 4.76, "d": 0.59, "lat": 41.327404, "lon": -82.073638, "flag": "disputed", "age_hr": 1, "note": "All four fuel grades were posted by one reporter in a single burst, and the station's own reviews repeatedly allege misreporting here \u2014 \"Someone keeps incorrectly reporting the prices\" and \"Someone does keep reporting the price wrong. Is it the owner???\". Call 440-458-6462 to confirm before you route a truck to it."}, {"id": "89068", "brand": "Sunoco", "addr": "1540 Front St", "city": "Toledo", "zip": "43605", "price": 5.09, "d": 0.1, "lat": 41.654181, "lon": -83.514065, "flag": "", "age_hr": 4, "note": ""}, {"id": "137906", "brand": "CITGO", "addr": "1896 Front St", "city": "Toledo", "zip": "43605", "price": 5.09, "d": 0.13, "lat": 41.659844, "lon": -83.502718, "flag": "", "age_hr": 6, "note": ""}, {"id": "1343", "brand": "Sunoco", "addr": "14005 Madison Ave", "city": "Lakewood", "zip": "44107", "price": 5.21, "d": 0.53, "lat": 41.477032, "lon": -81.789841, "flag": "", "age_hr": 15, "note": ""}, {"id": "207771", "brand": "Exxon", "addr": "5411 Pearl Ave", "city": "Lorain", "zip": "44055", "price": 5.24, "d": 0.8, "lat": 41.418762, "lon": -82.134404, "flag": "", "age_hr": 24, "note": ""}]}, "Shameria": {"mi": 93.19, "min": 138.0, "stops_n": 4, "onpath": 91, "priced_n": 42, "stops": [{"id": "30982", "brand": "Marathon", "addr": "8177 Brecksville Rd", "city": "Brecksville", "zip": "44141", "price": 5.19, "d": 1.1, "lat": 41.340009, "lon": -81.62821, "flag": "", "age_hr": 48, "note": ""}, {"id": "113228", "brand": "BP", "addr": "6501 Denison Ave", "city": "Cleveland", "zip": "44102", "price": 5.29, "d": 0.53, "lat": 41.459554, "lon": -81.731775, "flag": "", "age_hr": 24, "note": ""}, {"id": "19180", "brand": "Sunoco", "addr": "3980 Pearl Rd", "city": "Medina", "zip": "44256", "price": 5.29, "d": 1.63, "lat": 41.166393, "lon": -81.861962, "flag": "", "age_hr": 17, "note": ""}, {"id": "361", "brand": "Speedy Gas", "addr": "14001 Lakewood Heights Blvd", "city": "Cleveland", "zip": "44107", "price": 5.35, "d": 1.79, "lat": 41.470248, "lon": -81.789774, "flag": "", "age_hr": 11, "note": ""}, {"id": "1365", "brand": "Sunoco", "addr": "6009 Turney Rd", "city": "Garfield Heights", "zip": "44125", "price": 5.35, "d": 1.29, "lat": 41.400779, "lon": -81.594398, "flag": "", "age_hr": 24, "note": ""}]}, "Vince": {"mi": 154.4, "min": 248.3, "stops_n": 6, "onpath": 102, "priced_n": 31, "stops": [{"id": "1365", "brand": "Sunoco", "addr": "6009 Turney Rd", "city": "Garfield Heights", "zip": "44125", "price": 5.35, "d": 1.0, "lat": 41.400779, "lon": -81.594398, "flag": "", "age_hr": 24, "note": ""}, {"id": "92002", "brand": "Sunoco", "addr": "6947 St Clair Ave", "city": "Cleveland", "zip": "44103", "price": 5.39, "d": 0.52, "lat": 41.527205, "lon": -81.641156, "flag": "", "age_hr": 24, "note": ""}, {"id": "28867", "brand": "Marathon", "addr": "3980 St Clair Ave", "city": "Cleveland", "zip": "44103", "price": 5.39, "d": 0.65, "lat": 41.516243, "lon": -81.664516, "flag": "", "age_hr": 24, "note": ""}, {"id": "59213", "brand": "Circle K & MAPCO", "addr": "15560 W High St", "city": "Middlefield", "zip": "44062", "price": 5.39, "d": 0.1, "lat": 41.46298, "lon": -81.086335, "flag": "", "age_hr": 2, "note": ""}, {"id": "103234", "brand": "B.T. Oil", "addr": "15525 West High St", "city": "Middlefield", "zip": "44062", "price": 5.39, "d": 0.13, "lat": 41.462957, "lon": -81.087713, "flag": "verify", "age_hr": 24, "note": "Lowest price on the eastern side of the market. Single reporter, but the same reporter posted a normal $5.39 next door, which reads as a real look at the sign rather than a bad one. Worth a call before counting on it."}]}}}</script>
+<script id="appdata" type="application/json">{"refreshed": "2026-08-31 08:47", "median": 5.79, "yard": 5.49, "stale_n": 163, "stale_frac": 1.0, "as_of": "2026-08-30", "eia": {"d": "2026-08-10", "v": 5.181}, "priced_n": 163, "drivers": {"Pete": {"mi": 384.88, "min": 513.1, "stops_n": 12, "onpath": 196, "priced_n": 80, "stops": [{"id": "29474", "brand": "Sunoco", "addr": "2091 Grafton Rd", "city": "Elyria", "zip": "44035", "price": 4.76, "d": 0.59, "lat": 41.327404, "lon": -82.073638, "flag": "disputed", "age_hr": 1, "note": "All four fuel grades were posted by one reporter in a single burst, and the station's own reviews repeatedly allege misreporting here \u2014 \"Someone keeps incorrectly reporting the prices\" and \"Someone does keep reporting the price wrong. Is it the owner???\". Call 440-458-6462 to confirm before you route a truck to it.", "stale": true}, {"id": "89068", "brand": "Sunoco", "addr": "1540 Front St", "city": "Toledo", "zip": "43605", "price": 5.09, "d": 0.1, "lat": 41.654181, "lon": -83.514065, "flag": "", "age_hr": 4, "note": "", "stale": true}, {"id": "137906", "brand": "CITGO", "addr": "1896 Front St", "city": "Toledo", "zip": "43605", "price": 5.09, "d": 0.13, "lat": 41.659844, "lon": -83.502718, "flag": "", "age_hr": 6, "note": "", "stale": true}, {"id": "1343", "brand": "Sunoco", "addr": "14005 Madison Ave", "city": "Lakewood", "zip": "44107", "price": 5.21, "d": 0.53, "lat": 41.477032, "lon": -81.789841, "flag": "", "age_hr": 15, "note": "", "stale": true}, {"id": "207771", "brand": "Exxon", "addr": "5411 Pearl Ave", "city": "Lorain", "zip": "44055", "price": 5.24, "d": 0.8, "lat": 41.418762, "lon": -82.134404, "flag": "", "age_hr": 24, "note": "", "stale": true}]}, "Shameria": {"mi": 93.19, "min": 138.0, "stops_n": 4, "onpath": 91, "priced_n": 42, "stops": [{"id": "30982", "brand": "Marathon", "addr": "8177 Brecksville Rd", "city": "Brecksville", "zip": "44141", "price": 5.19, "d": 1.1, "lat": 41.340009, "lon": -81.62821, "flag": "", "age_hr": 48, "note": "", "stale": true}, {"id": "113228", "brand": "BP", "addr": "6501 Denison Ave", "city": "Cleveland", "zip": "44102", "price": 5.29, "d": 0.53, "lat": 41.459554, "lon": -81.731775, "flag": "", "age_hr": 24, "note": "", "stale": true}, {"id": "19180", "brand": "Sunoco", "addr": "3980 Pearl Rd", "city": "Medina", "zip": "44256", "price": 5.29, "d": 1.63, "lat": 41.166393, "lon": -81.861962, "flag": "", "age_hr": 17, "note": "", "stale": true}, {"id": "361", "brand": "Speedy Gas", "addr": "14001 Lakewood Heights Blvd", "city": "Cleveland", "zip": "44107", "price": 5.35, "d": 1.79, "lat": 41.470248, "lon": -81.789774, "flag": "", "age_hr": 11, "note": "", "stale": true}, {"id": "1365", "brand": "Sunoco", "addr": "6009 Turney Rd", "city": "Garfield Heights", "zip": "44125", "price": 5.35, "d": 1.29, "lat": 41.400779, "lon": -81.594398, "flag": "", "age_hr": 24, "note": "", "stale": true}]}, "Vince": {"mi": 154.4, "min": 248.3, "stops_n": 6, "onpath": 102, "priced_n": 31, "stops": [{"id": "1365", "brand": "Sunoco", "addr": "6009 Turney Rd", "city": "Garfield Heights", "zip": "44125", "price": 5.35, "d": 1.0, "lat": 41.400779, "lon": -81.594398, "flag": "", "age_hr": 24, "note": "", "stale": true}, {"id": "92002", "brand": "Sunoco", "addr": "6947 St Clair Ave", "city": "Cleveland", "zip": "44103", "price": 5.39, "d": 0.52, "lat": 41.527205, "lon": -81.641156, "flag": "", "age_hr": 24, "note": "", "stale": true}, {"id": "28867", "brand": "Marathon", "addr": "3980 St Clair Ave", "city": "Cleveland", "zip": "44103", "price": 5.39, "d": 0.65, "lat": 41.516243, "lon": -81.664516, "flag": "", "age_hr": 24, "note": "", "stale": true}, {"id": "59213", "brand": "Circle K & MAPCO", "addr": "15560 W High St", "city": "Middlefield", "zip": "44062", "price": 5.39, "d": 0.1, "lat": 41.46298, "lon": -81.086335, "flag": "", "age_hr": 2, "note": "", "stale": true}, {"id": "103234", "brand": "B.T. Oil", "addr": "15525 West High St", "city": "Middlefield", "zip": "44062", "price": 5.39, "d": 0.13, "lat": 41.462957, "lon": -81.087713, "flag": "verify", "age_hr": 24, "note": "Lowest price on the eastern side of the market. Single reporter, but the same reporter posted a normal $5.39 next door, which reads as a real look at the sign rather than a bad one. Worth a call before counting on it.", "stale": true}]}}}</script>
 <script>
 const A=JSON.parse(document.getElementById('appdata').textContent);
 const $=id=>document.getElementById(id);
@@ -202,13 +208,16 @@ let who=null, current=null;
 
 /* ---------- storage ---------- */
 const KEY=d=>'rfm.fills.'+d;
-const load=d=>{try{return JSON.parse(localStorage.getItem(KEY(d))||'[]')}catch(e){return[]}};
-const save=(d,v)=>localStorage.setItem(KEY(d),JSON.stringify(v));
+const mem={};                                   // fallback when storage is unavailable
+const load=d=>{try{return JSON.parse(localStorage.getItem(KEY(d))||'[]')}catch(e){return mem[d]||[]}};
+const save=(d,v)=>{mem[d]=v;try{localStorage.setItem(KEY(d),JSON.stringify(v))}catch(e){}};
+const remember=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}};
+const recall=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 
 /* ---------- splash ---------- */
 setTimeout(()=>{$('splash').classList.add('gone')},1750);
 setTimeout(()=>{
-  const last=localStorage.getItem('rfm.driver');
+  const last=recall('rfm.driver');
   if(last && A.drivers[last]) openDriver(last); else show('s-land');
 },1500);
 
@@ -226,11 +235,11 @@ $('drivers').innerHTML=Object.entries(A.drivers).map(([d,v])=>{
     <span class="go">›</span></button>`}).join('');
 $('drivers').onclick=e=>{const b=e.target.closest('.drv'); if(b) openDriver(b.dataset.d)};
 $('landfoot').textContent=`Live prices · ${A.priced_n} stations · updated ${A.refreshed||'today'}`;
-$('bHome').onclick=()=>{localStorage.removeItem('rfm.driver');show('s-land')};
+$('bHome').onclick=()=>{remember('rfm.driver',null);show('s-land')};
 
 /* ---------- driver home ---------- */
 function openDriver(d){
-  who=d; localStorage.setItem('rfm.driver',d);
+  who=d; remember('rfm.driver',d);
   const v=A.drivers[d];
   $('hiName').textContent='Hey, '+d+'.';
   $('homeDate').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -238,11 +247,22 @@ function openDriver(d){
   $('hiSub').innerHTML = best
     ? `Cheapest on your run today is <b>${money(best.price)}</b> at ${best.brand}, ${best.d.toFixed(2)} mi off your path.`
     : `No priced pumps on your route yet today.`;
-  renderYTD(); renderStops(v); renderHist();
+  renderStale(); renderYTD(); renderStops(v); renderHist();
   show('s-home');
   $('homefoot').innerHTML=`Prices are crowd-reported and move daily. If the sign says different, you're right —<br>tell dispatch what you actually paid.`;
 }
 
+function renderStale(){
+  const el=$('staleBanner'); const f=A.stale_frac||0;
+  if(f<0.15){el.innerHTML='';return}
+  const when=A.as_of?new Date(A.as_of+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}):'an earlier run';
+  el.innerHTML = f>=0.9
+    ? `<div class="stalebar"><span>⚠</span><span><b>These prices are not from today.</b>
+       Today's price check didn't come back, so you're looking at what we last confirmed on ${when}.
+       Treat them as a guide and go by the sign at the pump.</span></div>`
+    : `<div class="stalebar"><span>⚠</span><span><b>Some prices are older than today.</b>
+       ${A.stale_n} of them last confirmed ${when} — those are tagged <i>not updated today</i>.</span></div>`;
+}
 function savingsOf(price,gal){return (A.yard-price)*gal}
 
 function renderStops(v){
@@ -256,8 +276,9 @@ function renderStops(v){
             : s.flag==='owner'     ? '<span class="bd owner">owner-posted</span>'
             : isBest               ? '<span class="bd best">best on route</span>'
             : s.flag==='verify'    ? '<span class="bd warn">worth a call</span>' : '';
+    const sb = s.stale ? '<span class="bd stale">not updated today</span>' : '';
     return `<button class="stop ${isBest?'best':''}" data-id="${s.id}">
-      <span class="srow"><span class="px mono ${isBest?'good':''}">${money(s.price)}</span>${bd}</span>
+      <span class="srow"><span class="px mono ${isBest?'good':''}">${money(s.price)}</span>${bd}${sb}</span>
       <div class="snm">${s.brand}</div>
       <div class="sad">${s.addr}, ${s.city}</div>
       <div class="smeta"><span><b>${s.d.toFixed(2)}</b> mi off path</span>
@@ -289,6 +310,7 @@ function openSheet(id){
     ${s.flag==='disputed'?`<div class="warnbox"><b>Check before you commit.</b> ${s.note||'This station has a history of misreported prices.'}</div>`:''}
     ${s.flag==='owner'?`<div class="warnbox" style="background:#12262f;border-color:#1d4356;color:#9ad3ee"><b>Posted by the station itself</b> — the most reliable price on here.</div>`:''}
     ${s.flag==='verify'?`<div class="warnbox"><b>Worth a quick call.</b> ${s.note||'Only one report backing this price so far.'}</div>`:''}
+    ${s.stale?`<div class="warnbox"><b>Not updated today.</b> This is what we last confirmed${A.as_of?' on '+new Date(A.as_of+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):''}. Go by the sign.</div>`:''}
 
     <a class="btn pri" href="${maps}" target="_blank" rel="noopener">Navigate here</a>
     <button class="btn sec" id="bLog">I filled up here</button>
