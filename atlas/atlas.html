@@ -1,0 +1,577 @@
+<title>SupplyNow Atlas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F3F6F5;--surface:#FFFFFF;--surface-2:#EAF0EE;--ink:#10202A;--ink-2:#3E4F5A;--ink-3:#66767F;--line:#D7DFDC;--line-2:#C4CFCB;
+  --accent:#176B73;--accent-ink:#FFFFFF;--accent-soft:#DFEFEF;--focus:#2A8C95;
+  --amber:#8A5A0B;--amber-soft:#FBF0DA;--red:#9E2B23;--red-soft:#FBE8E5;--green:#25693F;--green-soft:#E3F3E8;--violet:#4a3aa7;--violet-soft:#E9E6F7;
+  --t-person:#2a78d6;--t-vendor:#eb6834;--t-operator:#1baf7a;--t-lessor:#c98500;--t-truck:#d55181;--t-contract:#4a3aa7;--t-system:#7c7b76;--t-market:#008300;--t-internal:#10202A;--t-advisor:#5a4fcf;--t-supplier:#7c7b76;
+  --shadow:0 1px 2px rgba(16,32,42,.06),0 8px 24px rgba(16,32,42,.08);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1518;--surface:#171F23;--surface-2:#1E282D;--ink:#EEF3F2;--ink-2:#BAC6C6;--ink-3:#8A9AA0;--line:#2A3539;--line-2:#3A474C;
+  --accent:#4FB3B8;--accent-ink:#0F1518;--accent-soft:#173539;--focus:#6CC8CD;
+  --amber:#E0B25A;--amber-soft:#2E2510;--red:#EE8B84;--red-soft:#3A1A17;--green:#7FD0A0;--green-soft:#17301F;--violet:#A79BF0;--violet-soft:#26224A;
+  --t-person:#3987e5;--t-vendor:#d95926;--t-operator:#199e70;--t-lessor:#c98500;--t-truck:#d55181;--t-contract:#9085e9;--t-system:#8f8e88;--t-market:#3fb03f;--t-internal:#EEF3F2;--t-advisor:#9c93ef;--t-supplier:#8f8e88;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0F1518;--surface:#171F23;--surface-2:#1E282D;--ink:#EEF3F2;--ink-2:#BAC6C6;--ink-3:#8A9AA0;--line:#2A3539;--line-2:#3A474C;
+  --accent:#4FB3B8;--accent-ink:#0F1518;--accent-soft:#173539;--focus:#6CC8CD;
+  --amber:#E0B25A;--amber-soft:#2E2510;--red:#EE8B84;--red-soft:#3A1A17;--green:#7FD0A0;--green-soft:#17301F;--violet:#A79BF0;--violet-soft:#26224A;
+  --t-person:#3987e5;--t-vendor:#d95926;--t-operator:#199e70;--t-lessor:#c98500;--t-truck:#d55181;--t-contract:#9085e9;--t-system:#8f8e88;--t-market:#3fb03f;--t-internal:#EEF3F2;--t-advisor:#9c93ef;--t-supplier:#8f8e88;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.disp{font-family:"Archivo",system-ui,sans-serif}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+[hidden]{display:none!important}
+/* ---------- top bar ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);padding:0 18px;display:flex;align-items:center;gap:14px;min-height:54px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;font-family:"Archivo",sans-serif;font-weight:700;font-size:1.02rem;letter-spacing:-.01em;white-space:nowrap}
+.brand i{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--accent) 0 60%,var(--t-truck) 60% 80%,var(--t-lessor) 80% 100%);display:inline-block;position:relative}
+.brand i::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--surface)}
+.brand small{font-family:"IBM Plex Mono",monospace;font-weight:400;font-size:.68rem;color:var(--ink-3);letter-spacing:.06em;margin-left:4px}
+.modes{display:flex;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:3px;margin-left:auto}
+.modes button{border:0;background:none;padding:6px 12px;border-radius:6px;font-family:"Archivo",sans-serif;font-weight:600;font-size:.82rem;color:var(--ink-2);display:flex;align-items:center;gap:6px}
+.modes button.on{background:var(--surface);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.modes button .n{font-family:"IBM Plex Mono",monospace;font-size:.68rem;background:var(--amber-soft);color:var(--amber);padding:0 5px;border-radius:4px;font-weight:500}
+.userchip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:4px 10px 4px 4px;font-size:.82rem;color:var(--ink-2)}
+.userchip b{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:"Archivo",sans-serif;font-size:.72rem;font-weight:700}
+.userchip button{border:0;background:none;color:var(--accent);font-size:.75rem;padding:0;font-weight:600}
+@media(max-width:720px){.modes{margin-left:0;width:100%;order:3}.modes button{flex:1;justify-content:center;padding:6px 6px;font-size:.76rem}.userchip{margin-left:auto}.brand small{display:none}}
+/* ---------- search hero ---------- */
+.hero{padding:22px 18px 8px;max-width:1240px;margin:0 auto;width:100%}
+.searchbox{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line-2);border-radius:14px;padding:6px 8px 6px 16px;box-shadow:var(--shadow);transition:border-color .15s}
+.searchbox:focus-within{border-color:var(--accent)}
+.searchbox svg{flex:none;color:var(--ink-3)}
+.searchbox input{flex:1;border:0;background:none;font-size:1.12rem;padding:10px 4px;min-width:0}
+.searchbox input::placeholder{color:var(--ink-3)}
+.ibtn{border:0;background:var(--surface-2);color:var(--ink-2);border-radius:10px;width:40px;height:40px;display:grid;place-items:center;flex:none}
+.ibtn:hover{background:var(--accent-soft);color:var(--accent)}
+.ibtn.rec{background:var(--red-soft);color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px var(--red-soft)}}
+.askbtn{border:0;background:var(--accent);color:var(--accent-ink);border-radius:10px;height:40px;padding:0 14px;font-family:"Archivo",sans-serif;font-weight:600;font-size:.86rem;display:flex;align-items:center;gap:6px;flex:none;white-space:nowrap}
+.askbtn:hover{filter:brightness(1.08)}
+.hint{display:flex;flex-wrap:wrap;gap:6px;margin:10px 2px 0;align-items:center;font-size:.86rem;color:var(--ink-3)}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:.82rem;color:var(--ink-2)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip .n{font-family:"IBM Plex Mono",monospace;font-size:.7rem;opacity:.75;margin-left:5px}
+/* ---------- layout ---------- */
+.main{max-width:1240px;margin:0 auto;padding:8px 18px 60px;display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:18px;align-items:start}
+@media(max-width:940px){.main{grid-template-columns:1fr}.detail{position:fixed;inset:auto 0 0 0;max-height:82vh;overflow:auto;z-index:30;border-radius:16px 16px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.25);padding-bottom:env(safe-area-inset-bottom,0px)}.detail:not(.open){display:none}}
+.col{min-width:0}
+.section-h{font-family:"Archivo",sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.section-h .n{font-family:"IBM Plex Mono",monospace;letter-spacing:0;text-transform:none;background:var(--surface-2);padding:1px 6px;border-radius:4px}
+.ent-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.ent{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;text-align:left;display:flex;gap:10px;align-items:flex-start;transition:border-color .12s,transform .12s}
+.ent:hover{border-color:var(--accent);transform:translateY(-1px)}
+.ent.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;margin-top:6px}
+.ent b{display:block;font-family:"Archivo",sans-serif;font-size:.92rem;font-weight:600;line-height:1.25}
+.ent span{display:block;font-size:.78rem;color:var(--ink-3);margin-top:2px;line-height:1.3}
+.fact{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:11px 14px;margin-bottom:8px;position:relative;text-align:left;width:100%;display:block}
+.fact:hover{border-color:var(--line-2)}
+.fact.sel{border-color:var(--accent)}
+.fact .k{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:5px;font-size:.72rem;color:var(--ink-3)}
+.fact .t{font-size:.96rem;line-height:1.5;color:var(--ink)}
+.fact .t mark{background:var(--amber-soft);color:inherit;padding:0 1px;border-radius:2px}
+.fact .m{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
+.fact .ents{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.tag{font-family:"Archivo",sans-serif;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:600;white-space:nowrap}
+.k-definition{background:var(--accent-soft);color:var(--accent)}.k-moment{background:var(--violet-soft);color:var(--violet)}.k-decision{background:var(--green-soft);color:var(--green)}.k-number{background:var(--surface-2);color:var(--ink-2)}.k-open{background:var(--amber-soft);color:var(--amber)}.k-finding{background:var(--red-soft);color:var(--red)}.k-additional{background:var(--ink);color:var(--paper)}
+.elink{font-size:.74rem;border:1px solid var(--line);border-radius:999px;padding:1px 8px 1px 5px;background:var(--surface-2);color:var(--ink-2);display:inline-flex;align-items:center;gap:5px}
+.elink i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.elink:hover{border-color:var(--accent);color:var(--accent)}
+.conn{display:flex;gap:10px;align-items:baseline;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:6px;font-size:.92rem;width:100%;text-align:left}
+.conn:hover{border-color:var(--accent)}
+.conn b{font-family:"Archivo",sans-serif;font-weight:600}
+.conn .lbl{color:var(--ink-2)}
+.conn .note{color:var(--ink-3);font-size:.8rem;margin-left:auto;text-align:right;max-width:45%}
+.empty{padding:36px 10px;color:var(--ink-3);text-align:center;font-size:.95rem}
+.start{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:8px}
+.start button{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;text-align:left}
+.start button:hover{border-color:var(--accent)}
+.start b{display:flex;align-items:center;gap:8px;font-family:"Archivo",sans-serif;font-weight:600}
+.start span{display:block;font-size:.8rem;color:var(--ink-3);margin-top:4px;line-height:1.35}
+/* ---------- detail panel ---------- */
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px 20px;position:sticky;top:calc(64px + env(safe-area-inset-top,0px));max-height:calc(100vh - 80px);overflow:auto}
+.detail .close{position:absolute;right:10px;top:10px;border:0;background:var(--surface-2);border-radius:8px;width:30px;height:30px}
+.detail h2{font-family:"Archivo",sans-serif;font-size:1.28rem;font-weight:700;margin:6px 0 2px;letter-spacing:-.01em;line-height:1.15;text-wrap:balance;padding-right:30px}
+.detail .role{color:var(--ink-3);font-size:.86rem}
+.detail .blurb{margin:10px 0 12px;font-size:.96rem;color:var(--ink-2);line-height:1.5}
+.detail .acts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 6px}
+.sbtn{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:6px 10px;font-size:.82rem;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.sbtn:hover{border-color:var(--accent);color:var(--accent)}
+.sbtn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.detail h3{font-family:"Archivo",sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 6px}
+.rel{display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.rel:last-child{border-bottom:0}
+.rel .lbl{color:var(--ink-3);font-size:.8rem;flex:none;max-width:46%}
+.rel button{border:0;background:none;padding:0;font-family:"Archivo",sans-serif;font-weight:600;color:var(--accent);text-align:left;display:inline-flex;align-items:center;gap:5px}
+.rel .note{display:block;font-size:.76rem;color:var(--ink-3)}
+.detail .fact{padding:9px 11px}
+.detail .fact .t{font-size:.9rem}
+/* ---------- map ---------- */
+.map{max-width:1240px;margin:0 auto;padding:8px 18px 40px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;align-items:start}
+@media(max-width:940px){.map{grid-template-columns:1fr}}
+.mapwrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;height:min(74vh,760px);min-height:420px}
+.mapwrap svg{width:100%;height:100%;display:block;touch-action:none}
+.legend{position:absolute;left:10px;bottom:10px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.74rem;color:var(--ink-2);max-width:calc(100% - 20px)}
+.legend button{border:0;background:none;padding:2px 0;display:inline-flex;align-items:center;gap:5px;color:inherit}
+.legend button.off{opacity:.35;text-decoration:line-through}
+.legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.maptools{position:absolute;right:10px;top:10px;display:flex;gap:6px}
+.mapwrap .node-l{font-family:"Archivo",sans-serif;font-size:11px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.mapwrap .link{stroke:var(--line-2);stroke-opacity:.7}
+.mapwrap .link.hl{stroke:var(--accent);stroke-opacity:1;stroke-width:2.2px}
+.mapwrap .link-l{font-size:10px;fill:var(--ink-2);paint-order:stroke;stroke:var(--surface);stroke-width:3px;pointer-events:none;font-family:"Source Sans 3",sans-serif}
+.mapwrap .node circle{stroke:var(--surface);stroke-width:1.5px;cursor:pointer}
+.mapwrap .node.sel circle{stroke:var(--ink);stroke-width:3px}
+.mapwrap.focus .node:not(.hl){opacity:.18}
+.mapwrap.focus .link:not(.hl){stroke-opacity:.12}
+.mapwrap.focus .node-l:not(.hl){opacity:.15}
+.mapwrap .node.dim{opacity:.12;pointer-events:none}
+/* ---------- requests / activity ---------- */
+.page{max-width:1240px;margin:0 auto;padding:10px 18px 60px}
+.page h1{font-family:"Archivo",sans-serif;font-size:1.5rem;font-weight:700;margin:10px 0 4px;letter-spacing:-.01em}
+.page .lede{color:var(--ink-2);max-width:70ch;margin:0 0 16px}
+.req{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:8px 16px}
+.req.answered{border-left:4px solid var(--green)}
+.req.open{border-left:4px solid var(--amber)}
+.req .who{font-size:.76rem;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.req .q{font-family:"Archivo",sans-serif;font-weight:600;margin:2px 0}
+.req .sp{color:var(--ink-2);font-size:.9rem;white-space:pre-wrap}
+.req .ans{margin-top:8px;padding:8px 10px;background:var(--green-soft);border-radius:8px;font-size:.92rem;white-space:pre-wrap}
+.req .ans b{font-family:"Archivo",sans-serif;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;display:block;color:var(--green);margin-bottom:3px}
+.req textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--paper);resize:vertical;margin-top:6px}
+.req .side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:8px 0 14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stat .k{font-family:"Archivo",sans-serif;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.stat .v{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin-top:2px;font-family:"Archivo",sans-serif}
+.stat .s{font-size:.74rem;color:var(--ink-3)}
+.meter{height:6px;background:var(--surface-2);border-radius:3px;margin-top:6px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.ucard{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.ucard h3{font-family:"Archivo",sans-serif;font-size:1rem;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+.ucard .sub{font-size:.8rem;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.qlist{font-size:.84rem;color:var(--ink-2);margin-top:8px;display:grid;gap:3px}
+.qlist span{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);margin-right:8px}
+table.simple{border-collapse:collapse;width:100%;font-size:.88rem}
+table.simple th{text-align:left;font-family:"Archivo",sans-serif;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:6px 8px;border-bottom:1px solid var(--line)}
+table.simple td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tblwrap{overflow-x:auto}
+/* ---------- chat drawer ---------- */
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;border:0;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:12px 18px;font-family:"Archivo",sans-serif;font-weight:600;box-shadow:var(--shadow);display:flex;align-items:center;gap:8px}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--surface);border-left:1px solid var(--line);z-index:50;display:flex;flex-direction:column;transform:translateX(102%);transition:transform .22s ease;box-shadow:var(--shadow);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer.open{transform:none}
+@media(prefers-reduced-motion:reduce){.drawer{transition:none}.ibtn.rec{animation:none}}
+.drawer header{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.drawer header b{font-family:"Archivo",sans-serif;font-size:1rem}
+.drawer header small{color:var(--ink-3);font-size:.78rem;display:block}
+.drawer .log{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:92%;padding:10px 13px;border-radius:12px;font-size:.94rem;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.msg.u{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--surface-2);border-bottom-left-radius:4px}
+.msg.a .cite{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.72rem;background:var(--accent-soft);color:var(--accent);border:0;padding:0 5px;border-radius:4px;margin:0 1px;cursor:pointer}
+.msg.sys{align-self:center;font-size:.78rem;color:var(--ink-3);background:none;text-align:center}
+.msg.req{align-self:flex-start;background:var(--amber-soft);color:var(--amber);font-size:.84rem;border-left:3px solid var(--amber);border-radius:6px}
+.msg.think{color:var(--ink-3);font-style:italic}
+.drawer form{display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line);align-items:flex-end}
+.drawer textarea{flex:1;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:9px 11px;resize:none;min-height:42px;max-height:140px}
+.drawer .sug{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 8px}
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;background:rgba(10,20,26,.55);z-index:60;display:grid;place-items:center;padding:18px}
+.modal .box{background:var(--surface);border-radius:16px;padding:22px 22px 18px;max-width:520px;width:100%;box-shadow:var(--shadow)}
+.modal h2{font-family:"Archivo",sans-serif;margin:0 0 4px;font-size:1.3rem}
+.modal p{color:var(--ink-2);margin:0 0 14px;font-size:.94rem}
+.who{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.who button{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:7px 14px;font-weight:600}
+.who button:hover{border-color:var(--accent);color:var(--accent)}
+.modal input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--paper)}
+.modal .row{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+.toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 14px;border-radius:10px;font-size:.86rem;z-index:70;box-shadow:var(--shadow);max-width:90vw}
+.kbd{font-family:"IBM Plex Mono",monospace;font-size:.7rem;border:1px solid var(--line-2);border-radius:4px;padding:0 5px;color:var(--ink-3)}
+</style>
+<div class="top">
+  <div class="brand"><i></i>SupplyNow Atlas <small id="asof"></small></div>
+  <nav class="modes" id="modes" aria-label="Views">
+    <button data-mode="search" class="on">Search</button>
+    <button data-mode="map">Map</button>
+    <button data-mode="requests">Requests <span class="n" id="reqcount" hidden>0</span></button>
+    <button data-mode="activity">Activity</button>
+  </nav>
+  <div class="userchip" id="userchip" hidden><b id="uinit"></b><span id="uname"></span><button type="button" id="switchuser">switch</button></div>
+</div>
+
+<section class="hero" id="hero">
+  <div class="searchbox">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search anything — a name, a truck number, a dollar amount, a question…" aria-label="Search">
+    <button type="button" class="ibtn" id="mic" title="Speak your search" aria-label="Speak your search" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button type="button" class="askbtn" id="askbtn" title="Ask the ledger in plain language">Ask</button>
+  </div>
+  <div class="hint" id="hint"></div>
+</section>
+
+<main class="main" id="view-search">
+  <div class="col" id="results"></div>
+  <aside class="detail" id="detail" hidden></aside>
+</main>
+
+<section class="map" id="view-map" hidden>
+  <div class="mapwrap" id="mapwrap">
+    <svg id="mapsvg" role="img" aria-label="Relationship map"></svg>
+    <div class="maptools"><button type="button" class="sbtn" id="mapfit">Fit</button><button type="button" class="sbtn" id="mapclear">Clear</button></div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <aside class="detail" id="mapdetail"><div class="empty">Click any dot to see who it is, what it holds, and everything it connects to. Drag to move, scroll to zoom. Use the search box to jump to a name.</div></aside>
+</section>
+
+<section class="page" id="view-requests" hidden>
+  <h1>Additional findings per user request</h1>
+  <p class="lede">Anything the ledger could not answer lands here with who asked, when, and what they needed. Mike enriches it; the answer then shows up in search as an additional finding. No pings, no chasing.</p>
+  <div class="acts" style="margin-bottom:12px"><button type="button" class="sbtn pri" id="newreq">+ Request information</button> <span id="reqstatus" style="font-size:.82rem;color:var(--ink-3)"></span></div>
+  <div id="reqlist"></div>
+</section>
+
+<section class="page" id="view-activity" hidden>
+  <h1>Activity</h1>
+  <p class="lede">Time on the atlas, what was searched, and three scores per person: how simple the asks were, how complex, and how much was repeated. Repeats are the signal that something is not being retained and should be made easier to find.</p>
+  <div id="actlist"></div>
+</section>
+
+<button type="button" class="fab" id="fab"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Ask the ledger</button>
+
+<aside class="drawer" id="drawer" aria-label="Ask the ledger">
+  <header>
+    <div style="flex:1"><b>Ask the ledger</b><small id="chatsub">Answers only from what is on record. Anything missing is logged for Mike.</small></div>
+    <button type="button" class="ibtn" id="chatmic" title="Speak" aria-label="Speak your question" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button type="button" class="ibtn" id="chatclose" aria-label="Close">✕</button>
+  </header>
+  <div class="log" id="chatlog"></div>
+  <div class="sug" id="chatsug"></div>
+  <form id="chatform">
+    <textarea id="chatin" rows="1" placeholder="e.g. What do we still owe Sigma and why?"></textarea>
+    <button type="submit" class="askbtn" id="chatsend">Send</button>
+    <button type="button" class="ibtn" id="chatstop" hidden title="Stop">■</button>
+  </form>
+</aside>
+
+<div class="modal" id="whomodal" hidden>
+  <div class="box">
+    <h2>Who's using the atlas?</h2>
+    <p>Pick your name once. It labels your requests to Mike and your activity; nothing else.</p>
+    <div class="who" id="wholist"></div>
+    <input id="whoname" placeholder="Or type a name">
+    <div class="row"><button type="button" class="sbtn pri" id="whook">Start</button></div>
+  </div>
+</div>
+
+<div class="modal" id="reqmodal" hidden>
+  <div class="box">
+    <h2>Request information</h2>
+    <p>Say what you were looking for and what you need it for. It goes to Mike's queue with a timestamp; the answer comes back into the atlas.</p>
+    <input id="reqq" placeholder="What were you looking for?">
+    <textarea id="reqsp" placeholder="Specifics — which counterparty, which number, which date, why it matters" style="width:100%;margin-top:8px;min-height:90px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--paper)"></textarea>
+    <div class="row"><button type="button" class="sbtn" id="reqcancel">Cancel</button><button type="button" class="sbtn pri" id="reqsend">Log it for Mike</button></div>
+  </div>
+</div>
+<script src="kb.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+/* ===================== core: data, search, render ===================== */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const E = Object.fromEntries(KB.entities.map(e => [e.id, e]));
+const F = Object.fromEntries(KB.facts.map(f => [f.id, f]));
+const TYPE_LABEL = {person:'Person', truck:'Truck', contract:'Contract / document', system:'System / report', market:'Market'};
+const BUCKET_LABEL = {vendor:'Vendor partner (account served)', operator:'Service partner (delivers)', lessor:'Fleet owner / lessor', internal:'SupplyNow', advisor:'WSC', supplier:'Supplier / other'};
+const KIND_LABEL = {definition:'Definition', moment:'Moment', decision:'Decision', number:'Number', open:'Open item', finding:'Finding', additional:'Additional finding'};
+const KIND_ORDER = ['open','decision','number','moment','finding','definition','additional'];
+function typeKey(e){ return e.type==='org' ? (e.bucket||'supplier') : e.type; }
+function typeColor(e){ return `var(--t-${typeKey(e)})`; }
+function typeName(e){ return e.type==='org' ? (BUCKET_LABEL[e.bucket]||'Organization') : TYPE_LABEL[e.type]; }
+const state = { mode:'search', q:'', kind:'', sel:null, selFact:null, mapSel:null, user:null, admin:false, extraFacts:[] };
+let db=null, sample=null, usage=null;
+
+/* ---------- relationships index ---------- */
+const relsOf = {};
+KB.rels.forEach((r,i) => { (relsOf[r[0]] ||= []).push({i, dir:'out', other:r[1], label:r[2], note:r[3]}); (relsOf[r[1]] ||= []).push({i, dir:'in', other:r[0], label:r[2], note:r[3]}); });
+const factsOf = {};
+function indexFactsOf(){ Object.keys(factsOf).forEach(k=>delete factsOf[k]); allFacts().forEach(f => f.ents.forEach(e => (factsOf[e] ||= []).push(f))); }
+function allFacts(){ return KB.facts.concat(state.extraFacts); }
+
+/* ---------- tokenizer & fuzzy ---------- */
+const STOP = new Set('the a an of to in on for and or is are was were be been do does did what who whom whose which when where why how much many our we us they it its this that these those with about from by at as into vs per me i my have has had can could should would will shall not no yes any all some there here than then so if but'.split(' '));
+function norm(s){ return String(s).toLowerCase().replace(/[’']/g,'').replace(/\$([\d,]+)/g,' $1 ').replace(/(\d),(\d)/g,'$1$2').replace(/[^\p{L}\p{N}.#]+/gu,' ').replace(/\.(?=\s|$)/g,' ').trim(); }
+function toks(s, keepStop){ return norm(s).split(/\s+/).filter(t => t && (keepStop || !STOP.has(t))).map(t => t.replace(/^#/, '')); }
+function editDist(a,b){ if(Math.abs(a.length-b.length)>2) return 3; const m=a.length,n=b.length; let prev=Array.from({length:n+1},(_,i)=>i), cur=new Array(n+1); for(let i=1;i<=m;i++){ cur[0]=i; for(let j=1;j<=n;j++){ cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) cur[j]=Math.min(cur[j],prev[j-1]); } [prev,cur]=[cur,prev]; } return prev[n]; }
+function tokScore(qt, dt){ if(qt===dt) return 3; if(dt.startsWith(qt) && qt.length>=3) return 2 + Math.min(1, qt.length/dt.length); if(qt.length>=5 && dt.length>=5){ const d=editDist(qt,dt); if(d<=1) return 1.6; if(d===2 && qt.length>=8) return 1.1; } if(/^\d+$/.test(qt) && /^\d+(\.\d+)?$/.test(dt) && dt.startsWith(qt) && qt.length>=4) return 2; return 0; }
+
+/* ---------- documents ---------- */
+let DOCS = [];
+function buildDocs(){
+  DOCS = [];
+  KB.entities.forEach(e => { const names=[e.name].concat(e.aliases||[]); DOCS.push({kind:'entity', id:e.id, ref:e, nameToks:new Set(names.flatMap(n=>toks(n,true))), toks:new Set(toks(names.join(' ')+' '+(e.role||'')+' '+e.blurb)), text:(names.join(' ')+' '+(e.role||'')+' '+e.blurb).toLowerCase()}); });
+  allFacts().forEach(f => { const entNames = f.ents.map(id=>E[id]?E[id].name:'').join(' '); DOCS.push({kind:'fact', id:f.id, ref:f, nameToks:new Set(), toks:new Set(toks(f.text+' '+entNames+' '+(f.tab||''))), text:(f.text+' '+entNames).toLowerCase()}); });
+  KB.rels.forEach((r,i) => { const a=E[r[0]], b=E[r[1]]; const t=a.name+' '+r[2]+' '+b.name+' '+(r[3]||''); DOCS.push({kind:'rel', id:'r'+i, ref:{i, from:a, to:b, label:r[2], note:r[3]}, nameToks:new Set(), toks:new Set(toks(t)), text:t.toLowerCase()}); });
+}
+/* entity mention detection: longest alias match in query */
+const ALIASES = KB.entities.flatMap(e => [e.name].concat(e.aliases||[]).map(a => ({a:norm(a), id:e.id}))).filter(x=>x.a.length>=2).sort((x,y)=>y.a.length-x.a.length);
+function mentions(q){ const nq=' '+norm(q)+' '; const found=[]; for(const {a,id} of ALIASES){ if(found.includes(id)) continue; if(a.length<2) continue; if(nq.includes(' '+a+' ')) found.push(id); } return found; }
+
+function search(q, kind){
+  const qt = toks(q); const raw = norm(q); const ment = mentions(q);
+  const out = {entities:[], facts:[], rels:[], mentioned:ment, strong:false};
+  if(!qt.length && !ment.length){ if(kind){ out.facts = allFacts().filter(f=>f.kind===kind).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(f=>({ref:f,score:1,id:f.id})); } return out; }
+  const need = qt.length<=2 ? qt.length : Math.ceil(qt.length*0.6);
+  DOCS.forEach(d => {
+    let s=0, matched=0, nameHit=false, phrase = raw.length>=4 && d.text.includes(raw);
+    for(const t of qt){ let best=0; for(const dt of d.toks){ const v=tokScore(t,dt); if(v>best){best=v; if(v>=3) break;} } if(best>0){matched++; s+=best;} if(d.kind==='entity'){ let nb=0; for(const nt of d.nameToks){ const v=tokScore(t,nt); if(v>nb) nb=v; } if(nb>0){ nameHit=true; s+=nb*2.2; if(!best){matched++; s+=nb;} } } }
+    if(phrase) s+=4;
+    if(d.kind==='fact' && ment.length){ const hit = d.ref.ents.filter(e=>ment.includes(e)).length; if(hit) s += 2.5*hit; }
+    if(d.kind==='rel' && ment.length){ if(ment.includes(d.ref.from.id)||ment.includes(d.ref.to.id)) s+=2; }
+    if(d.kind==='entity' && ment.includes(d.id)) s+=8;
+    if(matched<need && !(d.kind==='fact'&&ment.length&&d.ref.ents.some(e=>ment.includes(e))) && !(d.kind==='entity'&&(ment.includes(d.id)||nameHit))) return;
+    if(s<=0) return;
+    if(kind && d.kind==='fact' && d.ref.kind!==kind) return;
+    if(d.kind==='entity') out.entities.push({ref:d.ref,score:s,id:d.id}); else if(d.kind==='fact') out.facts.push({ref:d.ref,score:s,id:d.id}); else out.rels.push({ref:d.ref,score:s,id:d.id});
+  });
+  out.entities.sort((a,b)=>b.score-a.score); out.facts.sort((a,b)=>b.score-a.score||((b.ref.date||'').localeCompare(a.ref.date||''))); out.rels.sort((a,b)=>b.score-a.score);
+  out.strong = (out.entities[0]&&out.entities[0].score>=6) || (out.facts[0]&&out.facts[0].score>=7);
+  return out;
+}
+function highlight(text, q){ const t=toks(q).filter(x=>x.length>=3); if(!t.length) return esc(text); const re=new RegExp('('+t.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','ig'); return esc(text).replace(re,'<mark>$1</mark>'); }
+
+/* ---------- rendering: search ---------- */
+function entCard(e, extraCls){ return `<button type="button" class="ent ${extraCls||''} ${state.sel===e.id?'sel':''}" data-ent="${e.id}"><i class="dot" style="background:${typeColor(e)}"></i><div><b>${esc(e.name)}</b><span>${esc(e.role||typeName(e))}</span></div></button>`; }
+function factCard(f, q, compact){ const d=f.date? fmtDate(f.date):''; return `<button type="button" class="fact ${state.selFact===f.id?'sel':''}" data-fact="${f.id}"><div class="k"><span class="tag k-${f.kind}">${KIND_LABEL[f.kind]||f.kind}</span>${d?`<span class="mono">${d}</span>`:''}${f.tab?`<span>· ${esc(f.tab)}</span>`:''}${f.by?`<span>· asked by ${esc(f.by)}</span>`:''}</div><div class="t">${highlight(f.text,q||'')}</div>${compact?'':`<div class="ents">${f.ents.slice(0,8).map(id=>E[id]?`<span class="elink" data-ent="${id}"><i style="background:${typeColor(E[id])}"></i>${esc(E[id].name)}</span>`:'').join('')}</div><div class="m"><span>${esc(f.id)}</span><span>Source: ${esc(f.src||'')}</span></div>`}</button>`; }
+function relCard(r){ return `<button type="button" class="conn" data-ent="${r.from.id}" data-ent2="${r.to.id}"><b><i class="dot" style="background:${typeColor(r.from)};display:inline-block;width:8px;height:8px;margin:0 4px 1px 0"></i>${esc(r.from.name)}</b><span class="lbl">${esc(r.label)}</span><b><i class="dot" style="background:${typeColor(r.to)};display:inline-block;width:8px;height:8px;margin:0 4px 1px 0"></i>${esc(r.to.name)}</b>${r.note?`<span class="note">${esc(r.note)}</span>`:''}</button>`; }
+function fmtDate(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-'); const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${M[+m-1]} ${+d}, ${y}`; }
+
+const STARTERS = [
+  {bucket:'vendor', t:'Vendor partners', s:'The accounts we serve — Depot, SNAP, CFH, Greenlight, Coltrane'},
+  {bucket:'operator', t:'Service partners', s:'Who delivers — PA, Sigma, Logivex, D&D'},
+  {bucket:'lessor', t:'Fleet owners & leases', s:'Who owns or finances the trucks'},
+  {type:'truck', t:'Trucks', s:'Every unit: condition, paper, money'},
+  {type:'contract', t:'Contracts & documents', s:'What each agreement actually says'},
+  {type:'person', t:'People', s:'Who is who, and what each owns'},
+  {kind:'open', t:'Open items', s:'Everything still unanswered or undecided'},
+  {kind:'decision', t:'Decisions made', s:'What was decided, when, by whom'},
+  {kind:'moment', t:'Timeline', s:'Historical moments, newest first'},
+  {kind:'number', t:'Numbers', s:'Balances, rates, budgets'},
+];
+const EXAMPLES = ['Fleet One','who owns truck 1008','what do we owe PA','Sigma net','1003 turbo','Justworks','Gretchen','Kirill balance','Coltrane 3.75%','pricing go-live','Quality Supply','Indianapolis'];
+
+function renderHint(){ const h=$('#hint'); const kinds=['open','decision','moment','number','finding','definition'].map(k=>`<button type="button" class="chip ${state.kind===k?'on':''}" data-kind="${k}">${KIND_LABEL[k]}s<span class="n">${allFacts().filter(f=>f.kind===k).length}</span></button>`).join(''); h.innerHTML = `<span>Filter:</span>${kinds}<button type="button" class="chip ${state.kind===''?'on':''}" data-kind="">All</button>`; }
+
+function renderSearch(){
+  const q=state.q.trim(); const box=$('#results');
+  if(!q && !state.kind){
+    const open = allFacts().filter(f=>f.kind==='open').length; const add=state.extraFacts.length;
+    box.innerHTML = `<div class="section-h">Start here</div><div class="start">${STARTERS.map((s,i)=>`<button type="button" data-start="${i}"><b>${s.t}</b><span>${s.s}</span></button>`).join('')}</div>
+      <div class="section-h" style="margin-top:22px">Try</div><div class="hint" style="margin:0">${EXAMPLES.map(x=>`<button type="button" class="chip" data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div>
+      <div class="section-h" style="margin-top:22px">What is in here</div><div class="stats"><div class="stat"><div class="k">Entities</div><div class="v">${KB.entities.length}</div><div class="s">people, companies, trucks, contracts</div></div><div class="stat"><div class="k">Facts</div><div class="v">${allFacts().length}</div><div class="s">${open} open items · ${add} added by request</div></div><div class="stat"><div class="k">Connections</div><div class="v">${KB.rels.length}</div><div class="s">who owns, signs, drives, owes</div></div><div class="stat"><div class="k">As of</div><div class="v" style="font-size:1.05rem;margin-top:8px">${esc(KB.asOf)}</div><div class="s">${esc(KB.source)}</div></div></div>`;
+    return;
+  }
+  const r = search(q, state.kind); lastSearch = r;
+  if(!r.entities.length && !r.facts.length && !r.rels.length){
+    box.innerHTML = `<div class="empty">Nothing on record matches <b>${esc(q)}</b>.<br><br><button type="button" class="sbtn pri" id="askthis">Ask the ledger instead</button> <button type="button" class="sbtn" id="reqthis">Log a request for Mike</button></div>`;
+    return;
+  }
+  let html='';
+  if(r.entities.length){ html += `<div class="section-h">Who / what <span class="n">${r.entities.length}</span></div><div class="ent-row">${r.entities.slice(0,8).map(x=>entCard(x.ref)).join('')}</div>`; }
+  if(r.facts.length){
+    const byKind={}; r.facts.forEach(x=>(byKind[x.ref.kind] ||= []).push(x));
+    const kinds = state.kind ? [state.kind] : KIND_ORDER.filter(k=>byKind[k]);
+    const total = r.facts.length;
+    html += `<div class="section-h" style="margin-top:20px">On record <span class="n">${total}</span>${!state.kind && !q ? '':''}</div>`;
+    if(!state.kind && q){ html += `<div class="hint" style="margin:0 0 10px">${kinds.map(k=>`<button type="button" class="chip" data-kind="${k}">${KIND_LABEL[k]}s<span class="n">${byKind[k].length}</span></button>`).join('')}</div>`; }
+    const list = (state.kind ? r.facts : r.facts.slice(0, 40));
+    html += list.map(x=>factCard(x.ref,q)).join('');
+    if(!state.kind && r.facts.length>40) html += `<div class="empty">Showing 40 of ${r.facts.length}. Narrow with a filter chip.</div>`;
+  }
+  if(r.rels.length){ html += `<div class="section-h" style="margin-top:20px">Connections <span class="n">${r.rels.length}</span></div>${r.rels.slice(0,10).map(x=>relCard(x.ref)).join('')}`; }
+  box.innerHTML = html;
+}
+let lastSearch=null;
+
+/* ---------- detail panel ---------- */
+function renderDetail(){
+  const d=$('#detail');
+  if(state.selFact){ const f=F[state.selFact]||state.extraFacts.find(x=>x.id===state.selFact); if(f){ d.hidden=false; d.classList.add('open'); d.innerHTML = `<button type="button" class="close" data-close>✕</button><div class="k" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="tag k-${f.kind}">${KIND_LABEL[f.kind]||f.kind}</span>${f.date?`<span class="mono" style="font-size:.78rem">${fmtDate(f.date)}</span>`:''}</div><h2>${esc(f.tab||'Fact')} <span class="mono" style="font-size:.7rem;color:var(--ink-3)">${esc(f.id)}</span></h2><p class="blurb">${esc(f.text)}</p><div class="mono" style="font-size:.74rem;color:var(--ink-3)">Source: ${esc(f.src||'')}</div><div class="acts"><button type="button" class="sbtn pri" data-askq="${esc('Tell me more about: '+f.text.slice(0,140))}">Ask about this</button><button type="button" class="sbtn" data-req="${esc(f.text.slice(0,120))}">Something missing? Request it</button></div><h3>Involves</h3><div class="ents" style="display:flex;flex-wrap:wrap;gap:4px">${f.ents.map(id=>E[id]?`<button type="button" class="elink" data-ent="${id}"><i style="background:${typeColor(E[id])}"></i>${esc(E[id].name)}</button>`:'').join('')}</div>`; return; } }
+  if(!state.sel){ d.hidden=true; d.classList.remove('open'); return; }
+  const e=E[state.sel]; d.hidden=false; d.classList.add('open');
+  const rels=(relsOf[e.id]||[]); const facts=(factsOf[e.id]||[]).slice().sort((a,b)=>KIND_ORDER.indexOf(a.kind)-KIND_ORDER.indexOf(b.kind)||(b.date||'').localeCompare(a.date||''));
+  const byKind={}; facts.forEach(f=>(byKind[f.kind] ||= []).push(f));
+  d.innerHTML = `<button type="button" class="close" data-close>✕</button>
+    <span class="tag" style="background:${typeColor(e)};color:#fff">${esc(typeName(e))}</span>
+    <h2>${esc(e.name)}</h2>${e.role?`<div class="role">${esc(e.role)}</div>`:''}${(e.aliases||[]).length?`<div class="role mono" style="font-size:.72rem">also: ${esc(e.aliases.slice(0,6).join(' · '))}</div>`:''}
+    <p class="blurb">${esc(e.blurb)}</p>
+    <div class="acts"><button type="button" class="sbtn pri" data-askq="${esc('What should I know about '+e.name+'? Include balances, open items and who to talk to.')}">Ask about this</button><button type="button" class="sbtn" data-map="${e.id}">Show on map</button><button type="button" class="sbtn" data-req="${esc(e.name)}">Request missing info</button></div>
+    <h3>Connections <span class="mono" style="letter-spacing:0">${rels.length}</span></h3>
+    ${rels.length? rels.map(r=>{ const o=E[r.other]; return `<div class="rel"><span class="lbl">${r.dir==='out'?esc(r.label):'← '+esc(r.label)}</span><div><button type="button" data-ent="${o.id}"><i class="dot" style="background:${typeColor(o)};width:8px;height:8px;margin:0"></i>${esc(o.name)}</button>${r.note?`<span class="note">${esc(r.note)}</span>`:''}</div></div>`; }).join('') : '<div class="empty" style="padding:8px">No connections recorded.</div>'}
+    <h3>On record <span class="mono" style="letter-spacing:0">${facts.length}</span></h3>
+    ${KIND_ORDER.filter(k=>byKind[k]).map(k=>`<div class="section-h" style="margin:10px 0 6px">${KIND_LABEL[k]}s <span class="n">${byKind[k].length}</span></div>${byKind[k].map(f=>factCard(f,'',true)).join('')}`).join('') || '<div class="empty" style="padding:8px">No facts recorded for this entity yet. Use “Request missing info”.</div>'}`;
+  d.scrollTop=0;
+}
+function selectEntity(id, fromMap){ state.sel=id; state.selFact=null; if(state.mode==='map'||fromMap){ mapSelect(id); } else { renderDetail(); $$('.ent').forEach(b=>b.classList.toggle('sel', b.dataset.ent===id)); } logQuery({q:'open: '+ (E[id]?E[id].name:id), type:'open', ents:1, hit:true}); }
+function selectFact(id){ state.selFact=id; state.sel=null; renderDetail(); $$('.fact').forEach(b=>b.classList.toggle('sel', b.dataset.fact===id)); }
+/* ===================== map: d3 force graph ===================== */
+let sim=null, gRoot=null, nodeSel=null, linkSel=null, labelSel=null, linkLabelSel=null, zoomB=null, mapBuilt=false, hiddenTypes=new Set();
+const NODES = KB.entities.map(e=>({id:e.id, e, deg:(relsOf[e.id]||[]).length}));
+const LINKS = KB.rels.map((r,i)=>({i, source:r[0], target:r[1], label:r[2], note:r[3]}));
+const TYPE_LEGEND = [['person','People'],['vendor','Vendor partners'],['operator','Service partners'],['lessor','Fleet owners'],['truck','Trucks'],['contract','Contracts'],['market','Markets'],['system','Systems'],['internal','SupplyNow'],['advisor','WSC'],['supplier','Suppliers']];
+function nodeR(n){ return 5 + Math.min(14, Math.sqrt(n.deg)*2.4); }
+function buildMap(){
+  if(mapBuilt) return; if(!window.d3){ $('#mapdetail').innerHTML='<div class="empty">The map library did not load. Check the connection and reopen the Map tab.</div>'; return; } mapBuilt=true;
+  const svg=d3.select('#mapsvg'); const wrap=$('#mapwrap'); const W=wrap.clientWidth||900, H=wrap.clientHeight||600;
+  svg.attr('viewBox',`0 0 ${W} ${H}`);
+  gRoot=svg.append('g');
+  zoomB=d3.zoom().scaleExtent([0.25,4]).on('zoom',ev=>gRoot.attr('transform',ev.transform)); svg.call(zoomB);
+  linkSel=gRoot.append('g').selectAll('line').data(LINKS).join('line').attr('class','link').attr('stroke-width',1.2);
+  linkLabelSel=gRoot.append('g').selectAll('text').data(LINKS).join('text').attr('class','link-l').attr('text-anchor','middle').text(d=>d.label).style('display','none');
+  nodeSel=gRoot.append('g').selectAll('g').data(NODES).join('g').attr('class','node').call(d3.drag().on('start',(ev,d)=>{if(!ev.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;}).on('drag',(ev,d)=>{d.fx=ev.x;d.fy=ev.y;}).on('end',(ev,d)=>{if(!ev.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
+  nodeSel.append('circle').attr('r',nodeR).attr('fill',d=>typeColor(d.e));
+  nodeSel.append('title').text(d=>d.e.name+' — '+typeName(d.e));
+  nodeSel.on('click',(ev,d)=>{ev.stopPropagation(); selectEntity(d.id,true);});
+  labelSel=gRoot.append('g').selectAll('text').data(NODES).join('text').attr('class','node-l').attr('text-anchor','middle').text(d=>d.e.name.length>28?d.e.name.slice(0,26)+'…':d.e.name).style('display',d=>d.deg>=5?null:'none');
+  svg.on('click',()=>mapSelect(null));
+  sim=d3.forceSimulation(NODES).force('link',d3.forceLink(LINKS).id(d=>d.id).distance(l=>60+Math.min(40,(l.source.deg+l.target.deg))).strength(.5)).force('charge',d3.forceManyBody().strength(d=>-120-d.deg*12)).force('center',d3.forceCenter(W/2,H/2)).force('collide',d3.forceCollide(d=>nodeR(d)+10)).force('x',d3.forceX(W/2).strength(.04)).force('y',d3.forceY(H/2).strength(.05));
+  sim.on('tick',()=>{ linkSel.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y); linkLabelSel.attr('x',d=>(d.source.x+d.target.x)/2).attr('y',d=>(d.source.y+d.target.y)/2-4); nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`); labelSel.attr('x',d=>d.x).attr('y',d=>d.y+nodeR(d)+12); });
+  $('#legend').innerHTML = TYPE_LEGEND.map(([k,l])=>`<button type="button" data-type="${k}"><i style="background:var(--t-${k})"></i>${l}</button>`).join('');
+  $('#legend').addEventListener('click',ev=>{ const b=ev.target.closest('[data-type]'); if(!b) return; const k=b.dataset.type; if(hiddenTypes.has(k)) hiddenTypes.delete(k); else hiddenTypes.add(k); b.classList.toggle('off',hiddenTypes.has(k)); applyTypeFilter(); });
+  $('#mapfit').onclick=()=>svg.transition().duration(400).call(zoomB.transform,d3.zoomIdentity);
+  $('#mapclear').onclick=()=>mapSelect(null);
+  if(state.sel) mapSelect(state.sel);
+}
+function applyTypeFilter(){ nodeSel.classed('dim',d=>hiddenTypes.has(typeKey(d.e))); linkSel.style('display',d=>(hiddenTypes.has(typeKey(d.source.e))||hiddenTypes.has(typeKey(d.target.e)))?'none':null); labelSel.style('display',d=>hiddenTypes.has(typeKey(d.e))?'none':(d.deg>=5||state.mapSel===d.id?null:'none')); }
+function mapSelect(id){
+  state.mapSel=id; if(!mapBuilt) return; const wrap=$('#mapwrap');
+  if(!id){ wrap.classList.remove('focus'); nodeSel.classed('sel',false).classed('hl',false); linkSel.classed('hl',false); labelSel.classed('hl',false).style('display',d=>d.deg>=5?null:'none'); linkLabelSel.style('display','none'); $('#mapdetail').innerHTML='<div class="empty">Click any dot to see who it is, what it holds, and everything it connects to. Drag to move, scroll to zoom. Use the search box to jump to a name.</div>'; return; }
+  const nb=new Set([id].concat((relsOf[id]||[]).map(r=>r.other)));
+  wrap.classList.add('focus'); nodeSel.classed('sel',d=>d.id===id).classed('hl',d=>nb.has(d.id)); linkSel.classed('hl',d=>d.source.id===id||d.target.id===id); labelSel.classed('hl',d=>nb.has(d.id)).style('display',d=>nb.has(d.id)?null:(d.deg>=5?null:'none')); linkLabelSel.style('display',d=>(d.source.id===id||d.target.id===id)?null:'none');
+  const n=NODES.find(x=>x.id===id); if(n&&n.x!=null){ const W=$('#mapwrap').clientWidth, H=$('#mapwrap').clientHeight; d3.select('#mapsvg').transition().duration(450).call(zoomB.transform,d3.zoomIdentity.translate(W/2-n.x*1.25,H/2-n.y*1.25).scale(1.25)); }
+  // side card reuses detail renderer
+  const keep=state.sel; state.sel=id; state.selFact=null; const d=$('#detail'); renderDetail(); $('#mapdetail').innerHTML=d.innerHTML; $('#mapdetail').scrollTop=0; d.hidden=true; state.sel=keep||id;
+}
+/* ===================== users, db, requests, activity, chat, voice, boot ===================== */
+const KNOWN = ['Mike','Alvin','Glen','Camille','Aaron','Matt','Ed','Mel','Max'];
+function userKey(n){ return n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'anon'; }
+function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){ return null; } }
+function toast(t){ const el=document.createElement('div'); el.className='toast'; el.textContent=t; document.body.appendChild(el); setTimeout(()=>el.remove(),2600); }
+function setUser(name){ state.user=name; state.admin=userKey(name)==='mike'; ls('atlas.user',name); $('#userchip').hidden=false; $('#uinit').textContent=name.slice(0,1).toUpperCase(); $('#uname').textContent=name; $('#whomodal').hidden=true; startUsage(); }
+function askWho(){ $('#wholist').innerHTML=KNOWN.map(n=>`<button type="button" data-n="${n}">${n}</button>`).join(''); $('#whomodal').hidden=false; }
+$('#wholist').addEventListener('click',ev=>{ const b=ev.target.closest('[data-n]'); if(b) setUser(b.dataset.n); });
+$('#whook').onclick=()=>{ const v=$('#whoname').value.trim(); if(v) setUser(v); };
+$('#whoname').addEventListener('keydown',ev=>{ if(ev.key==='Enter') $('#whook').click(); });
+$('#switchuser').onclick=()=>{ flushUsage(true); askWho(); };
+
+/* ---------- usage & scores ---------- */
+let activeMs=0, lastTick=Date.now(), dirty=false, usageLoaded=false;
+function startUsage(){ usage={name:state.user,totalMs:0,sessions:0,queries:[],asks:0,lastSeen:''}; usageLoaded=false; activeMs=0; if(db){ db.doc('usage/'+userKey(state.user)).get().then(s=>{ if(s.exists) usage=Object.assign(usage,s.data()); usage.sessions=(usage.sessions||0)+1; usageLoaded=true; dirty=true; flushUsage(); }).catch(()=>{usageLoaded=true;}); } }
+setInterval(()=>{ const now=Date.now(); if(document.visibilityState==='visible'){ activeMs+=now-lastTick; } lastTick=now; },5000);
+setInterval(()=>flushUsage(),60000);
+document.addEventListener('visibilitychange',()=>{ const now=Date.now(); if(document.visibilityState==='visible'){ lastTick=now; } else { activeMs+=now-lastTick; lastTick=now; flushUsage(); } });
+window.addEventListener('pagehide',()=>flushUsage());
+function flushUsage(force){ if(!db||!usage||!state.user) return; if(!usageLoaded && !force) return; if(!dirty && activeMs<1000) return; usage.totalMs=(usage.totalMs||0)+activeMs; activeMs=0; usage.lastSeen=new Date().toISOString(); usage.name=state.user; if(usage.queries.length>300) usage.queries=usage.queries.slice(-300); dirty=false; db.doc('usage/'+userKey(state.user)).set(usage).catch(()=>{}); }
+function normQ(q){ return toks(q).sort().join(' '); }
+let lastLogged={q:'',t:0};
+function logQuery(o){ if(!usage) return; const nq=normQ(o.q); if(o.type==='search' && nq===lastLogged.q && Date.now()-lastLogged.t<4000) return; lastLogged={q:nq,t:Date.now()}; usage.queries.push({q:o.q.slice(0,160),n:nq,ts:new Date().toISOString(),type:o.type,ents:o.ents||0,hit:!!o.hit,tk:toks(o.q).length}); if(o.type==='ask') usage.asks=(usage.asks||0)+1; dirty=true; }
+function scores(u){ const qs=(u.queries||[]); const n=qs.length; if(!n) return {simple:0,complex:0,redund:0,n:0}; const seen=new Set(); let red=0,simple=0,cx=0; qs.forEach((q,i)=>{ if(q.type==='search'||q.type==='ask'){ if(seen.has(q.n)&&q.n) red++; seen.add(q.n); } let c=0; if((q.tk||0)>=5) c++; if((q.ents||0)>=2) c++; if(q.type==='ask') c++; const prev=qs[i-1]; if(prev && prev.n && q.n && (new Date(q.ts)-new Date(prev.ts))<120000 && q.n!==prev.n) c++; cx+=c/4; if(q.type==='search'&&q.hit&&(q.tk||0)<=3) simple++; }); const searches=qs.filter(q=>q.type!=='open').length||1; return {simple:Math.round(100*simple/searches),complex:Math.round(100*cx/n),redund:Math.round(100*red/searches),n}; }
+function fmtMs(ms){ const m=Math.round((ms||0)/60000); return m<60? m+' min' : Math.floor(m/60)+' h '+(m%60)+' min'; }
+function renderActivity(){ const box=$('#actlist'); if(!db){ box.innerHTML='<div class="empty">Activity needs the shared store, which is not available in this view.</div>'; return; } box.innerHTML='<div class="empty">Loading…</div>'; const q = state.admin ? db.collection('usage').get() : db.doc('usage/'+userKey(state.user)).get().then(s=>({docs:s.exists?[s]:[]})); q.then(snap=>{ const rows=snap.docs.map(d=>d.data()).filter(Boolean).sort((a,b)=>(b.totalMs||0)-(a.totalMs||0)); if(!rows.length){ box.innerHTML='<div class="empty">No activity recorded yet.</div>'; return; } const isMe=u=>userKey(u.name||'')===userKey(state.user); box.innerHTML = (state.admin?'':'<p class="lede" style="font-size:.85rem">You see your own activity. Mike sees everyone\'s.</p>') + rows.map(u=>{ const s=scores(u); const recent=(u.queries||[]).slice(-12).reverse(); return `<div class="ucard"><h3>${esc(u.name||'?')}${isMe(u)?' <span class="tag k-definition">you</span>':''}</h3><div class="sub">${u.sessions||0} sessions · last seen ${u.lastSeen?new Date(u.lastSeen).toLocaleString():'—'}</div>
+<div class="stats"><div class="stat"><div class="k">Total time</div><div class="v">${fmtMs(u.totalMs)}</div><div class="s">active time on the atlas</div></div><div class="stat"><div class="k">Queries</div><div class="v">${s.n}</div><div class="s">${u.asks||0} asked the ledger</div></div><div class="stat"><div class="k">Simple information</div><div class="v">${s.simple}<span style="font-size:.9rem">%</span></div><div class="s">short searches answered directly</div><div class="meter"><i style="width:${s.simple}%"></i></div></div><div class="stat"><div class="k">Complexity</div><div class="v">${s.complex}<span style="font-size:.9rem">%</span></div><div class="s">long, multi-entity, chained or asked</div><div class="meter"><i style="width:${s.complex}%"></i></div></div><div class="stat"><div class="k">Redundancy</div><div class="v">${s.redund}<span style="font-size:.9rem">%</span></div><div class="s">repeated searches — not retained</div><div class="meter"><i style="width:${s.redund}%;background:var(--amber)"></i></div></div></div>
+<div class="qlist">${recent.map(q=>`<div><span>${new Date(q.ts).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</span>${q.type==='ask'?'💬 ':q.type==='open'?'↗ ':''}${esc(q.q)}</div>`).join('')}</div></div>`; }).join(''); }).catch(()=>{ box.innerHTML='<div class="empty">Could not load activity.</div>'; }); }
+
+/* ---------- requests (additional findings per user request) ---------- */
+let reqUnsub=null, requests=[];
+function watchRequests(){ if(!db) return; reqUnsub = db.collection('requests').orderBy('ts','desc').limit(300).onSnapshot(snap=>{ requests=snap.docs.map(d=>Object.assign({id:d.id},d.data())); const open=requests.filter(r=>r.status==='open').length; $('#reqcount').hidden=!open; $('#reqcount').textContent=open; state.extraFacts = requests.filter(r=>r.status==='answered'&&r.finding).map(r=>({id:'R-'+r.id.slice(0,6), kind:'additional', date:(r.answeredAt||r.ts||'').slice(0,10), text:r.finding, ents:mentions(r.query+' '+r.finding).slice(0,8), src:'Added by Mike, per '+(r.user||'?')+"'s request of "+fmtDate((r.ts||'').slice(0,10)), tab:'Additional findings', by:r.user})); buildDocs(); indexFactsOf(); if(state.mode==='requests') renderRequests(); if(state.mode==='search') { renderSearch(); renderHint(); } }, e=>{ $('#reqstatus').textContent='Live updates unavailable ('+e.code+').'; }); }
+function renderRequests(){ const box=$('#reqlist'); if(!db){ box.innerHTML='<div class="empty">The request log needs the shared store, which is not available in this view.</div>'; return; } if(!requests.length){ box.innerHTML='<div class="empty">Nothing requested yet. When a search or a question comes up empty, it lands here.</div>'; return; } box.innerHTML=requests.map(r=>`<div class="req ${r.status}" data-id="${r.id}"><div><div class="who">${esc(r.user||'?')} · ${r.ts?new Date(r.ts).toLocaleString():''} · ${r.kind==='chat'?'from a question':r.kind==='auto'?'from an empty search':'manual'}</div><div class="q">${esc(r.query)}</div>${r.specifics?`<div class="sp">${esc(r.specifics)}</div>`:''}${r.status==='answered'?`<div class="ans"><b>Additional finding · ${r.answeredBy||'Mike'} · ${r.answeredAt?new Date(r.answeredAt).toLocaleDateString():''}</b>${esc(r.finding||'')}</div>`:(state.admin?`<textarea data-ans="${r.id}" placeholder="Write the finding here — it becomes searchable the moment you save it."></textarea>`:'')}</div><div class="side"><span class="tag ${r.status==='open'?'k-open':'k-decision'}">${r.status}</span>${state.admin&&r.status==='open'?`<button type="button" class="sbtn pri" data-answer="${r.id}">Save finding</button>`:''}${state.admin?`<button type="button" class="sbtn" data-del="${r.id}">Delete</button>`:''}</div></div>`).join(''); }
+async function addRequest(o){ if(!db){ toast('Request log unavailable in this view.'); return; } const doc={ts:new Date().toISOString(),user:state.user||'?',kind:o.kind||'manual',query:(o.query||'').slice(0,400),specifics:(o.specifics||'').slice(0,2000),status:'open',finding:'',answeredAt:'',answeredBy:''}; try{ await db.collection('requests').add(doc); toast('Logged for Mike · '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})); }catch(e){ toast(e.code==='quota_exceeded'?'Request log is full — tell Mike.':'Could not log the request ('+e.code+').'); } }
+$('#reqlist').addEventListener('click',async ev=>{ const a=ev.target.closest('[data-answer]'); const d=ev.target.closest('[data-del]'); if(a){ const id=a.dataset.answer; const t=$(`[data-ans="${id}"]`); const v=(t&&t.value.trim())||''; if(!v){ toast('Write the finding first.'); return; } try{ await db.doc('requests/'+id).update({status:'answered',finding:v,answeredAt:new Date().toISOString(),answeredBy:state.user}); toast('Saved. It is now searchable.'); }catch(e){ toast('Could not save ('+e.code+').'); } } if(d){ if(confirm('Delete this request?')){ try{ await db.doc('requests/'+d.dataset.del).delete(); }catch(e){ toast('Could not delete.'); } } } });
+function openReqModal(q,sp){ $('#reqq').value=q||state.q||''; $('#reqsp').value=sp||''; $('#reqmodal').hidden=false; setTimeout(()=>$(q?'#reqsp':'#reqq').focus(),50); }
+$('#newreq').onclick=()=>openReqModal('');
+$('#reqcancel').onclick=()=>$('#reqmodal').hidden=true;
+$('#reqsend').onclick=async()=>{ const q=$('#reqq').value.trim(); if(!q){ toast('Say what you were looking for.'); return; } await addRequest({kind:'manual',query:q,specifics:$('#reqsp').value.trim()}); $('#reqmodal').hidden=true; };
+
+/* ---------- chat ---------- */
+const RULES = `You are the search assistant inside "SupplyNow Atlas", an index built from Mike Cook's Contract Facts Ledger (as of ${KB.asOf}). The people using you are SupplyNow and WSC teammates (Alvin, Glen, Camille, Aaron, Matt, Ed, Mel). Your job: answer from the CONTEXT below and connect the dots between entities.
+Rules:
+1. Use ONLY the CONTEXT. Never invent balances, dates, clauses or names. If the context does not contain the answer, say plainly "Not on record in the ledger" and do not guess.
+2. Be concise and plain-spoken: lead with the answer, then the 2–5 facts that support it, each ending with its fact id in square brackets like [F61]. Use dates and dollar figures exactly as written.
+3. When useful, name who owns the item and what is still open.
+4. If anything the user needs is missing from the context, finish with one final line exactly in this form: REQUEST: <one sentence describing what is missing and why it matters>. Omit that line entirely when nothing is missing.
+5. No preamble, no apologies, no markdown headers. Short bullets with "- " are fine.`;
+let turns=[], chatCtl=null;
+function buildContext(question){ const r=search(question,''); const ents=new Set(r.mentioned); r.entities.slice(0,5).forEach(x=>ents.add(x.id)); const facts=new Map(); r.facts.slice(0,22).forEach(x=>facts.set(x.id,x.ref)); ents.forEach(id=>(factsOf[id]||[]).slice(0,10).forEach(f=>{ if(facts.size<40) facts.set(f.id,f); })); let ctx='ENTITIES:\n'; ents.forEach(id=>{ const e=E[id]; if(!e) return; ctx+=`- ${e.name} (${typeName(e)}${e.role?', '+e.role:''}): ${e.blurb}\n`; const rl=(relsOf[id]||[]).slice(0,14).map(x=>x.dir==='out'?`${e.name} ${x.label} ${E[x.other].name}${x.note?' ('+x.note+')':''}`:`${E[x.other].name} ${x.label} ${e.name}${x.note?' ('+x.note+')':''}`); if(rl.length) ctx+='  connections: '+rl.join('; ')+'\n'; }); ctx+='\nFACTS:\n'; facts.forEach(f=>{ ctx+=`[${f.id}] (${KIND_LABEL[f.kind]||f.kind}${f.date?', '+fmtDate(f.date):''}) ${f.text} — source: ${f.src||''}\n`; }); if(ctx.length>42000) ctx=ctx.slice(0,42000)+'\n…(truncated)'; return {ctx, ents:[...ents], nfacts:facts.size}; }
+function addMsg(cls, html){ const el=document.createElement('div'); el.className='msg '+cls; el.innerHTML=html; $('#chatlog').appendChild(el); $('#chatlog').scrollTop=1e9; return el; }
+function renderAnswer(text){ let t=esc(text).replace(/\n?REQUEST:.*$/s,'').trim(); t=t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>'); t=t.replace(/\[(F\d+|R-[a-z0-9]+)\]/gi,(m,id)=>`<button type="button" class="cite" data-fact="${id}">${id}</button>`); return t; }
+async function ask(question){ if(!question) return; if(!sample){ addMsg('sys','Asking is not available in this view. Search still works, and you can log a request for Mike.'); return; } openDrawer(); addMsg('u',esc(question)); const {ctx,ents,nfacts}=buildContext(question); logQuery({q:question,type:'ask',ents:ents.length,hit:nfacts>0}); const el=addMsg('a think','Thinking…'); $('#chatstop').hidden=false; $('#chatsend').disabled=true; chatCtl=new AbortController(); const userTurn=`CONTEXT (${nfacts} facts):\n${ctx}\n\nQUESTION: ${question}`; const input=[{role:'user',content:RULES}].concat(turns.slice(-6),[{role:'user',content:userTurn}]); try{ const res=await sample(input,{cache:false,signal:chatCtl.signal,onText:({text})=>{ el.classList.remove('think'); el.innerHTML=renderAnswer(text); $('#chatlog').scrollTop=1e9; }}); el.classList.remove('think'); el.innerHTML=renderAnswer(res.text); turns.push({role:'user',content:'QUESTION: '+question},{role:'assistant',content:res.text}); const m=res.text.match(/REQUEST:\s*(.+)$/m); if(m){ const what=m[1].trim(); addMsg('req',`Not fully on record. <b>Logged for Mike:</b> ${esc(what)}`); addRequest({kind:'chat',query:question,specifics:what}); } if(res.truncated) addMsg('sys','Answer was cut short — ask for less at a time.'); }catch(e){ if(e.code==='cancelled'){ el.innerHTML=renderAnswer(e.text||'')||'Stopped.'; } else if(e.code==='not_granted'||e.code==='sampling_disabled'||e.code==='not_declared'||e.code==='capability_disabled'){ el.remove(); sample=null; addMsg('sys','Asking is not available for your account here. Search still works, and you can log a request for Mike.'); } else if(e.code==='rate_limited'){ el.innerHTML=renderAnswer(e.text||'')||'Too many questions at once — wait a moment and try again.'; } else { el.innerHTML=(e.text?renderAnswer(e.text)+'<br>':'')+'<i>Interrupted ('+esc(e.code||'error')+'). Try again.</i>'; } } finally{ $('#chatstop').hidden=true; $('#chatsend').disabled=false; chatCtl=null; } }
+function openDrawer(){ $('#drawer').classList.add('open'); if(!$('#chatlog').children.length){ addMsg('sys','Ask in plain language. Answers cite the fact they came from — click a fact id to open it. If the ledger does not have it, the gap is logged for Mike automatically.'); $('#chatsug').innerHTML=['What do we owe PA and what is disputed?','Who owns truck 1008 and why does it matter?','What is still open on Sigma?','Which contracts block a transfer to the NewCo?','What decided the #1007 recommendation?'].map(s=>`<button type="button" class="chip" data-askq="${esc(s)}">${esc(s)}</button>`).join(''); } setTimeout(()=>$('#chatin').focus(),120); }
+$('#fab').onclick=()=>openDrawer(); $('#chatclose').onclick=()=>$('#drawer').classList.remove('open'); $('#chatstop').onclick=()=>chatCtl&&chatCtl.abort();
+$('#chatform').addEventListener('submit',ev=>{ ev.preventDefault(); const v=$('#chatin').value.trim(); if(!v||chatCtl) return; $('#chatin').value=''; ask(v); });
+$('#chatin').addEventListener('keydown',ev=>{ if(ev.key==='Enter'&&!ev.shiftKey){ ev.preventDefault(); $('#chatform').requestSubmit(); } });
+$('#chatlog').addEventListener('click',ev=>{ const c=ev.target.closest('[data-fact]'); if(c){ const id=c.dataset.fact; setMode('search'); selectFact(id); } });
+
+/* ---------- voice ---------- */
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+function wireMic(btn, onText){ if(!SR){ btn.hidden=true; return; } btn.hidden=false; let rec=null; btn.onclick=()=>{ if(rec){ rec.stop(); return; } rec=new SR(); rec.lang='en-US'; rec.interimResults=true; let final=''; rec.onresult=ev=>{ let s=''; for(const r of ev.results){ s+=r[0].transcript; if(r.isFinal) final=s; } onText(s,false); }; rec.onend=()=>{ btn.classList.remove('rec'); rec=null; onText(final||$('#q').value,true); }; rec.onerror=()=>{ btn.classList.remove('rec'); rec=null; toast('Could not hear that — check the microphone permission.'); }; btn.classList.add('rec'); try{ rec.start(); }catch(e){ btn.classList.remove('rec'); rec=null; } }; }
+wireMic($('#mic'),(t,done)=>{ $('#q').value=t; if(done){ setQuery(t); if(looksLikeQuestion(t)) toast('Sounds like a question — press Ask for a full answer.'); } else { setQuery(t,true); } });
+wireMic($('#chatmic'),(t,done)=>{ $('#chatin').value=t; if(done&&t.trim()) $('#chatform').requestSubmit(); });
+function looksLikeQuestion(t){ return /\?$/.test(t.trim()) || /^(who|what|when|where|why|how|does|do|is|are|can|should|which|explain|tell me|summar)/i.test(t.trim()); }
+
+/* ---------- modes & events ---------- */
+function setMode(m){ state.mode=m; $$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m)); ['search','map','requests','activity'].forEach(v=>$('#view-'+v).hidden=v!==m); $('#hero').hidden=!(m==='search'||m==='map'); if(m==='map'){ buildMap(); $('#q').placeholder='Jump to a name on the map…'; } else { $('#q').placeholder='Search anything — a name, a truck number, a dollar amount, a question…'; } if(m==='requests') renderRequests(); if(m==='activity') renderActivity(); if(m==='search'){ renderSearch(); renderDetail(); } try{ history.replaceState(null,'','#'+m); }catch(e){} }
+$('#modes').addEventListener('click',ev=>{ const b=ev.target.closest('[data-mode]'); if(b) setMode(b.dataset.mode); });
+let debounce=null;
+function setQuery(q, interim){ state.q=q; $('#q').value=q; if(state.mode==='map'){ const r=search(q,''); const top=r.mentioned[0]||(r.entities[0]&&r.entities[0].id); if(top&&!interim) mapSelect(top); return; } renderSearch(); if(!interim && q.trim()){ const r=lastSearch; logQuery({q,type:'search',ents:r?r.mentioned.length+Math.min(r.entities.length,3):0,hit:!!(r&&r.strong)}); if(r && !r.entities.length && !r.facts.length && !r.rels.length && toks(q).length>=1){ pendingEmpty=q; } } }
+let pendingEmpty=null;
+$('#q').addEventListener('input',ev=>{ clearTimeout(debounce); const v=ev.target.value; debounce=setTimeout(()=>setQuery(v),160); });
+$('#q').addEventListener('keydown',ev=>{ if(ev.key==='Enter'){ clearTimeout(debounce); setQuery(ev.target.value); if(looksLikeQuestion(ev.target.value)) ask(ev.target.value.trim()); } if(ev.key==='Escape'){ setQuery(''); } });
+$('#askbtn').onclick=()=>{ const v=$('#q').value.trim(); if(v) ask(v); else openDrawer(); };
+document.addEventListener('click',ev=>{
+  const t=ev.target;
+  const kind=t.closest('[data-kind]'); if(kind){ state.kind = (kind.dataset.kind===state.kind && kind.closest('#hint')) ? '' : kind.dataset.kind; if(kind.closest('#results')) {} renderHint(); renderSearch(); return; }
+  const st=t.closest('[data-start]'); if(st){ const s=STARTERS[+st.dataset.start]; if(s.kind){ state.kind=s.kind; state.q=''; $('#q').value=''; renderHint(); renderSearch(); } else { const list=KB.entities.filter(e=>s.bucket?e.bucket===s.bucket:e.type===s.type); $('#results').innerHTML=`<div class="section-h">${s.t} <span class="n">${list.length}</span></div><div class="ent-row">${list.map(e=>entCard(e)).join('')}</div>`; logQuery({q:'browse: '+s.t,type:'search',ents:list.length,hit:true}); } window.scrollTo({top:0}); return; }
+  const qq=t.closest('[data-q]'); if(qq){ setMode('search'); setQuery(qq.dataset.q); return; }
+  const aq=t.closest('[data-askq]'); if(aq){ ask(aq.dataset.askq); return; }
+  const rq=t.closest('[data-req]'); if(rq){ openReqModal(rq.dataset.req,''); return; }
+  const mp=t.closest('[data-map]'); if(mp){ setMode('map'); setTimeout(()=>mapSelect(mp.dataset.map),50); return; }
+  if(t.closest('[data-close]')){ state.sel=null; state.selFact=null; renderDetail(); $$('.ent.sel,.fact.sel').forEach(x=>x.classList.remove('sel')); return; }
+  const fc=t.closest('[data-fact]'); if(fc && !t.closest('[data-ent]')){ if(fc.classList.contains('cite')) return; selectFact(fc.dataset.fact); return; }
+  const en=t.closest('[data-ent]'); if(en){ selectEntity(en.dataset.ent, !!t.closest('#mapdetail')); return; }
+  if(t.id==='askthis'){ ask(state.q); return; }
+  if(t.id==='reqthis'){ openReqModal(state.q,'Search returned nothing.'); return; }
+});
+window.addEventListener('resize',()=>{ if(mapBuilt){ const w=$('#mapwrap'); d3.select('#mapsvg').attr('viewBox',`0 0 ${w.clientWidth} ${w.clientHeight}`); } });
+
+/* ---------- boot ---------- */
+function boot(snap){
+  $('#asof').textContent='as of '+KB.asOf;
+  buildDocs(); indexFactsOf(); renderHint();
+  const saved=ls('atlas.user'); if(saved) setUser(saved); else askWho();
+  const m=(location.hash||'').replace('#',''); setMode(['search','map','requests','activity'].includes(m)?m:'search');
+  if(snap && snap.q){ setQuery(snap.q); } else renderSearch();
+  if(snap && snap.sel) selectEntity(snap.sel);
+  if(window.claude && window.claude.use){
+    claude.use('db').then(d=>{ db=d; if(db){ watchRequests(); if(state.user) startUsage(); } else { $('#reqstatus').textContent='Shared store unavailable in this view.'; } }).catch(()=>{});
+    claude.use('sample').then(s=>{ sample=s; if(!s){ $('#chatsub').textContent='Search works here; asking needs the Claude viewer.'; } }).catch(()=>{});
+  } else { $('#chatsub').textContent='Search works here; asking and the request log need the Claude viewer.'; }
+  try{ window.claude?.hot?.snapshot?.(()=>({q:state.q, sel:state.sel, mode:state.mode})); }catch(e){}
+}
+if(window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data);
+</script>
