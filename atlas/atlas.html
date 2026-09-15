@@ -568,7 +568,7 @@ function renderDetail(){
   if(state.selFact){
     const f=F[state.selFact]||state.extraFacts.find(x=>x.id===state.selFact);
     if(f){ d.hidden=false; d.classList.add('open');
-      d.innerHTML = `<button type="button" class="close" data-close aria-label="Close">'+XICON+'</button>
+      d.innerHTML = `<button type="button" class="close" data-close aria-label="Close">${XICON}</button>
         <div class="k" style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding-right:36px"><span class="tag k-${f.kind}">${KIND_LABEL[f.kind]||f.kind}</span>${f.date?`<span class="mono" style="font-size:.79rem;color:var(--ink-3)">${fmtDate(f.date)}</span>`:''}</div>
         <h2 style="margin-top:8px">${esc(f.tab||'Fact')}</h2><div class="role mono" style="font-size:.74rem">${esc(f.id)}</div>
         <p class="blurb">${esc(f.text)}</p>
@@ -583,7 +583,7 @@ function renderDetail(){
   const rels=(relsOf[e.id]||[]);
   const facts=(factsOf[e.id]||[]).slice().sort((a,b)=>KIND_ORDER.indexOf(a.kind)-KIND_ORDER.indexOf(b.kind)||(b.date||'').localeCompare(a.date||''));
   const byKind={}; facts.forEach(f=>(byKind[f.kind] ||= []).push(f));
-  d.innerHTML = `<button type="button" class="close" data-close aria-label="Close">'+XICON+'</button>
+  d.innerHTML = `<button type="button" class="close" data-close aria-label="Close">${XICON}</button>
     <div class="hd" style="--tc:var(--t-${k})"><span class="tico">${icon(k)}</span><div><div class="role" style="color:var(--t-${k});font-weight:600;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">${esc(typeName(e))}</div><h2>${esc(e.name)}</h2>${e.role?`<div class="role">${esc(e.role)}</div>`:''}</div></div>
     ${(e.aliases||[]).length?`<div class="role mono" style="font-size:.73rem;margin-top:8px">also: ${esc(e.aliases.slice(0,6).join(' · '))}</div>`:''}
     <p class="blurb">${esc(e.blurb)}</p>
@@ -635,6 +635,7 @@ function mapSelect(id){
   const keep=state.sel; state.sel=id; state.selFact=null; const d=$('#detail'); renderDetail(); $('#mapdetail').innerHTML=d.innerHTML; $('#mapdetail').scrollTop=0; d.hidden=true; state.sel=keep||id;
 }
 /* ===================== sign-in, store, conversation, requests, activity ===================== */
+const OWNER_EMAIL='mike@supplynow.org';   let pendingMode=null;   // the only address that sees Requests and Activity
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){ return null; } }
 function lsDel(k){ try{ localStorage.removeItem(k);}catch(e){} }
 function toast(t){ const el=document.createElement('div'); el.className='toast'; el.textContent=t; document.body.appendChild(el); setTimeout(()=>el.remove(),2800); }
@@ -644,17 +645,22 @@ function nameFromEmail(email){ const l=String(email).split('@')[0].replace(/[._-
 function initials(name){ const p=name.split(' ').filter(Boolean); return ((p[0]||'?')[0]+(p[1]?p[1][0]:'')).toUpperCase(); }
 function setUser(email){
   state.email=email.trim().toLowerCase(); state.user=nameFromEmail(state.email);
-  const local=state.email.split('@')[0];
-  state.admin = local==='mike' || local==='mike.cook' || local==='mikecook';
+  state.admin = state.email===OWNER_EMAIL;
   ls('atlas.email',state.email);
+  applyRole();
   $('#userchip').hidden=false; $('#uinit').textContent=initials(state.user); $('#uname').textContent=state.user;
-  $('#whomodal').hidden=true; startUsage(); renderGreeting();
+  $('#whomodal').hidden=true; startUsage(); maybeWatch(); renderGreeting();
+  if(pendingMode && (state.admin || !['requests','activity'].includes(pendingMode))){ const m=pendingMode; pendingMode=null; setMode(m); }
+}
+function applyRole(){
+  $$('#modes button').forEach(b=>{ const m=b.dataset.mode; if(m==='requests'||m==='activity') b.hidden=!state.admin; });
+  if(!state.admin){ $('#reqcount').hidden=true; if(state.mode==='requests'||state.mode==='activity') setMode('search'); }
 }
 function askWho(){ $('#whoemail').value=state.email||''; $('#whoerr').textContent=''; $('#whomodal').hidden=false; setTimeout(()=>$('#whoemail').focus(),80); }
 $('#whook').onclick=()=>{ const v=$('#whoemail').value.trim(); if(!EMAIL_RE.test(v)){ $('#whoerr').textContent='That does not look like an email address.'; $('#whoemail').focus(); return; } setUser(v); };
 $('#whoemail').addEventListener('keydown',ev=>{ if(ev.key==='Enter') $('#whook').click(); });
 $('#whoemail').addEventListener('input',()=>{ $('#whoerr').textContent=''; });
-$('#switchuser').onclick=()=>{ flushUsage(true); lsDel('atlas.email'); state.user=null; state.email=null; state.admin=false; $('#userchip').hidden=true; askWho(); };
+$('#switchuser').onclick=()=>{ flushUsage(true); lsDel('atlas.email'); state.user=null; state.email=null; state.admin=false; dbWatched=false; $('#userchip').hidden=true; applyRole(); askWho(); };
 
 /* ---------- usage & scores ---------- */
 let activeMs=0, lastTick=Date.now(), dirty=false, usageLoaded=false;
@@ -683,12 +689,13 @@ function scores(u){ const qs=(u.queries||[]); const n=qs.length; if(!n) return {
 function fmtMs(ms){ const m=Math.round((ms||0)/60000); return m<60? m+' min' : Math.floor(m/60)+' h '+(m%60)+' min'; }
 function renderActivity(){
   const box=$('#actlist');
+  if(!state.admin){ box.innerHTML='<div class="empty">Activity is only visible to '+esc(OWNER_EMAIL)+'.</div>'; return; }
   if(!db){ box.innerHTML='<div class="empty">Activity needs the shared store, which is not available in this view.</div>'; return; }
   box.innerHTML='<div class="empty">Loading…</div>';
-  const q = state.admin ? db.collection('usage').get() : db.doc('usage/'+userKey(state.email)).get().then(s=>({docs:s.exists?[s]:[]}));
+  const q = db.collection('usage').get();
   q.then(snap=>{ const rows=snap.docs.map(d=>d.data()).filter(Boolean).sort((a,b)=>(b.totalMs||0)-(a.totalMs||0));
     if(!rows.length){ box.innerHTML='<div class="empty">No activity recorded yet.</div>'; return; }
-    box.innerHTML = (state.admin?'':'<p class="lede" style="font-size:.87rem">You see your own activity. Mike sees everyone\'s.</p>') + rows.map(u=>{
+    box.innerHTML = rows.map(u=>{
       const s=scores(u); const recent=(u.queries||[]).slice(-12).reverse(); const me=(u.email||'')===state.email;
       return `<div class="ucard"><h3><span class="av" style="width:26px;height:26px;font-size:.7rem">${esc(initials(u.name||'?'))}</span>${esc(u.name||'?')}${me?' <span class="tag k-definition">you</span>':''}</h3>
         <div class="sub">${esc(u.email||'')} · ${u.sessions||0} sessions · last seen ${u.lastSeen?new Date(u.lastSeen).toLocaleString():'—'}</div>
@@ -702,20 +709,33 @@ function renderActivity(){
   }).catch(()=>{ box.innerHTML='<div class="empty">Could not load activity.</div>'; });
 }
 
-/* ---------- requests ---------- */
-let requests=[];
-function watchRequests(){ if(!db) return;
-  db.collection('requests').orderBy('ts','desc').limit(300).onSnapshot(snap=>{
-    requests=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
-    const open=requests.filter(r=>r.status==='open').length; $('#reqcount').hidden=!open; $('#reqcount').textContent=open;
-    state.extraFacts = requests.filter(r=>r.status==='answered'&&r.finding).map(r=>({id:'R-'+r.id.slice(0,6), kind:'additional', date:(r.answeredAt||r.ts||'').slice(0,10), text:r.finding, ents:mentions(r.query+' '+r.finding).slice(0,8), src:'Added by Mike, per '+(r.user||'?')+"'s request of "+fmtDate((r.ts||'').slice(0,10)), tab:'Additional findings', by:r.user}));
+/* ---------- requests (queue: owner only) and findings (answers: everyone) ---------- */
+let requests=[], dbWatched=false, unsubFind=null, unsubQueue=null;
+function maybeWatch(){ if(db && state.email && !dbWatched){ dbWatched=true; watchDb(); } }
+function watchDb(){
+  if(!db) return;
+  if(unsubFind){ unsubFind(); unsubFind=null; }
+  if(unsubQueue){ unsubQueue(); unsubQueue=null; }
+  // Everyone reads published answers. Only the owner can write them (db rule).
+  unsubFind = db.collection('findings').orderBy('answeredAt','desc').limit(200).onSnapshot(snap=>{
+    state.extraFacts = snap.docs.map(d=>{ const r=d.data()||{};
+      const src = 'Added by '+(r.answeredBy||'Mike')+(r.askedBy?', per '+r.askedBy+"'s request":'')+(r.askedAt?' of '+fmtDate(String(r.askedAt).slice(0,10)):'');
+      return {id:'R-'+d.id.slice(0,6), kind:'additional', date:String(r.answeredAt||'').slice(0,10), text:String(r.text||''), ents:mentions(String(r.query||'')+' '+String(r.text||'')).slice(0,8), src, tab:'Additional findings', by:r.askedBy}; });
     buildDocs(); indexFactsOf();
-    if(state.mode==='requests') renderRequests();
     if(state.mode==='search'){ renderSearch(); renderHint(); }
+  }, ()=>{});
+  // The queue itself is only ever fetched by the owner's browser.
+  if(!state.admin) return;
+  unsubQueue = db.collection('requests').orderBy('ts','desc').limit(300).onSnapshot(snap=>{
+    requests=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+    const open=requests.filter(r=>r.status==='open').length;
+    $('#reqcount').hidden=!open; $('#reqcount').textContent=open;
+    if(state.mode==='requests') renderRequests();
   }, e=>{ $('#reqstatus').textContent='Live updates unavailable ('+e.code+').'; });
 }
 function renderRequests(){
   const box=$('#reqlist');
+  if(!state.admin){ box.innerHTML='<div class="empty">This queue is only visible to '+esc(OWNER_EMAIL)+'.</div>'; return; }
   if(!db){ box.innerHTML='<div class="empty">The request log needs the shared store, which is not available in this view.</div>'; return; }
   if(!requests.length){ box.innerHTML='<div class="empty">Nothing requested yet. When a search or a question comes up empty, it lands here.</div>'; return; }
   box.innerHTML=requests.map(r=>`<div class="req ${r.status}" data-id="${r.id}">
@@ -733,7 +753,12 @@ async function addRequest(o){
 $('#reqlist').addEventListener('click',async ev=>{
   const a=ev.target.closest('[data-answer]'); const d=ev.target.closest('[data-del]');
   if(a){ const id=a.dataset.answer; const t=$(`[data-ans="${id}"]`); const v=(t&&t.value.trim())||''; if(!v){ toast('Write the finding first.'); return; }
-    try{ await db.doc('requests/'+id).update({status:'answered',finding:v,answeredAt:new Date().toISOString(),answeredBy:state.user}); toast('Saved. It is searchable now.'); }catch(e){ toast('Could not save ('+e.code+').'); } }
+    const r=requests.find(x=>x.id===id)||{}; const at=new Date().toISOString();
+    try{
+      const ref=await db.collection('findings').add({text:v, query:r.query||'', askedBy:r.user||'', askedAt:r.ts||'', answeredAt:at, answeredBy:state.user});
+      await db.doc('requests/'+id).update({status:'answered',finding:v,answeredAt:at,answeredBy:state.user,findingId:ref.id});
+      toast('Published. It is searchable for everyone now.');
+    }catch(e){ toast('Could not save ('+e.code+').'); } }
   if(d){ if(confirm('Delete this request?')){ try{ await db.doc('requests/'+d.dataset.del).delete(); }catch(e){ toast('Could not delete.'); } } }
 });
 function openReqModal(q,sp){ $('#reqq').value=q||state.q||''; $('#reqsp').value=sp||''; $('#reqmodal').hidden=false; setTimeout(()=>$(q?'#reqsp':'#reqq').focus(),60); }
@@ -851,6 +876,7 @@ function looksLikeQuestion(t){ return /\?\s*$/.test(t) || /^(who|what|when|where
 
 /* ---------- modes & events ---------- */
 function setMode(m){
+  if((m==='requests'||m==='activity') && !state.admin) m='search';
   state.mode=m;
   $$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
   ['search','ask','map','requests','activity'].forEach(v=>$('#view-'+v).hidden=v!==m);
@@ -902,12 +928,15 @@ function boot(snap){
   $('#asof').textContent='as of '+KB.asOf;
   measureTop(); if(window.ResizeObserver){ new ResizeObserver(measureTop).observe(document.querySelector('.top')); } window.addEventListener('resize',measureTop); autoGrow();
   buildDocs(); indexFactsOf(); renderHint();
+  applyRole();
   const saved=ls('atlas.email'); if(saved && EMAIL_RE.test(saved)) setUser(saved); else askWho();
-  const m=(location.hash||'').replace('#',''); setMode(['search','ask','map','requests','activity'].includes(m)?m:'search');
+  const m=(location.hash||'').replace('#','');
+  if(['requests','activity'].includes(m) && !state.admin) pendingMode=m;
+  setMode(['search','ask','map','requests','activity'].includes(m)?m:'search');
   if(snap && snap.q) setQuery(snap.q); else if(state.mode==='search') renderSearch();
   if(snap && snap.sel) selectEntity(snap.sel);
   if(window.claude && window.claude.use){
-    claude.use('db').then(d=>{ db=d; if(db){ watchRequests(); if(state.email) startUsage(); } else { $('#reqstatus').textContent='Shared store unavailable in this view.'; } }).catch(()=>{});
+    claude.use('db').then(d=>{ db=d; if(db){ if(state.email) startUsage(); maybeWatch(); } else { $('#reqstatus').textContent='Shared store unavailable in this view.'; } }).catch(()=>{});
     claude.use('sample').then(s=>{ sample=s; if(!s) $('#cfoot').textContent='Search works here; asking needs the Claude viewer.'; }).catch(()=>{});
   } else { $('#cfoot').textContent='Search works here; asking and the request log need the Claude viewer.'; }
   try{ window.claude?.hot?.snapshot?.(()=>({q:state.q, sel:state.sel, mode:state.mode})); }catch(e){}
