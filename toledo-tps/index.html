@@ -1,0 +1,429 @@
+<title>Toledo 12-School Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+
+<style>
+:root{
+  --ink:#0F1922;
+  --ink-2:#3A4A56;
+  --ink-3:#6B7C88;
+  --ground:#F4F7F8;
+  --card:#FFFFFF;
+  --line:#DCE4E8;
+  --line-2:#EDF2F4;
+  --cold:#0E7C8A;
+  --cold-soft:#E2F1F3;
+  --amber:#B26A00;
+  --amber-soft:#FBEFDC;
+  --green:#16714B;
+  --green-soft:#E0F0E8;
+  --red:#A32E1F;
+  --red-soft:#FBE7E3;
+  --shadow:0 1px 2px rgba(15,25,34,.06),0 8px 24px -12px rgba(15,25,34,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E8EFF2; --ink-2:#A8BAC4; --ink-3:#788B96;
+    --ground:#0C141A; --card:#141F27; --line:#25343E; --line-2:#1C2A33;
+    --cold:#5CC5D2; --cold-soft:#123039;
+    --amber:#E8A54A; --amber-soft:#33270F;
+    --green:#5FC493; --green-soft:#102C21;
+    --red:#F08A75; --red-soft:#3A1712;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8EFF2; --ink-2:#A8BAC4; --ink-3:#788B96;
+  --ground:#0C141A; --card:#141F27; --line:#25343E; --line-2:#1C2A33;
+  --cold:#5CC5D2; --cold-soft:#123039;
+  --amber:#E8A54A; --amber-soft:#33270F;
+  --green:#5FC493; --green-soft:#102C21;
+  --red:#F08A75; --red-soft:#3A1712;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;
+  font-size:16px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px;display:flex;flex-direction:column;gap:34px}
+
+h1,h2,h3{font-family:"Barlow Condensed",ui-sans-serif,system-ui,sans-serif;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:clamp(2.4rem,5.4vw,3.7rem);line-height:.98;font-weight:700;text-transform:uppercase}
+h2{font-size:1.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.045em}
+h3{font-size:1.18rem;font-weight:600}
+p{margin:0}
+a{color:var(--cold)}
+
+.eyebrow{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:.7rem;letter-spacing:.17em;text-transform:uppercase;color:var(--cold);font-weight:600;
+}
+.sub{color:var(--ink-2);max-width:66ch}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+/* ---- masthead ---- */
+.mast{
+  background:var(--card);border:1px solid var(--line);border-radius:3px;
+  padding:30px 30px 26px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:14px;
+  border-top:4px solid var(--cold);
+}
+.mast-meta{
+  display:flex;flex-wrap:wrap;gap:10px 26px;padding-top:14px;border-top:1px solid var(--line-2);
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;
+}
+.mast-meta b{color:var(--ink);font-weight:600}
+
+/* ---- metric strip ---- */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.met{background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:3px}
+.met .k{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.met .v{font-family:"Barlow Condensed",sans-serif;font-size:2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.met .u{font-size:.76rem;color:var(--ink-3)}
+.met.hi .v{color:var(--cold)}
+
+/* ---- callout ---- */
+.flags{display:flex;flex-direction:column;gap:12px}
+.flag{
+  background:var(--card);border:1px solid var(--line);border-left:3px solid var(--amber);
+  border-radius:3px;padding:15px 18px;display:flex;flex-direction:column;gap:5px;
+}
+.flag.ok{border-left-color:var(--green)}
+.flag-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tag{
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.62rem;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;padding:3px 7px;border-radius:2px;
+  background:var(--amber-soft);color:var(--amber);white-space:nowrap;
+}
+.tag.g{background:var(--green-soft);color:var(--green)}
+.tag.c{background:var(--cold-soft);color:var(--cold)}
+.tag.r{background:var(--red-soft);color:var(--red)}
+.flag.danger{border-left-color:var(--red)}
+.flag p{font-size:.93rem;color:var(--ink-2)}
+
+/* ---- tables ---- */
+.tbox{border:1px solid var(--line);border-radius:3px;overflow-x:auto;background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.87rem}
+thead th{
+  background:var(--ground);text-align:left;padding:10px 12px;
+  font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.63rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:600;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--line-2);vertical-align:baseline}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.seq{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--cold);font-weight:600}
+td.sch{font-weight:600}
+td.addr{color:var(--ink-2);font-size:.83rem}
+tr.tot td{border-top:2px solid var(--line);border-bottom:none;font-weight:700;background:var(--ground)}
+tr.leg td{background:var(--cold-soft)}
+.zip{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.76rem;color:var(--ink-3)}
+
+/* ---- timeline ---- */
+.tl{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);margin-left:8px;padding-left:0}
+.tl-i{display:grid;grid-template-columns:74px 1fr;gap:14px;padding:9px 0 9px 18px;position:relative}
+.tl-i::before{content:"";position:absolute;left:-6px;top:16px;width:10px;height:10px;border-radius:50%;background:var(--line);border:2px solid var(--ground)}
+.tl-i.key::before{background:var(--cold)}
+.tl-t{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.86rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--cold)}
+.tl-d strong{display:block;font-size:.95rem}
+.tl-d span{font-size:.86rem;color:var(--ink-2)}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:18px 20px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow)}
+.card h3{color:var(--ink)}
+.card p,.card li{font-size:.9rem;color:var(--ink-2)}
+.card ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:5px}
+
+section{display:flex;flex-direction:column;gap:14px}
+.sec-h{display:flex;flex-direction:column;gap:5px;border-bottom:1px solid var(--line);padding-bottom:9px}
+
+.verdict{
+  background:var(--cold-soft);border:1px solid var(--cold);border-radius:3px;padding:20px 22px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.verdict h3{color:var(--cold);font-size:1.3rem;text-transform:uppercase;letter-spacing:.03em}
+.verdict p{color:var(--ink);font-size:.95rem}
+
+footer{border-top:1px solid var(--line);padding-top:18px;color:var(--ink-3);font-size:.8rem;display:flex;flex-direction:column;gap:7px}
+footer code{font-family:"IBM Plex Mono",monospace;font-size:.76rem}
+@media (max-width:560px){.tl-i{grid-template-columns:60px 1fr;gap:10px}}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <span class="eyebrow">SupplyNow 3PL &middot; SNAP Gourmet Foods &middot; Run Scope</span>
+    <h1>Toledo Public Schools<br>12-School Frozen Drop</h1>
+    <p class="sub">Wednesday <b>8/26/26</b> delivery of the <b>Thursday 8/27</b> meal to twelve TPS buildings. Single-day, single-week engagement handed to SupplyNow after Atlantic Food Distributors confirmed it has no driver capacity to serve these schools before lunch on 8/27. Revised against the 8/21 SNAP&nbsp;&times;&nbsp;SupplyNow call &mdash; case counts and palletization are settled.</p>
+    <div class="mast-meta">
+      <span>RUN <b>TPS-0826</b></span>
+      <span>ORIGIN <b>SNAP, 2275 E 55th St, Cleveland</b></span>
+      <span>STOPS <b>14 &mdash; 12 TPS + 2 SLA</b></span>
+      <span>TEMP <b>Refrigerated (thawed)</b></span>
+      <span>SERVICE <b>20 min/stop</b></span>
+      <span>OPS CONTACT <b>Edward Williams</b></span>
+      <span>REVISED <b>2026-08-21, post-call</b></span>
+    </div>
+  </header>
+
+  <div class="strip">
+    <div class="met hi"><span class="k">Total miles</span><span class="v">257.8</span><span class="u">round trip from E 55th</span></div>
+    <div class="met"><span class="k">Drive time</span><span class="v">5.64</span><span class="u">hours &middot; 338 min</span></div>
+    <div class="met"><span class="k">Stop time</span><span class="v">4.67</span><span class="u">hours &middot; 14 &times; 20 min</span></div>
+    <div class="met hi"><span class="k">Total travel</span><span class="v">11.31</span><span class="u">hours, yard to yard</span></div>
+    <div class="met"><span class="k">Est. meals</span><span class="v">3,230</span><span class="u">75% of 4,308 enrolled &middot; unconfirmed</span></div>
+    <div class="met hi"><span class="k">Load</span><span class="v">308</span><span class="u">cases &middot; 13 pallets incl. SLA</span></div>
+  </div>
+
+  <section>
+    <div class="sec-h">
+      <h2>What the 8/21 call changed</h2>
+      <p class="sub">The first version of this scope was built from the email thread alone. The call replaced modeled assumptions with counted numbers, and two of the earlier conclusions were wrong.</p>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead><tr><th>Item</th><th>First pass</th><th>Corrected</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="lab">Total cases</td><td>118 modeled</td><td><b>294 counted</b></td><td>Sean, live off his sheet</td></tr>
+          <tr><td class="lab">Cases per school</td><td>9.8 avg</td><td><b>24.5 avg</b></td><td>294 &divide; 12</td></tr>
+          <tr class="hl"><td class="lab">Pallets</td><td>~1.5 equiv, mixed</td><td><b>12 &mdash; one per school</b></td><td>Agreed on the call</td></tr>
+          <tr class="hl"><td class="lab">Truck utilization</td><td>7% of cube</td><td><b>12 of 12 floor positions</b></td><td>Pallet method changed the constraint</td></tr>
+          <tr><td class="lab">Temperature</td><td>Frozen</td><td><b>Refrigerated &mdash; thawing</b></td><td>Sean, on Tuesday-night load</td></tr>
+          <tr><td class="lab">Menu</td><td>Meal 1 or Meal 2 unknown</td><td><b>Hamburger meal, no milk</b></td><td>Sean and Ed</td></tr>
+          <tr><td class="lab">Origin</td><td>Unconfirmed</td><td><b>SNAP E 55th</b></td><td>Ed saw pallets staged there</td></tr>
+          <tr><td class="lab">Load-out</td><td>Wed 03:36</td><td><b>Tuesday night option added</b></td><td>Agreed on the call</td></tr>
+          <tr><td class="lab">Ops contact</td><td>&mdash;</td><td><b>Edward Williams</b></td><td>Agreed on the call</td></tr>
+          <tr><td class="lab">Meal estimate</td><td>3,230 @ 75%</td><td><b>Holds</b></td><td>294 cases &rarr; 44 servings/case, ordinary K&ndash;12 pack</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Open items before this run can be dispatched</h2>
+      <p class="sub">Three things are unresolved in the thread as of 8/21. The first two block the load build; the third is a routing decision you can make yourself.</p>
+    </div>
+    <div class="flags">
+      <div class="flag">
+        <div class="flag-h"><span class="tag">Blocking</span><h3>Per-school breakdown of the 294 still sits with BJ</h3></div>
+        <p>Sean has the total but not the split &mdash; on the call he read &ldquo;294&rdquo; off his sheet and estimated &ldquo;25 or more&rdquo; each. Twelve pallets get built and labeled to a specific school, so the split <em>is</em> the load plan. Get it from Bobbi-Jo on Monday; the case column below is an enrollment-weighted stand-in until then.</p>
+      </div>
+      <div class="flag">
+        <div class="flag-h"><span class="tag">Blocking</span><h3>Eleven schools or twelve</h3></div>
+        <p>Morgan's 8/14 list names <b>12</b> buildings and Ed said 12 on the call &mdash; but Sean and Mike both said &ldquo;11 schools&rdquo; while sizing the load, and the meeting notes recorded 11. If 294 was counted against 11, a twelfth pallet is unbuilt and unaccounted for. Reconcile the count against the address list before staging.</p>
+      </div>
+      <div class="flag ok">
+        <div class="flag-h"><span class="tag g">On the truck</span><h3>SLA Toledo rides along on 8/26</h3></div>
+        <p>The two SLA stops go on the same truck. Their 14 cases build to a <b class="mono">24 in</b> pallet, and the school pallets run <b class="mono">33 in</b> &mdash; so the SLA pallet double-stacks on any of them at 57 in, well under the 90 in interior. Combining costs <b class="mono">2.7 miles</b> and <b class="mono">56 minutes</b> against sending a second vehicle 230 miles for two drops.</p>
+      </div>
+      <div class="flag ok">
+        <div class="flag-h"><span class="tag g">Resolved</span><h3>Origin, meal, temperature and pallet method</h3></div>
+        <p>Product stages at <b>SNAP E 55th</b>, not Atlantic &mdash; Ed saw the wrapped and marked pallets on the floor there. Mike can <b>load Tuesday night</b> and hold overnight in the reefer. It is the <b>hamburger meal</b>, no milk and no secondary items. Product rides <b>refrigerated, not frozen</b>, because it is pulled to thaw for Thursday service. <b>One school per pallet</b>, labeled and wrapped by SNAP. Edward Williams is the standing operations contact.</p>
+      </div>
+      <div class="flag ok">
+        <div class="flag-h"><span class="tag g">Resolved</span><h3>Same-day-serve pressure and addresses</h3></div>
+        <p>Morgan's original worry was that two truckloads could not be delivered before lunch on 8/27; the Wednesday-for-Thursday move removes it. Sean owes street addresses, but all twelve are resolved with ZIPs in the manifest below &mdash; send him this instead of waiting on it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Stop-by-stop manifest</h2>
+      <p class="sub">Sequenced west &rarr; central &rarr; south, following the natural 43615 / 43607 / 43609 / 43614 cluster order. Arrival clock assumes the first delivery lands at 7:00 AM when kitchens open.</p>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead>
+          <tr>
+            <th class="n">#</th><th class="n">TPS</th><th>School</th><th>Address</th><th class="n">ZIP</th>
+            <th class="n">Enroll</th><th class="n">Est&nbsp;meals</th><th class="n">Cases</th>
+            <th class="n">Leg&nbsp;mi</th><th class="n">Cum&nbsp;mi</th><th class="n">Drive</th><th class="n">Arrive</th><th class="n">Depart</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="leg"><td colspan="8"><b>Transit out</b> &mdash; SNAP E 55th, Cleveland &rarr; west Toledo via I-80/90 W</td><td class="n">122.1</td><td class="n">122.1</td><td class="n">2h24</td><td class="n">&mdash;</td><td class="n">&mdash;</td></tr>
+          <tr><td class="seq n">1</td><td class="n">124</td><td class="sch">Hawkins Elementary</td><td class="addr">5550 W Bancroft St</td><td class="n zip">43615</td><td class="n">310</td><td class="n">232</td><td class="n">21</td><td class="n">122.1</td><td class="n">122.1</td><td class="n">144</td><td class="n">7:00</td><td class="n">7:20</td></tr>
+          <tr><td class="seq n">2</td><td class="n">213</td><td class="sch">McTigue Elementary</td><td class="addr">5555 Nebraska Ave</td><td class="n zip">43615</td><td class="n">552</td><td class="n">414</td><td class="n">38</td><td class="n">2.1</td><td class="n">124.2</td><td class="n">6</td><td class="n">7:26</td><td class="n">7:46</td></tr>
+          <tr><td class="seq n">3</td><td class="n">149</td><td class="sch">Reynolds Elementary</td><td class="addr">5000 Norwich Rd</td><td class="n zip">43615</td><td class="n">336</td><td class="n">252</td><td class="n">23</td><td class="n">1.1</td><td class="n">125.3</td><td class="n">3</td><td class="n">7:49</td><td class="n">8:09</td></tr>
+          <tr><td class="seq n">4</td><td class="n">127</td><td class="sch">Keyser Elementary</td><td class="addr">3900 Hill Ave</td><td class="n zip">43607</td><td class="n">306</td><td class="n">230</td><td class="n">21</td><td class="n">2.5</td><td class="n">127.8</td><td class="n">7</td><td class="n">8:16</td><td class="n">8:36</td></tr>
+          <tr><td class="seq n">5</td><td class="n">117</td><td class="sch">Escuela SMART Academy</td><td class="addr">617 Western Ave</td><td class="n zip">43609</td><td class="n">287</td><td class="n">215</td><td class="n">20</td><td class="n">3.7</td><td class="n">131.5</td><td class="n">10</td><td class="n">8:46</td><td class="n">9:06</td></tr>
+          <tr><td class="seq n">6</td><td class="n">136</td><td class="sch">Marshall STEMM Academy</td><td class="addr">415 Colburn St</td><td class="n zip">43609</td><td class="n">366</td><td class="n">274</td><td class="n">25</td><td class="n">0.4</td><td class="n">131.9</td><td class="n">1</td><td class="n">9:07</td><td class="n">9:27</td></tr>
+          <tr><td class="seq n">7</td><td class="n">100</td><td class="sch">Arlington Elementary</td><td class="addr">707 Woodsdale Ave</td><td class="n zip">43609</td><td class="n">305</td><td class="n">229</td><td class="n">21</td><td class="n">0.8</td><td class="n">132.7</td><td class="n">2</td><td class="n">9:29</td><td class="n">9:49</td></tr>
+          <tr><td class="seq n">8</td><td class="n">104</td><td class="sch">Burroughs Elementary</td><td class="addr">2420 South Ave</td><td class="n zip">43609</td><td class="n">310</td><td class="n">232</td><td class="n">21</td><td class="n">0.4</td><td class="n">133.1</td><td class="n">1</td><td class="n">9:50</td><td class="n">10:10</td></tr>
+          <tr><td class="seq n">9</td><td class="n">182</td><td class="sch">Glendale-Feilbach Elementary</td><td class="addr">2317 Cass Rd</td><td class="n zip">43614</td><td class="n">335</td><td class="n">251</td><td class="n">23</td><td class="n">1.2</td><td class="n">134.3</td><td class="n">3</td><td class="n">10:13</td><td class="n">10:33</td></tr>
+          <tr><td class="seq n">10</td><td class="n">102</td><td class="sch">Beverly Elementary</td><td class="addr">3548 S Detroit Ave</td><td class="n zip">43614</td><td class="n">557</td><td class="n">418</td><td class="n">37</td><td class="n">0.8</td><td class="n">135.1</td><td class="n">2</td><td class="n">10:35</td><td class="n">10:55</td></tr>
+          <tr><td class="seq n">11</td><td class="n">217</td><td class="sch">Byrnedale Elementary</td><td class="addr">3635 Glendale Ave</td><td class="n zip">43614</td><td class="n">316</td><td class="n">237</td><td class="n">22</td><td class="n">0.3</td><td class="n">135.4</td><td class="n">1</td><td class="n">10:56</td><td class="n">11:16</td></tr>
+          <tr><td class="seq n">12</td><td class="n">113</td><td class="sch">Crossgates Preschool Center</td><td class="addr">3901 Shadylawn Dr</td><td class="n zip">43614</td><td class="n">328</td><td class="n">246</td><td class="n">22</td><td class="n">1.0</td><td class="n">136.4</td><td class="n">3</td><td class="n">11:19</td><td class="n">11:39</td></tr>
+          <tr class="leg"><td colspan="8"><b>Transit back</b> &mdash; Toledo &rarr; SNAP E 55th, Cleveland</td><td class="n">118.7</td><td class="n">255.1</td><td class="n">2h20</td><td class="n">13:59</td><td class="n">&mdash;</td></tr>
+          <tr class="tot">
+            <td class="n"></td><td class="n"></td><td>TOTALS &mdash; 12 stops</td><td></td><td></td>
+            <td class="n">4,308</td><td class="n">3,230</td><td class="n">294</td>
+            <td class="n">255.1</td><td class="n">255.1</td><td class="n">323</td><td class="n"></td><td class="n"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Time and distance breakdown</h2>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <h3>Miles</h3>
+        <ul>
+          <li>Transit out, Cleveland &rarr; Toledo: <b class="mono">122.1 mi</b></li>
+          <li>Stop-to-stop inside Toledo (11 legs): <b class="mono">14.3 mi</b></li>
+          <li>Transit back, Toledo &rarr; Cleveland: <b class="mono">118.7 mi</b></li>
+          <li><b>Total: <span class="mono">257.8 mi</span></b> &mdash; every mile on the clock</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Time</h3>
+        <ul>
+          <li>Drive time: <b class="mono">5.38 h</b> (323 min)</li>
+          <li>Stop time: <b class="mono">4.00 h</b> (12 &times; 20 min)</li>
+          <li>Total travel: <b class="mono">9.38 h</b></li>
+          <li>Plus load-out at E 55th: <b class="mono">~1.0 h</b></li>
+          <li><b>Driver day: <span class="mono">10.4 h</span></b> &mdash; inside the 14-hour window with room</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Driver day &mdash; Wednesday 8/26</h2>
+      <p class="sub">Anchored to your real 8/29/25 Toledo run, which departed E 55th at 4:00 and was on the ground in Toledo at 6:14.</p>
+    </div>
+    <div class="tl">
+      <div class="tl-i key"><span class="tl-t">Tue&nbsp;PM</span><div class="tl-d"><strong>Optional &mdash; stage Tuesday night</strong><span>Load 12 labeled pallets and hold refrigerated in the reefer overnight; turns Wednesday’s 03:36 start into a 04:36 roll-out</span></div></div>
+      <div class="tl-i key"><span class="tl-t">03:36</span><div class="tl-d"><strong>Yard, SNAP E 55th</strong><span>Pre-trip, reefer set to refrigerated (not frozen &mdash; product is thawing for Thursday), load 12 school pallets in reverse stop order</span></div></div>
+      <div class="tl-i key"><span class="tl-t">04:36</span><div class="tl-d"><strong>Wheels out</strong><span>I-90 W &rarr; I-80/90 Ohio Turnpike W &rarr; I-475 N. 122.1 mi</span></div></div>
+      <div class="tl-i"><span class="tl-t">07:00</span><div class="tl-d"><strong>Stop 1 &mdash; Hawkins Elementary</strong><span>Kitchens open; begin the 43615 cluster</span></div></div>
+      <div class="tl-i"><span class="tl-t">08:16</span><div class="tl-d"><strong>Stop 4 &mdash; Keyser Elementary</strong><span>Cross into 43607, then run the 43609 core</span></div></div>
+      <div class="tl-i"><span class="tl-t">10:13</span><div class="tl-d"><strong>Stop 9 &mdash; Glendale-Feilbach</strong><span>Into the 43614 south cluster, four stops within 2.1 mi</span></div></div>
+      <div class="tl-i key"><span class="tl-t">11:39</span><div class="tl-d"><strong>Stop 12 complete &mdash; Crossgates</strong><span>All 12 POD photos captured, empty and rolling</span></div></div>
+      <div class="tl-i key"><span class="tl-t">13:59</span><div class="tl-d"><strong>Back at SNAP E 55th</strong><span>10.4-hour driver day including load-out</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Case count and pallet build</h2>
+      <p class="sub">Superseded by the 8/21 call. Sean counted <b>294 cases</b> off his sheet live, and the team settled on <b>one school per pallet</b> &mdash; Mike asked for it as the idiot-proof build for a 12-drop day and Sean agreed outright. The meal is the hamburger meal; no milk, no secondary items.</p>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead>
+          <tr><th class="n">#</th><th class="n">TPS</th><th>School</th><th class="n">Enroll</th><th class="n">Est meals</th><th class="n">Cases</th><th class="n">Pallets</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="seq n">1</td><td class="n">124</td><td class="sch">Hawkins Elementary</td><td class="n">310</td><td class="n">232</td><td class="n">21</td><td class="n">1</td></tr>
+          <tr><td class="seq n">2</td><td class="n">213</td><td class="sch">McTigue Elementary</td><td class="n">552</td><td class="n">414</td><td class="n">38</td><td class="n">1</td></tr>
+          <tr><td class="seq n">3</td><td class="n">149</td><td class="sch">Reynolds Elementary</td><td class="n">336</td><td class="n">252</td><td class="n">23</td><td class="n">1</td></tr>
+          <tr><td class="seq n">4</td><td class="n">127</td><td class="sch">Keyser Elementary</td><td class="n">306</td><td class="n">230</td><td class="n">21</td><td class="n">1</td></tr>
+          <tr><td class="seq n">5</td><td class="n">117</td><td class="sch">Escuela SMART Academy</td><td class="n">287</td><td class="n">215</td><td class="n">20</td><td class="n">1</td></tr>
+          <tr><td class="seq n">6</td><td class="n">136</td><td class="sch">Marshall STEMM Academy</td><td class="n">366</td><td class="n">274</td><td class="n">25</td><td class="n">1</td></tr>
+          <tr><td class="seq n">7</td><td class="n">100</td><td class="sch">Arlington Elementary</td><td class="n">305</td><td class="n">229</td><td class="n">21</td><td class="n">1</td></tr>
+          <tr><td class="seq n">8</td><td class="n">104</td><td class="sch">Burroughs Elementary</td><td class="n">310</td><td class="n">232</td><td class="n">21</td><td class="n">1</td></tr>
+          <tr><td class="seq n">9</td><td class="n">182</td><td class="sch">Glendale-Feilbach Elementary</td><td class="n">335</td><td class="n">251</td><td class="n">23</td><td class="n">1</td></tr>
+          <tr><td class="seq n">10</td><td class="n">102</td><td class="sch">Beverly Elementary</td><td class="n">557</td><td class="n">418</td><td class="n">37</td><td class="n">1</td></tr>
+          <tr><td class="seq n">11</td><td class="n">217</td><td class="sch">Byrnedale Elementary</td><td class="n">316</td><td class="n">237</td><td class="n">22</td><td class="n">1</td></tr>
+          <tr><td class="seq n">12</td><td class="n">113</td><td class="sch">Crossgates Preschool Center</td><td class="n">328</td><td class="n">246</td><td class="n">22</td><td class="n">1</td></tr>
+          <tr class="tot"><td class="n"></td><td class="n"></td><td>TOTAL</td><td class="n">4,308</td><td class="n">3,230</td><td class="n">294</td><td class="n">12</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <h3>How the 294 splits</h3>
+        <p>Sean gave the total, not the per-school breakdown &mdash; &ldquo;a lot of these are 25 or more.&rdquo; The column above is an <b>enrollment-weighted allocation</b> of his 294, averaging 24.5 per school.</p>
+        <p>Treat it as a staging guide only. <b>BJ's sheet holds the real per-school counts</b>; get them Monday and this column is replaced, not adjusted.</p>
+      </div>
+      <div class="card">
+        <h3>The meal estimate survives</h3>
+        <p>294 cases against 3,230 estimated meals across a four-component hamburger meal implies <b class="mono">44 servings per case</b> &mdash; an ordinary K&ndash;12 pack.</p>
+        <p>The enrollment model and Sean's live count agree. What was wrong in the first pass was the assumed case pack, not the meal math.</p>
+      </div>
+      <div class="card">
+        <h3>Temperature changed</h3>
+        <p>The 8/14 email said frozen. On the call Sean confirmed that for a <b>Tuesday-night load</b> the product has to ride <b>refrigerated, not frozen</b> &mdash; it is pulled to thaw for Thursday service.</p>
+        <p>Set the reefer to refrigerated, not 0&deg;F, and log the pulp temp at every drop.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Equipment call</h2>
+    </div>
+    <div class="verdict">
+      <h3>One 26&prime; reefer. Thirteen pallets. It fits.</h3>
+      <p>Twelve school pallets take the twelve floor positions; the SLA pallet rides double-stacked. Ten of the twelve school pallets stand <b>33 in</b> (3 layers at 9 cases per layer) and the SLA pallet is <b>24 in</b> &mdash; stacked together that is 57 in against roughly 90 in of interior height. Only McTigue and Beverly go five layers to 51 in, and nothing needs to sit on those.</p>
+      <p>Total cube is <b>342 cu ft of about 1,600</b>, near 21%. The load was never the constraint on this run &mdash; the clock is. Fourteen POD-required drops on an 11.31-hour day is the whole risk, and that is a driver question, not a truck question.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>Scenario comparison</h2>
+      <p class="sub">Origin is settled at SNAP E 55th. What remains open is how the same-morning SLA delivery gets covered now that the school truck leaves full.</p>
+    </div>
+    <div class="tbox">
+      <table>
+        <thead><tr><th>Scenario</th><th class="n">Stops</th><th class="n">Total mi</th><th class="n">Drive</th><th class="n">Stop time</th><th class="n">Total travel</th></tr></thead>
+        <tbody>
+          <tr><td class="sch">A &mdash; TPS only, SLA on a second truck</td><td class="n">12</td><td class="n">255.1</td><td class="n">5.38 h</td><td class="n">4.00 h</td><td class="n">9.38 h</td></tr>
+          <tr><td class="sch">B &mdash; TPS + both SLA stops, one truck <span class="tag g">the plan</span></td><td class="n">14</td><td class="n">257.8</td><td class="n">5.64 h</td><td class="n">4.67 h</td><td class="n">10.31 h</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <ul>
+          <li><b>B is the plan.</b> One truck covers all fourteen stops out of SNAP E 55th.</li>
+          <li>It costs <b>2.7 extra miles and 56 minutes</b> against a second vehicle running the same road for two drops.</li>
+          <li>Sean floated consolidating SLA into one delivery a week but said &ldquo;we haven&rsquo;t got it together&rdquo; &mdash; worth pushing Monday.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h">
+      <h2>What to send back to Sean</h2>
+    </div>
+    <div class="cols">
+      <div class="card">
+        <h3>Ask BJ for, Monday</h3>
+        <ul>
+          <li>The per-school split of the 294 cases &mdash; the pallet labels depend on it</li>
+          <li>Whether 294 was counted against 11 schools or 12</li>
+          <li>Receiving contact and phone for each building</li>
+          <li>Confirmed receiving windows &mdash; this run assumes kitchens take product from 7:00</li>
+          <li>Whether TPS requires a district delivery pass or vendor check-in</li>
+          <li>Dock reality per site: stairs, back entrance, liftgate needed</li>
+          <li>Tuesday-night load-out window and who lets the truck in</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>Sources.</b> Case count, pallet method, menu, temperature, staging, ops contact and the truck-in-lieu-of-payment agreement come from the <i>SNAP (Toledo Schools) &times; SupplyNow</i> call, 8/21/26. Stop list and dates from the <i>Atlantic and TPS = Early Orders</i> thread (Morgan Geib &rarr; Sean Moorey, 8/14/26) and <i>Deliveries Next Week</i> (Sean Moorey, 8/21/26). SLA Toledo cases and dates from <i>SLA Toledo Food Delivery Schedule thru August 31st Meals</i> (8/17/26). Menu options and serving availability from Sandy Madachik, 8/13&ndash;8/14/26.</p>
+    <p><b>Method.</b> Highway circuity factor <code>1.1751</code> and <code>51 mph</code> average speed are calibrated against your actual 8/29/25 Mike Bailey run (E 55th &rarr; Toledo Prep 6th St, 113.96 road mi, 4:00 depart / 6:14 arrive). City legs use a 1.32 circuity factor at 22 mph. Service time is 20 min per stop.</p>
+    <p><b>Estimates, flagged.</b> Enrollment is published 2024&ndash;25 NCES/district data. The 294-case total and the one-school-per-pallet build are confirmed; the <i>per-school</i> case split is an enrollment-weighted allocation pending BJ&rsquo;s sheet, and meal counts remain unconfirmed by TPS. Intra-Toledo leg distances are derived from address geography rather than a live routing engine &mdash; validate the sequence in Routific before dispatch and expect city miles to run 15&ndash;20% above the 14.3 modeled.</p>
+  </footer>
+
+</div>

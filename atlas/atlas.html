@@ -1,0 +1,945 @@
+<title>SupplyNow Atlas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F2F6FB;--surface:#FFFFFF;--surface-2:#EDF3FA;--surface-3:#F7FAFD;
+  --ink:#0E1B2A;--ink-2:#41586E;--ink-3:#7D91A6;--line:#E1EAF4;--line-2:#CCDAE8;
+  --accent:#1A6FD4;--accent-2:#0FA6A6;--accent-ink:#FFFFFF;--accent-soft:#E6F0FE;--focus:#1A6FD4;
+  --k-open:#C2700B;--k-open-bg:#FEF3DF;--k-decision:#12855A;--k-decision-bg:#E0F6EC;
+  --k-number:#1A6FD4;--k-number-bg:#E6F0FE;--k-moment:#6B4BD6;--k-moment-bg:#EFEAFD;
+  --k-finding:#C43B3B;--k-finding-bg:#FDEAEA;--k-definition:#0E8A97;--k-definition-bg:#DFF5F7;
+  --k-additional:#8A5A0B;--k-additional-bg:#FBF0DA;
+  --t-person:#2a78d6;--t-vendor:#eb6834;--t-operator:#1baf7a;--t-lessor:#c98500;--t-truck:#d55181;
+  --t-contract:#6B4BD6;--t-system:#6E8194;--t-market:#0f9d58;--t-internal:#0E1B2A;--t-advisor:#5a4fcf;--t-supplier:#6E8194;
+  --sh-1:0 1px 2px rgba(14,27,42,.05);--sh-2:0 2px 6px rgba(14,27,42,.06),0 10px 24px rgba(14,27,42,.07);
+  --sh-3:0 10px 40px rgba(14,27,42,.16);
+  --wash:radial-gradient(1100px 460px at 12% -12%, #DEEBFF 0%, transparent 62%),radial-gradient(900px 400px at 88% -8%, #DBF6F2 0%, transparent 58%);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0B1219;--surface:#141E28;--surface-2:#1B2733;--surface-3:#111A23;
+  --ink:#EAF2F8;--ink-2:#AFC2D2;--ink-3:#7F94A6;--line:#25333F;--line-2:#35485A;
+  --accent:#57A8F5;--accent-2:#38CFC6;--accent-ink:#06121C;--accent-soft:#162D44;--focus:#7CBEFF;
+  --k-open:#F0B45C;--k-open-bg:#33260F;--k-decision:#63D69C;--k-decision-bg:#10301F;
+  --k-number:#7CBEFF;--k-number-bg:#132A40;--k-moment:#B3A2F5;--k-moment-bg:#241E3F;
+  --k-finding:#F28B85;--k-finding-bg:#38191A;--k-definition:#4FC9D4;--k-definition-bg:#0F2F34;
+  --k-additional:#E0B25A;--k-additional-bg:#2E2510;
+  --t-person:#4d9bf0;--t-vendor:#f07a4a;--t-operator:#2ec48c;--t-lessor:#e0a63a;--t-truck:#eb7aa4;
+  --t-contract:#a596f0;--t-system:#8fa3b5;--t-market:#4cc47a;--t-internal:#EAF2F8;--t-advisor:#9c93ef;--t-supplier:#8fa3b5;
+  --sh-1:0 1px 2px rgba(0,0,0,.4);--sh-2:0 2px 6px rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.35);
+  --sh-3:0 10px 40px rgba(0,0,0,.55);
+  --wash:radial-gradient(1100px 460px at 12% -12%, #16304C 0%, transparent 62%),radial-gradient(900px 400px at 88% -8%, #0E3A38 0%, transparent 58%);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0B1219;--surface:#141E28;--surface-2:#1B2733;--surface-3:#111A23;
+  --ink:#EAF2F8;--ink-2:#AFC2D2;--ink-3:#7F94A6;--line:#25333F;--line-2:#35485A;
+  --accent:#57A8F5;--accent-2:#38CFC6;--accent-ink:#06121C;--accent-soft:#162D44;--focus:#7CBEFF;
+  --k-open:#F0B45C;--k-open-bg:#33260F;--k-decision:#63D69C;--k-decision-bg:#10301F;
+  --k-number:#7CBEFF;--k-number-bg:#132A40;--k-moment:#B3A2F5;--k-moment-bg:#241E3F;
+  --k-finding:#F28B85;--k-finding-bg:#38191A;--k-definition:#4FC9D4;--k-definition-bg:#0F2F34;
+  --k-additional:#E0B25A;--k-additional-bg:#2E2510;
+  --t-person:#4d9bf0;--t-vendor:#f07a4a;--t-operator:#2ec48c;--t-lessor:#e0a63a;--t-truck:#eb7aa4;
+  --t-contract:#a596f0;--t-system:#8fa3b5;--t-market:#4cc47a;--t-internal:#EAF2F8;--t-advisor:#9c93ef;--t-supplier:#8fa3b5;
+  --sh-1:0 1px 2px rgba(0,0,0,.4);--sh-2:0 2px 6px rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.35);
+  --sh-3:0 10px 40px rgba(0,0,0,.55);
+  --wash:radial-gradient(1100px 460px at 12% -12%, #16304C 0%, transparent 62%),radial-gradient(900px 400px at 88% -8%, #0E3A38 0%, transparent 58%);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--wash),var(--paper);background-attachment:fixed;color:var(--ink);
+  font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.disp{font-family:"Bricolage Grotesque","Archivo",system-ui,sans-serif}
+h1,h2,h3,h4,.disp{font-family:"Bricolage Grotesque","Archivo",system-ui,sans-serif}
+:focus-visible{outline:2.5px solid var(--focus);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);
+  border-bottom:1px solid var(--line);padding:0 18px;display:flex;align-items:center;gap:14px;min-height:60px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.06rem;letter-spacing:-.015em;white-space:nowrap}
+.mark{width:26px;height:26px;border-radius:9px;background:conic-gradient(from 210deg,var(--accent),var(--accent-2),var(--t-lessor),var(--t-truck),var(--accent));
+  display:grid;place-items:center;flex:none;box-shadow:var(--sh-1)}
+.mark::after{content:"";width:9px;height:9px;border-radius:3px;background:var(--surface)}
+.brand small{font-family:"IBM Plex Mono",monospace;font-weight:400;font-size:.68rem;color:var(--ink-3);letter-spacing:.04em;margin-left:2px}
+.modes{display:flex;gap:2px;background:var(--surface-2);border-radius:12px;padding:4px;margin-left:auto}
+.modes button{border:0;background:none;padding:7px 13px;border-radius:9px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:.86rem;color:var(--ink-2);display:flex;align-items:center;gap:7px;transition:background .15s,color .15s}
+.modes button:hover{color:var(--ink)}
+.modes button.on{background:var(--surface);color:var(--accent);box-shadow:var(--sh-1)}
+.modes button .n{font-family:"IBM Plex Mono",monospace;font-size:.68rem;background:var(--k-open);color:#fff;padding:1px 6px;border-radius:99px;font-weight:600;line-height:1.4}
+.userchip{display:flex;align-items:center;gap:9px;border-radius:99px;padding:4px 12px 4px 4px;font-size:.85rem;color:var(--ink-2);background:var(--surface-2)}
+.av{width:28px;height:28px;border-radius:50%;background:linear-gradient(140deg,var(--accent),var(--accent-2));color:#fff;display:grid;place-items:center;
+  font-family:"Bricolage Grotesque",sans-serif;font-size:.78rem;font-weight:700;flex:none;letter-spacing:.02em}
+.userchip button{border:0;background:none;color:var(--accent);font-size:.76rem;padding:0;font-weight:600}
+@media(max-width:780px){.top{min-height:54px;padding:0 14px;gap:10px}.modes{margin-left:0;width:100%;order:3;margin-bottom:8px}.modes button{flex:1;justify-content:center;padding:7px 4px;font-size:.78rem}.userchip{margin-left:auto;padding:3px 10px 3px 3px}.brand small{display:none}.brand{font-size:.98rem}#uname{max-width:86px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+/* ---------- search hero ---------- */
+.hero{padding:26px 18px 6px;max-width:1240px;margin:0 auto;width:100%}
+.searchbox{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:6px 8px 6px 18px;box-shadow:var(--sh-2);transition:border-color .16s,box-shadow .16s}
+.searchbox:focus-within{border-color:var(--accent);box-shadow:var(--sh-2),0 0 0 4px var(--accent-soft)}
+.searchbox>svg{flex:none;color:var(--ink-3)}
+.searchbox input{flex:1;border:0;background:none;font-size:1.14rem;padding:12px 4px;min-width:0}
+.searchbox input:focus{outline:none}
+.searchbox input::placeholder{color:var(--ink-3)}
+.ibtn{border:0;background:var(--surface-2);color:var(--ink-2);border-radius:12px;width:42px;height:42px;display:grid;place-items:center;flex:none;transition:background .15s,color .15s}
+.ibtn:hover{background:var(--accent-soft);color:var(--accent)}
+.ibtn.rec{background:var(--k-finding-bg);color:var(--k-finding);animation:pulse 1.1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 7px var(--k-finding-bg)}}
+.pill-btn{border:0;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-radius:13px;height:42px;padding:0 17px;
+  font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:.9rem;display:flex;align-items:center;gap:7px;flex:none;white-space:nowrap;box-shadow:var(--sh-1)}
+.pill-btn:hover{filter:brightness(1.07)}
+.hint{display:flex;flex-wrap:wrap;gap:7px;margin:14px 2px 0;align-items:center;font-size:.86rem;color:var(--ink-3)}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 13px;font-size:.84rem;color:var(--ink-2);transition:border-color .14s,color .14s,background .14s}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip .n{font-family:"IBM Plex Mono",monospace;font-size:.72rem;opacity:.7;margin-left:6px}
+.chip[data-kind]::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rail,var(--line-2));display:inline-block;margin-right:7px;vertical-align:0}
+.chip[data-kind].on::before{background:#fff}
+
+/* ---------- layout ---------- */
+.main{max-width:1240px;margin:0 auto;padding:6px 18px 70px;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:20px;align-items:start}
+@media(max-width:980px){.main{grid-template-columns:1fr}
+  .detail{position:fixed;inset:auto 0 0 0;max-height:84vh;overflow:auto;z-index:30;border-radius:22px 22px 0 0;box-shadow:var(--sh-3);padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+  .detail:not(.open){display:none}}
+.col{min-width:0}
+.section-h{font-family:"Bricolage Grotesque",sans-serif;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:22px 0 10px;display:flex;align-items:center;gap:9px}
+.section-h .n{font-family:"IBM Plex Mono",monospace;letter-spacing:0;text-transform:none;background:var(--surface-2);padding:1px 7px;border-radius:99px;color:var(--ink-2)}
+
+/* entity cards */
+.ent-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:10px}
+.ent{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;text-align:left;display:flex;gap:11px;align-items:flex-start;
+  transition:border-color .14s,transform .14s,box-shadow .14s;box-shadow:var(--sh-1)}
+.ent:hover{border-color:color-mix(in srgb,var(--tc) 55%,var(--line));transform:translateY(-2px);box-shadow:var(--sh-2)}
+.ent.sel{border-color:var(--tc);box-shadow:0 0 0 3px color-mix(in srgb,var(--tc) 18%,transparent)}
+.tico{width:32px;height:32px;border-radius:10px;flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--tc) 14%,var(--surface));color:var(--tc)}
+.tico svg{width:17px;height:17px}
+.ent b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:.95rem;font-weight:600;line-height:1.3;letter-spacing:-.005em}
+.ent span{display:block;font-size:.79rem;color:var(--ink-3);margin-top:2px;line-height:1.35}
+
+/* fact cards */
+.fact{border:1px solid var(--line);border-left:3px solid var(--rail);background:var(--surface);border-radius:12px;padding:13px 15px;margin-bottom:9px;
+  text-align:left;width:100%;display:block;box-shadow:var(--sh-1);transition:border-color .14s,box-shadow .14s,transform .14s}
+.fact:hover{box-shadow:var(--sh-2);transform:translateY(-1px)}
+.fact.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--rail) 18%,transparent)}
+.fact .k{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-size:.73rem;color:var(--ink-3)}
+.fact .t{font-size:.97rem;line-height:1.55;color:var(--ink)}
+.fact .t mark{background:var(--k-open-bg);color:inherit;padding:0 2px;border-radius:3px;box-shadow:0 1px 0 var(--k-open)}
+.fact .m{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);margin-top:8px;display:flex;gap:12px;flex-wrap:wrap}
+.fact .ents{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.tag{font-family:"Bricolage Grotesque",sans-serif;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:99px;font-weight:600;white-space:nowrap}
+.k-definition{background:var(--k-definition-bg);color:var(--k-definition)}
+.k-moment{background:var(--k-moment-bg);color:var(--k-moment)}
+.k-decision{background:var(--k-decision-bg);color:var(--k-decision)}
+.k-number{background:var(--k-number-bg);color:var(--k-number)}
+.k-open{background:var(--k-open-bg);color:var(--k-open)}
+.k-finding{background:var(--k-finding-bg);color:var(--k-finding)}
+.k-additional{background:var(--k-additional-bg);color:var(--k-additional)}
+.elink{font-size:.75rem;border:0;border-radius:99px;padding:3px 10px 3px 7px;background:color-mix(in srgb,var(--tc) 13%,var(--surface));color:color-mix(in srgb,var(--tc) 72%,var(--ink));
+  display:inline-flex;align-items:center;gap:5px;font-weight:500}
+.elink i{width:7px;height:7px;border-radius:50%;display:inline-block;background:var(--tc)}
+.elink:hover{background:color-mix(in srgb,var(--tc) 24%,var(--surface))}
+.conn{display:flex;gap:11px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-bottom:7px;font-size:.93rem;width:100%;text-align:left;box-shadow:var(--sh-1);flex-wrap:wrap}
+.conn:hover{border-color:var(--accent)}
+.conn b{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.conn .lbl{color:var(--ink-2);font-size:.86rem}
+.conn .note{color:var(--ink-3);font-size:.8rem;margin-left:auto;text-align:right;max-width:46%}
+.empty{padding:40px 14px;color:var(--ink-3);text-align:center;font-size:.96rem}
+
+/* start grid */
+.start{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:11px;margin-top:8px}
+.start button{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:15px;text-align:left;box-shadow:var(--sh-1);transition:transform .14s,box-shadow .14s,border-color .14s}
+.start button:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:color-mix(in srgb,var(--tc) 55%,var(--line))}
+.start b{display:flex;align-items:center;gap:9px;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:.98rem}
+.start span{display:block;font-size:.82rem;color:var(--ink-3);margin-top:6px;line-height:1.4}
+
+/* ---------- detail panel ---------- */
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px 22px;position:sticky;top:calc(74px + env(safe-area-inset-top,0px));max-height:calc(100vh - 92px);overflow:auto;box-shadow:var(--sh-2)}
+.detail .close{position:absolute;right:12px;top:12px;border:0;background:var(--surface-2);border-radius:10px;width:32px;height:32px;color:var(--ink-2);display:grid;place-items:center}
+.detail .close:hover{background:var(--k-finding-bg);color:var(--k-finding)}
+.detail .hd{display:flex;gap:12px;align-items:flex-start;padding-right:36px}
+.detail .hd .tico{width:44px;height:44px;border-radius:14px}
+.detail .hd .tico svg{width:22px;height:22px}
+.detail h2{font-size:1.32rem;font-weight:700;margin:2px 0 3px;letter-spacing:-.018em;line-height:1.18;text-wrap:balance}
+.detail .role{color:var(--ink-3);font-size:.87rem}
+.detail .blurb{margin:12px 0 14px;font-size:.97rem;color:var(--ink-2);line-height:1.55}
+.acts{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 6px}
+.sbtn{border:1px solid var(--line);background:var(--surface-2);border-radius:11px;padding:7px 12px;font-size:.84rem;font-weight:600;color:var(--ink-2);display:inline-flex;align-items:center;gap:7px;transition:all .14s}
+.sbtn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.sbtn.pri{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:transparent;color:#fff}
+.sbtn.pri:hover{filter:brightness(1.07);color:#fff}
+.detail h3{font-family:"Bricolage Grotesque",sans-serif;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:18px 0 8px}
+.rel{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:.91rem}
+.rel:last-child{border-bottom:0}
+.rel .lbl{color:var(--ink-3);font-size:.81rem;flex:none;max-width:46%}
+.rel button{border:0;background:none;padding:0;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;color:var(--accent);text-align:left;display:inline-flex;align-items:center;gap:6px}
+.rel .note{display:block;font-size:.77rem;color:var(--ink-3)}
+.detail .fact{padding:10px 12px}
+.detail .fact .t{font-size:.9rem}
+
+/* ---------- map ---------- */
+.map{max-width:1240px;margin:0 auto;padding:6px 18px 44px;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+@media(max-width:980px){.map{grid-template-columns:1fr}}
+.mapwrap{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;position:relative;height:min(74vh,760px);min-height:430px;box-shadow:var(--sh-2)}
+.mapwrap svg{width:100%;height:100%;display:block;touch-action:none}
+.legend{position:absolute;left:12px;bottom:12px;background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:12px;padding:9px 11px;display:flex;flex-wrap:wrap;gap:5px 12px;font-size:.75rem;color:var(--ink-2);max-width:calc(100% - 24px)}
+.legend button{border:0;background:none;padding:2px 0;display:inline-flex;align-items:center;gap:6px;color:inherit}
+.legend button.off{opacity:.35;text-decoration:line-through}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.maptools{position:absolute;right:12px;top:12px;display:flex;gap:7px}
+.mapwrap .node-l{font-family:"Bricolage Grotesque",sans-serif;font-size:11.5px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none}
+.mapwrap .link{stroke:var(--line-2);stroke-opacity:.75}
+.mapwrap .link.hl{stroke:var(--accent);stroke-opacity:1;stroke-width:2.4px}
+.mapwrap .link-l{font-size:10px;fill:var(--ink-2);paint-order:stroke;stroke:var(--surface);stroke-width:3.5px;pointer-events:none;font-family:"Source Sans 3",sans-serif}
+.mapwrap .node circle{stroke:var(--surface);stroke-width:2px;cursor:pointer}
+.mapwrap .node.sel circle{stroke:var(--ink);stroke-width:3px}
+.mapwrap.focus .node:not(.hl){opacity:.16}
+.mapwrap.focus .link:not(.hl){stroke-opacity:.1}
+.mapwrap.focus .node-l:not(.hl){opacity:.13}
+.mapwrap .node.dim{opacity:.1;pointer-events:none}
+
+/* ---------- pages ---------- */
+.page{max-width:1240px;margin:0 auto;padding:18px 18px 70px}
+.page h1{font-size:1.62rem;font-weight:700;margin:6px 0 6px;letter-spacing:-.02em}
+.page .lede{color:var(--ink-2);max-width:68ch;margin:0 0 18px}
+.req{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px;margin-bottom:11px;display:grid;grid-template-columns:1fr auto;gap:10px 16px;box-shadow:var(--sh-1)}
+.req.answered{border-left:4px solid var(--k-decision)}
+.req.open{border-left:4px solid var(--k-open)}
+.req .who{font-size:.77rem;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.req .q{font-family:"Bricolage Grotesque",sans-serif;font-weight:600;margin:3px 0;font-size:1.02rem}
+.req .sp{color:var(--ink-2);font-size:.91rem;white-space:pre-wrap}
+.req .ans{margin-top:10px;padding:10px 12px;background:var(--k-decision-bg);border-radius:11px;font-size:.93rem;white-space:pre-wrap}
+.req .ans b{font-family:"Bricolage Grotesque",sans-serif;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;display:block;color:var(--k-decision);margin-bottom:4px}
+.req textarea{width:100%;min-height:74px;border:1px solid var(--line);border-radius:11px;padding:10px;background:var(--surface-3);resize:vertical;margin-top:8px}
+.req .side{display:flex;flex-direction:column;gap:7px;align-items:flex-end}
+@media(max-width:620px){.req{grid-template-columns:1fr}.req .side{flex-direction:row;align-items:center;flex-wrap:wrap}}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(164px,1fr));gap:10px;margin:10px 0 16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--sh-1)}
+.stat .k{font-family:"Bricolage Grotesque",sans-serif;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.stat .v{font-size:1.64rem;font-weight:700;letter-spacing:-.025em;margin-top:3px;font-family:"Bricolage Grotesque",sans-serif}
+.stat .s{font-size:.76rem;color:var(--ink-3);line-height:1.35}
+.meter{height:7px;background:var(--surface-2);border-radius:99px;margin-top:8px;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.meter i.warn{background:linear-gradient(90deg,var(--k-open),#E8A33D)}
+.ucard{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--sh-1)}
+.ucard h3{font-family:"Bricolage Grotesque",sans-serif;font-size:1.05rem;margin:0 0 2px;display:flex;align-items:center;gap:9px}
+.ucard .sub{font-size:.8rem;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.qlist{font-size:.85rem;color:var(--ink-2);margin-top:10px;display:grid;gap:4px}
+.qlist span{font-family:"IBM Plex Mono",monospace;font-size:.71rem;color:var(--ink-3);margin-right:9px}
+
+/* ---------- ASK: the conversation ---------- */
+.ask{max-width:860px;margin:0 auto;width:100%;height:calc(100dvh - var(--topbar,60px) - env(safe-area-inset-top,0px));min-height:360px;display:flex;flex-direction:column;padding:0 14px}
+.thread{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 4px 10px;display:flex;flex-direction:column;scroll-behavior:smooth;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px);mask-image:linear-gradient(to bottom,transparent 0,#000 14px)}
+.tinner{margin-top:auto;display:flex;flex-direction:column}
+.thread.empty .tinner{margin-bottom:auto}
+@media(prefers-reduced-motion:reduce){.thread{scroll-behavior:auto}}
+.greet{padding:10px 6px 26px;text-align:left}
+.greet h2{font-size:1.62rem;font-weight:700;letter-spacing:-.025em;margin:0 0 6px;text-wrap:balance}
+.greet h2 em{font-style:normal;background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.greet p{color:var(--ink-2);margin:0 0 18px;max-width:54ch}
+.greet .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.greet .cards button{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:13px 15px;text-align:left;box-shadow:var(--sh-1);font-size:.93rem;line-height:1.4;transition:transform .14s,box-shadow .14s,border-color .14s;display:flex;gap:10px;align-items:flex-start}
+.greet .cards button:hover{transform:translateY(-2px);box-shadow:var(--sh-2);border-color:var(--accent)}
+.greet .cards i{width:26px;height:26px;border-radius:9px;flex:none;display:grid;place-items:center;background:color-mix(in srgb,var(--tc) 15%,var(--surface));color:var(--tc)}
+.greet .cards i svg{width:14px;height:14px}
+.row{display:flex;gap:10px;align-items:flex-end;margin-top:12px}
+.row.me{flex-direction:row-reverse}
+.row+.row{margin-top:14px}
+.row.cont{margin-top:3px}
+.row.cont .av,.row.cont .avspace{visibility:hidden}
+.avspace{width:30px;flex:none}
+.row .av{width:30px;height:30px;font-size:.76rem;box-shadow:var(--sh-1);margin-bottom:19px}
+.row .av.bot{background:conic-gradient(from 210deg,var(--accent),var(--accent-2),var(--t-lessor),var(--t-truck),var(--accent));position:relative}
+.row .av.bot::after{content:"";position:absolute;inset:8px;border-radius:4px;background:var(--surface)}
+.stack{display:flex;flex-direction:column;gap:3px;max-width:min(76%,640px);min-width:0}
+.row.me .stack{align-items:flex-end}
+.bub{padding:11px 15px;border-radius:20px;font-size:.98rem;line-height:1.56;word-wrap:break-word;overflow-wrap:anywhere;animation:pop .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.bub{animation:none}}
+.bub.me{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-bottom-right-radius:7px;box-shadow:var(--sh-1)}
+.bub.bot{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:7px;box-shadow:var(--sh-1);color:var(--ink)}
+.bub.bot b{font-weight:600}
+.bub.bot ul{margin:6px 0 0;padding-left:18px}
+.bub.bot li{margin:0 0 4px}
+.bub .cite{display:inline-flex;align-items:center;gap:4px;font-family:"IBM Plex Mono",monospace;font-size:.73rem;background:var(--accent-soft);color:var(--accent);border:0;padding:1px 7px;border-radius:99px;margin:0 2px;vertical-align:1px;font-weight:500}
+.bub .cite:hover{background:var(--accent);color:#fff}
+.stamp{font-size:.7rem;color:var(--ink-3);padding:0 8px;font-family:"IBM Plex Mono",monospace}
+.note-row{align-self:center;max-width:min(88%,560px);text-align:center;font-size:.83rem;color:var(--ink-3);margin:14px 0 2px;line-height:1.45}
+.flag{align-self:flex-start;margin:6px 0 0 40px;max-width:min(80%,600px);background:var(--k-open-bg);color:var(--k-open);border-radius:14px;padding:10px 14px;font-size:.87rem;line-height:1.45;display:flex;gap:9px;align-items:flex-start;box-shadow:var(--sh-1)}
+.flag svg{flex:none;margin-top:2px}
+.flag b{font-weight:600}
+.typing{display:inline-flex;gap:4px;padding:4px 2px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink-3);animation:bounce 1.25s infinite}
+.typing i:nth-child(2){animation-delay:.16s}.typing i:nth-child(3){animation-delay:.32s}
+@keyframes bounce{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:.9;transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.typing i{animation:none;opacity:.55}}
+.composer{padding:10px 0 calc(14px + env(safe-area-inset-bottom,0px));position:sticky;bottom:0;background:linear-gradient(to bottom,transparent,var(--paper) 22%)}
+.sugrow{display:flex;gap:7px;overflow-x:auto;padding:0 2px 10px;scrollbar-width:none}
+.sugrow::-webkit-scrollbar{display:none}
+.sugrow .chip{white-space:nowrap;flex:none;background:var(--surface)}
+.cbox{display:flex;align-items:flex-end;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:24px;padding:6px 6px 6px 16px;box-shadow:var(--sh-2);transition:border-color .16s,box-shadow .16s}
+.cbox:focus-within{border-color:var(--accent);box-shadow:var(--sh-2),0 0 0 4px var(--accent-soft)}
+.cbox textarea{flex:1;border:0;background:none;resize:none;padding:10px 0;max-height:150px;min-height:26px;line-height:1.5;font-size:1rem;min-width:0}
+.cbox textarea:focus{outline:none}
+.send{width:40px;height:40px;border-radius:50%;border:0;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--sh-1);transition:transform .14s,filter .14s,opacity .14s}
+.send:hover{filter:brightness(1.08)}
+.send:disabled{opacity:.4;cursor:default}
+.send.stop{background:var(--k-finding)}
+.cmic{width:40px;height:40px;border-radius:50%;border:0;flex:none;display:grid;place-items:center;background:var(--surface-2);color:var(--ink-2)}
+.cmic:hover{background:var(--accent-soft);color:var(--accent)}
+.cmic.rec{background:var(--k-finding-bg);color:var(--k-finding);animation:pulse 1.1s infinite}
+.cfoot{text-align:center;font-size:.73rem;color:var(--ink-3);padding:8px 10px 0}
+@media(max-width:560px){.pill-btn .lbl{display:none}.pill-btn{padding:0 13px}.searchbox{padding-left:14px;gap:7px}.searchbox input{font-size:1.04rem}}
+@media(max-width:520px){.ask{padding:0 10px}.stack{max-width:86%}.flag{margin-left:0}.greet h2{font-size:1.36rem}.cbox{padding:5px 5px 5px 13px}}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;background:rgba(8,18,28,.45);backdrop-filter:blur(6px);z-index:60;display:grid;place-items:center;padding:18px}
+.modal .box{background:var(--surface);border-radius:22px;padding:28px 26px 22px;max-width:460px;width:100%;box-shadow:var(--sh-3);animation:pop .26s cubic-bezier(.2,.9,.3,1.2)}
+.modal .box.wide{max-width:560px}
+.modal .mark{width:44px;height:44px;border-radius:15px;margin-bottom:14px}
+.modal .mark::after{width:15px;height:15px;border-radius:5px}
+.modal h2{margin:0 0 6px;font-size:1.42rem;font-weight:700;letter-spacing:-.02em}
+.modal p{color:var(--ink-2);margin:0 0 18px;font-size:.95rem}
+.field{position:relative;display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;background:var(--surface-3);transition:border-color .16s,box-shadow .16s}
+.field:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.field svg{color:var(--ink-3);flex:none}
+.field input{flex:1;border:0;background:none;padding:14px 0;font-size:1rem;min-width:0}
+.field input:focus{outline:none}
+.err{color:var(--k-finding);font-size:.84rem;margin:8px 2px 0;min-height:1.2em}
+.modal .row-b{display:flex;gap:9px;margin-top:14px;justify-content:flex-end;align-items:center}
+.modal textarea{width:100%;margin-top:10px;min-height:100px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface-3);resize:vertical}
+.modal textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.fineprint{font-size:.8rem;color:var(--ink-3);margin-top:14px;line-height:1.45}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:11px 17px;border-radius:14px;font-size:.88rem;z-index:70;box-shadow:var(--sh-3);max-width:90vw;animation:pop .2s}
+.tblwrap{overflow-x:auto}
+table.simple{border-collapse:collapse;width:100%;font-size:.89rem}
+table.simple th{text-align:left;font-family:"Bricolage Grotesque",sans-serif;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding:7px 9px;border-bottom:1px solid var(--line)}
+table.simple td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+</style>
+<div class="top">
+  <div class="brand"><span class="mark"></span>SupplyNow Atlas <small id="asof"></small></div>
+  <nav class="modes" id="modes" aria-label="Views">
+    <button data-mode="search" class="on">Search</button>
+    <button data-mode="ask">Ask</button>
+    <button data-mode="map">Map</button>
+    <button data-mode="requests">Requests <span class="n" id="reqcount" hidden>0</span></button>
+    <button data-mode="activity">Activity</button>
+  </nav>
+  <div class="userchip" id="userchip" hidden><span class="av" id="uinit"></span><span id="uname"></span><button type="button" id="switchuser">sign out</button></div>
+</div>
+
+<section class="hero" id="hero">
+  <div class="searchbox">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search a name, truck, contract or amount…" aria-label="Search the atlas">
+    <button type="button" class="ibtn" id="mic" title="Speak your search" aria-label="Speak your search" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <button type="button" class="pill-btn" id="askbtn" title="Ask this as a question"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span class="lbl">Ask</span></button>
+  </div>
+  <div class="hint" id="hint"></div>
+</section>
+
+<main class="main" id="view-search">
+  <div class="col" id="results"></div>
+  <aside class="detail" id="detail" hidden></aside>
+</main>
+
+<section class="ask" id="view-ask" hidden>
+  <div class="thread empty" id="thread"><div class="tinner" id="tinner"></div></div>
+  <div class="composer">
+    <div class="sugrow" id="sugrow"></div>
+    <div class="cbox">
+      <textarea id="chatin" rows="1" placeholder="Ask anything…" aria-label="Your question"></textarea>
+      <button type="button" class="cmic" id="chatmic" title="Speak" aria-label="Speak your question" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      <button type="button" class="send" id="send" aria-label="Send"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="cfoot" id="cfoot">Answers come only from the ledger, with the fact they came from. Anything missing is logged for Mike.</div>
+  </div>
+</section>
+
+<section class="map" id="view-map" hidden>
+  <div class="mapwrap" id="mapwrap">
+    <svg id="mapsvg" role="img" aria-label="Relationship map"></svg>
+    <div class="maptools"><button type="button" class="sbtn" id="mapfit">Fit</button><button type="button" class="sbtn" id="mapclear">Clear</button></div>
+    <div class="legend" id="legend"></div>
+  </div>
+  <aside class="detail" id="mapdetail"><div class="empty">Tap any dot to see who it is, what it holds, and everything it connects to. Drag to move, scroll to zoom. The search box up top jumps to a name.</div></aside>
+</section>
+
+<section class="page" id="view-requests" hidden>
+  <h1>Additional findings per user request</h1>
+  <p class="lede">Anything the atlas could not answer lands here with who asked, when, and what they needed. Mike fills it in; the answer then shows up in search as an additional finding. No pings, no chasing.</p>
+  <div class="acts" style="margin-bottom:14px"><button type="button" class="sbtn pri" id="newreq">Request information</button> <span id="reqstatus" style="font-size:.83rem;color:var(--ink-3)"></span></div>
+  <div id="reqlist"></div>
+</section>
+
+<section class="page" id="view-activity" hidden>
+  <h1>Activity</h1>
+  <p class="lede">Time on the atlas, what was searched, and three scores per person: how simple the asks were, how complex, and how much was repeated. Repeats are the signal that something is not being retained and should be easier to find.</p>
+  <div id="actlist"></div>
+</section>
+
+<div class="modal" id="whomodal" hidden>
+  <div class="box">
+    <span class="mark"></span>
+    <h2>Welcome to the Atlas</h2>
+    <p>Enter your work email to start. It labels your requests to Mike and your own activity — nothing else, and no password.</p>
+    <div class="field">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="m3 7 9 6 9-6"/></svg>
+      <input id="whoemail" type="email" inputmode="email" autocomplete="email" spellcheck="false" placeholder="you@supplynow.org" aria-label="Your work email">
+    </div>
+    <div class="err" id="whoerr"></div>
+    <div class="row-b"><button type="button" class="sbtn pri" id="whook">Enter the atlas</button></div>
+    <div class="fineprint">Stored on this device and in the atlas's own log so Mike can answer your requests. It is never sent anywhere else.</div>
+  </div>
+</div>
+
+<div class="modal" id="reqmodal" hidden>
+  <div class="box wide">
+    <h2>Request information</h2>
+    <p>Say what you were looking for and what you need it for. It goes to Mike's queue with a timestamp; the answer comes back into the atlas.</p>
+    <div class="field"><input id="reqq" placeholder="What were you looking for?" aria-label="What were you looking for"></div>
+    <textarea id="reqsp" placeholder="Specifics — which counterparty, which number, which date, and why it matters" aria-label="Specifics"></textarea>
+    <div class="row-b"><button type="button" class="sbtn" id="reqcancel">Cancel</button><button type="button" class="sbtn pri" id="reqsend">Send to Mike</button></div>
+  </div>
+</div>
+<script src="kb.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+/* ===================== core: data, icons, search, render ===================== */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const E = Object.fromEntries(KB.entities.map(e => [e.id, e]));
+const F = Object.fromEntries(KB.facts.map(f => [f.id, f]));
+const TYPE_LABEL = {person:'Person', truck:'Truck', contract:'Contract / document', system:'System / report', market:'Market'};
+const BUCKET_LABEL = {vendor:'Vendor partner', operator:'Service partner', lessor:'Fleet owner / lessor', internal:'SupplyNow', advisor:'WSC', supplier:'Supplier / other'};
+const KIND_LABEL = {definition:'Definition', moment:'Moment', decision:'Decision', number:'Number', open:'Open item', finding:'Finding', additional:'Additional finding'};
+const KIND_ORDER = ['open','decision','number','moment','finding','definition','additional'];
+const P = {
+  person:'<circle cx="12" cy="8" r="3.4"/><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0"/>',
+  vendor:'<path d="M4 9h16v10H4z"/><path d="M3 9l1.6-4h14.8L21 9"/><path d="M9.5 19v-5h5v5"/>',
+  operator:'<path d="M2.5 6.5h10v9h-10z"/><path d="M12.5 10h4l3.2 3.2v2.3h-7.2z"/><circle cx="6.5" cy="18" r="1.7"/><circle cx="16.5" cy="18" r="1.7"/>',
+  lessor:'<circle cx="8" cy="13.5" r="3.6"/><path d="M11 11.5 20 3.8M17.4 6.4l2 2M15 8.8l1.8 1.8"/>',
+  truck:'<rect x="3.5" y="5" width="17" height="14" rx="2.2"/><path d="M3.5 9.6h17M9.2 5v4.6"/>',
+  contract:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9.2 12.5h5.6M9.2 16.3h5.6"/>',
+  system:'<rect x="3" y="4.5" width="18" height="14" rx="2.2"/><path d="M7 14.2l3-3.6 2.6 2.6L17 8.4"/>',
+  market:'<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  internal:'<path d="M3 20V9.5L12 3l9 6.5V20z"/><path d="M9.5 20v-6.2h5V20"/>',
+  advisor:'<rect x="3" y="7.5" width="18" height="12" rx="2.2"/><path d="M9 7.5V6.2A2 2 0 0 1 11 4.2h2a2 2 0 0 1 2 2v1.3"/><path d="M3 12.6h18"/>',
+  supplier:'<path d="M3.5 8.5 12 4l8.5 4.5v7L12 20l-8.5-4.5z"/><path d="M3.5 8.5 12 13l8.5-4.5M12 13v7"/>'
+};
+const XICON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const INARROW='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
+function icon(k, sz){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"${sz?` width="${sz}" height="${sz}"`:''} aria-hidden="true">${P[k]||P.supplier}</svg>`; }
+function typeKey(e){ return e.type==='org' ? (e.bucket||'supplier') : e.type; }
+function typeColor(e){ return `var(--t-${typeKey(e)})`; }
+function typeName(e){ return e.type==='org' ? (BUCKET_LABEL[e.bucket]||'Organization') : TYPE_LABEL[e.type]; }
+const state = { mode:'search', q:'', kind:'', sel:null, selFact:null, mapSel:null, user:null, email:null, admin:false, extraFacts:[] };
+let db=null, sample=null, usage=null;
+
+const relsOf = {};
+KB.rels.forEach((r,i) => { (relsOf[r[0]] ||= []).push({i, dir:'out', other:r[1], label:r[2], note:r[3]}); (relsOf[r[1]] ||= []).push({i, dir:'in', other:r[0], label:r[2], note:r[3]}); });
+const factsOf = {};
+function indexFactsOf(){ Object.keys(factsOf).forEach(k=>delete factsOf[k]); allFacts().forEach(f => f.ents.forEach(e => (factsOf[e] ||= []).push(f))); }
+function allFacts(){ return KB.facts.concat(state.extraFacts); }
+
+/* ---------- tokenizer & fuzzy ---------- */
+const STOP = new Set('the a an of to in on for and or is are was were be been do does did what who whom whose which when where why how much many our we us they it its this that these those with about from by at as into vs per me i my have has had can could should would will shall not no yes any all some there here than then so if but'.split(' '));
+function norm(s){ return String(s).toLowerCase().replace(/[’']/g,'').replace(/\$([\d,]+)/g,' $1 ').replace(/(\d),(\d)/g,'$1$2').replace(/[^\p{L}\p{N}.#]+/gu,' ').replace(/\.(?=\s|$)/g,' ').trim(); }
+function toks(s, keepStop){ return norm(s).split(/\s+/).filter(t => t && (keepStop || !STOP.has(t))).map(t => t.replace(/^#/, '')); }
+function editDist(a,b){ if(Math.abs(a.length-b.length)>2) return 3; const m=a.length,n=b.length; let prev=Array.from({length:n+1},(_,i)=>i), cur=new Array(n+1); for(let i=1;i<=m;i++){ cur[0]=i; for(let j=1;j<=n;j++){ cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) cur[j]=Math.min(cur[j],prev[j-1]); } [prev,cur]=[cur,prev]; } return prev[n]; }
+function tokScore(qt, dt){ if(qt===dt) return 3; if(dt.startsWith(qt) && qt.length>=3) return 2 + Math.min(1, qt.length/dt.length); if(qt.length>=5 && dt.length>=5){ const d=editDist(qt,dt); if(d<=1) return 1.6; if(d===2 && qt.length>=8) return 1.1; } if(/^\d+$/.test(qt) && /^\d+(\.\d+)?$/.test(dt) && dt.startsWith(qt) && qt.length>=4) return 2; return 0; }
+
+let DOCS = [];
+function buildDocs(){
+  DOCS = [];
+  KB.entities.forEach(e => { const names=[e.name].concat(e.aliases||[]); DOCS.push({kind:'entity', id:e.id, ref:e, nameToks:new Set(names.flatMap(n=>toks(n,true))), toks:new Set(toks(names.join(' ')+' '+(e.role||'')+' '+e.blurb)), text:(names.join(' ')+' '+(e.role||'')+' '+e.blurb).toLowerCase()}); });
+  allFacts().forEach(f => { const entNames = f.ents.map(id=>E[id]?E[id].name:'').join(' '); DOCS.push({kind:'fact', id:f.id, ref:f, nameToks:new Set(), toks:new Set(toks(f.text+' '+entNames+' '+(f.tab||''))), text:(f.text+' '+entNames).toLowerCase()}); });
+  KB.rels.forEach((r,i) => { const a=E[r[0]], b=E[r[1]]; const t=a.name+' '+r[2]+' '+b.name+' '+(r[3]||''); DOCS.push({kind:'rel', id:'r'+i, ref:{i, from:a, to:b, label:r[2], note:r[3]}, nameToks:new Set(), toks:new Set(toks(t)), text:t.toLowerCase()}); });
+}
+const ALIASES = KB.entities.flatMap(e => [e.name].concat(e.aliases||[]).map(a => ({a:norm(a), id:e.id}))).filter(x=>x.a.length>=2).sort((x,y)=>y.a.length-x.a.length);
+function mentions(q){ const nq=' '+norm(q)+' '; const found=[]; for(const {a,id} of ALIASES){ if(found.includes(id)) continue; if(a.length<2) continue; if(nq.includes(' '+a+' ')) found.push(id); } return found; }
+
+function search(q, kind){
+  const qt = toks(q); const raw = norm(q); const ment = mentions(q);
+  const out = {entities:[], facts:[], rels:[], mentioned:ment, strong:false};
+  if(!qt.length && !ment.length){ if(kind){ out.facts = allFacts().filter(f=>f.kind===kind).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(f=>({ref:f,score:1,id:f.id})); } return out; }
+  const need = qt.length<=2 ? qt.length : Math.ceil(qt.length*0.6);
+  DOCS.forEach(d => {
+    let s=0, matched=0, nameHit=false, phrase = raw.length>=4 && d.text.includes(raw);
+    for(const t of qt){
+      let best=0; for(const dt of d.toks){ const v=tokScore(t,dt); if(v>best){best=v; if(v>=3) break;} }
+      if(best>0){ matched++; s+=best; }
+      if(d.kind==='entity'){ let nb=0; for(const nt of d.nameToks){ const v=tokScore(t,nt); if(v>nb) nb=v; } if(nb>0){ nameHit=true; s+=nb*2.2; if(!best){ matched++; s+=nb; } } }
+    }
+    if(phrase) s+=4;
+    if(d.kind==='fact' && ment.length){ const hit = d.ref.ents.filter(e=>ment.includes(e)).length; if(hit) s += 2.5*hit; }
+    if(d.kind==='rel' && ment.length){ if(ment.includes(d.ref.from.id)||ment.includes(d.ref.to.id)) s+=2; }
+    if(d.kind==='entity' && ment.includes(d.id)) s+=8;
+    if(matched<need && !(d.kind==='fact'&&ment.length&&d.ref.ents.some(e=>ment.includes(e))) && !(d.kind==='entity'&&(ment.includes(d.id)||nameHit))) return;
+    if(s<=0) return;
+    if(kind && d.kind==='fact' && d.ref.kind!==kind) return;
+    if(d.kind==='entity') out.entities.push({ref:d.ref,score:s,id:d.id}); else if(d.kind==='fact') out.facts.push({ref:d.ref,score:s,id:d.id}); else out.rels.push({ref:d.ref,score:s,id:d.id});
+  });
+  out.entities.sort((a,b)=>b.score-a.score); out.facts.sort((a,b)=>b.score-a.score||((b.ref.date||'').localeCompare(a.ref.date||''))); out.rels.sort((a,b)=>b.score-a.score);
+  out.strong = (out.entities[0]&&out.entities[0].score>=6) || (out.facts[0]&&out.facts[0].score>=7);
+  return out;
+}
+function highlight(text, q){ const t=toks(q).filter(x=>x.length>=3); if(!t.length) return esc(text); const re=new RegExp('('+t.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','ig'); return esc(text).replace(re,'<mark>$1</mark>'); }
+
+/* ---------- cards ---------- */
+function entCard(e){ const k=typeKey(e); return `<button type="button" class="ent ${state.sel===e.id?'sel':''}" style="--tc:var(--t-${k})" data-ent="${e.id}"><span class="tico">${icon(k)}</span><span><b>${esc(e.name)}</b><span>${esc(e.role||typeName(e))}</span></span></button>`; }
+function factCard(f, q, compact){
+  const d=f.date? fmtDate(f.date):'';
+  return `<button type="button" class="fact ${state.selFact===f.id?'sel':''}" style="--rail:var(--k-${f.kind})" data-fact="${f.id}">
+    <span class="k"><span class="tag k-${f.kind}">${KIND_LABEL[f.kind]||f.kind}</span>${d?`<span class="mono">${d}</span>`:''}${f.tab?`<span>${esc(f.tab)}</span>`:''}${f.by?`<span>asked by ${esc(f.by)}</span>`:''}</span>
+    <span class="t">${highlight(f.text,q||'')}</span>
+    ${compact?'':`<span class="ents">${f.ents.slice(0,8).map(id=>E[id]?`<span class="elink" style="--tc:${typeColor(E[id])}" data-ent="${id}"><i></i>${esc(E[id].name)}</span>`:'').join('')}</span><span class="m"><span>${esc(f.id)}</span><span>${esc(f.src||'')}</span></span>`}</button>`;
+}
+function relCard(r){ return `<button type="button" class="conn" data-ent="${r.from.id}"><b style="color:${typeColor(r.from)}">${esc(r.from.name)}</b><span class="lbl">${esc(r.label)}</span><b style="color:${typeColor(r.to)}">${esc(r.to.name)}</b>${r.note?`<span class="note">${esc(r.note)}</span>`:''}</button>`; }
+function fmtDate(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-'); const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${M[+m-1]} ${+d}, ${y}`; }
+
+const STARTERS = [
+  {bucket:'vendor', k:'vendor', t:'Vendor partners', s:'The accounts we serve — Depot, SNAP, CFH, Greenlight, Coltrane'},
+  {bucket:'operator', k:'operator', t:'Service partners', s:'Who delivers — PA, Sigma, Logivex, D&D'},
+  {bucket:'lessor', k:'lessor', t:'Fleet owners & leases', s:'Who owns or finances the trucks'},
+  {type:'truck', k:'truck', t:'Trucks', s:'Every unit: condition, paper, money'},
+  {type:'contract', k:'contract', t:'Contracts & documents', s:'What each agreement actually says'},
+  {type:'person', k:'person', t:'People', s:'Who is who, and what each one owns'},
+  {kind:'open', k:'market', t:'Open items', s:'Everything still unanswered or undecided'},
+  {kind:'decision', k:'system', t:'Decisions made', s:'What was decided, when, and by whom'},
+  {kind:'moment', k:'contract', t:'Timeline', s:'Historical moments, newest first'},
+  {kind:'number', k:'system', t:'Numbers', s:'Balances, rates and budgets'},
+];
+const EXAMPLES = ['Fleet One','truck 1008','what we owe PA','Sigma net','1003 turbo','Justworks','Gretchen','Kirill balance','Coltrane','pricing go-live','Quality Supply','Indianapolis'];
+const KIND_COLOR = {open:'--k-open',decision:'--k-decision',moment:'--k-moment',number:'--k-number',finding:'--k-finding',definition:'--k-definition',additional:'--k-additional'};
+
+function renderHint(){
+  const h=$('#hint');
+  const kinds=['open','decision','moment','number','finding','definition'].map(k=>`<button type="button" class="chip ${state.kind===k?'on':''}" style="--rail:var(${KIND_COLOR[k]})" data-kind="${k}">${KIND_LABEL[k]}s<span class="n">${allFacts().filter(f=>f.kind===k).length}</span></button>`).join('');
+  h.innerHTML = `<span>Filter</span>${kinds}<button type="button" class="chip ${state.kind===''?'on':''}" data-kind="">All</button>`;
+}
+
+function renderSearch(){
+  const q=state.q.trim(); const box=$('#results');
+  if(!q && !state.kind){
+    const open = allFacts().filter(f=>f.kind==='open').length; const add=state.extraFacts.length;
+    box.innerHTML = `<div class="section-h">Start here</div>
+      <div class="start">${STARTERS.map((s,i)=>`<button type="button" data-start="${i}" style="--tc:var(--t-${s.k})"><b><span class="tico" style="width:26px;height:26px;border-radius:8px">${icon(s.k,14)}</span>${s.t}</b><span>${s.s}</span></button>`).join('')}</div>
+      <div class="section-h" style="margin-top:26px">Try a search</div><div class="hint" style="margin:0">${EXAMPLES.map(x=>`<button type="button" class="chip" data-q="${esc(x)}">${esc(x)}</button>`).join('')}</div>
+      <div class="section-h" style="margin-top:26px">What is in here</div>
+      <div class="stats"><div class="stat"><div class="k">Entities</div><div class="v">${KB.entities.length}</div><div class="s">people, companies, trucks, contracts</div></div>
+      <div class="stat"><div class="k">Facts</div><div class="v">${allFacts().length}</div><div class="s">${open} open · ${add} added by request</div></div>
+      <div class="stat"><div class="k">Connections</div><div class="v">${KB.rels.length}</div><div class="s">who owns, signs, drives, owes</div></div>
+      <div class="stat"><div class="k">As of</div><div class="v" style="font-size:1.08rem;margin-top:9px">${esc(KB.asOf)}</div><div class="s">${esc(KB.source)}</div></div></div>`;
+    return;
+  }
+  const r = search(q, state.kind); lastSearch = r;
+  if(!r.entities.length && !r.facts.length && !r.rels.length){
+    box.innerHTML = `<div class="empty">Nothing on record matches <b>${esc(q)}</b>.<div class="acts" style="justify-content:center;margin-top:16px"><button type="button" class="sbtn pri" id="askthis">Ask it as a question</button><button type="button" class="sbtn" id="reqthis">Request it from Mike</button></div></div>`;
+    return;
+  }
+  let html='';
+  if(r.entities.length){ html += `<div class="section-h">Who / what <span class="n">${r.entities.length}</span></div><div class="ent-row">${r.entities.slice(0,8).map(x=>entCard(x.ref)).join('')}</div>`; }
+  if(r.facts.length){
+    const byKind={}; r.facts.forEach(x=>(byKind[x.ref.kind] ||= []).push(x));
+    const kinds = state.kind ? [state.kind] : KIND_ORDER.filter(k=>byKind[k]);
+    html += `<div class="section-h" style="margin-top:22px">On record <span class="n">${r.facts.length}</span></div>`;
+    if(!state.kind && q && kinds.length>1){ html += `<div class="hint" style="margin:0 0 12px">${kinds.map(k=>`<button type="button" class="chip" style="--rail:var(${KIND_COLOR[k]})" data-kind="${k}">${KIND_LABEL[k]}s<span class="n">${byKind[k].length}</span></button>`).join('')}</div>`; }
+    const list = (state.kind ? r.facts : r.facts.slice(0, 40));
+    html += list.map(x=>factCard(x.ref,q)).join('');
+    if(!state.kind && r.facts.length>40) html += `<div class="empty">Showing 40 of ${r.facts.length}. Narrow it with a filter above.</div>`;
+  }
+  if(r.rels.length){ html += `<div class="section-h" style="margin-top:22px">Connections <span class="n">${r.rels.length}</span></div>${r.rels.slice(0,10).map(x=>relCard(x.ref)).join('')}`; }
+  box.innerHTML = html;
+}
+let lastSearch=null;
+
+/* ---------- detail panel ---------- */
+function renderDetail(){
+  const d=$('#detail');
+  if(state.selFact){
+    const f=F[state.selFact]||state.extraFacts.find(x=>x.id===state.selFact);
+    if(f){ d.hidden=false; d.classList.add('open');
+      d.innerHTML = `<button type="button" class="close" data-close aria-label="Close">${XICON}</button>
+        <div class="k" style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding-right:36px"><span class="tag k-${f.kind}">${KIND_LABEL[f.kind]||f.kind}</span>${f.date?`<span class="mono" style="font-size:.79rem;color:var(--ink-3)">${fmtDate(f.date)}</span>`:''}</div>
+        <h2 style="margin-top:8px">${esc(f.tab||'Fact')}</h2><div class="role mono" style="font-size:.74rem">${esc(f.id)}</div>
+        <p class="blurb">${esc(f.text)}</p>
+        <div class="mono" style="font-size:.75rem;color:var(--ink-3)">Source: ${esc(f.src||'')}</div>
+        <div class="acts"><button type="button" class="sbtn pri" data-askq="${esc('Tell me more about: '+f.text.slice(0,140))}">Ask about this</button><button type="button" class="sbtn" data-req="${esc(f.text.slice(0,120))}">Request more</button></div>
+        <h3>Involves</h3><div class="ents" style="display:flex;flex-wrap:wrap;gap:5px">${f.ents.map(id=>E[id]?`<button type="button" class="elink" style="--tc:${typeColor(E[id])}" data-ent="${id}"><i></i>${esc(E[id].name)}</button>`:'').join('')}</div>`;
+      return; }
+  }
+  if(!state.sel){ d.hidden=true; d.classList.remove('open'); return; }
+  const e=E[state.sel]; d.hidden=false; d.classList.add('open');
+  const k=typeKey(e);
+  const rels=(relsOf[e.id]||[]);
+  const facts=(factsOf[e.id]||[]).slice().sort((a,b)=>KIND_ORDER.indexOf(a.kind)-KIND_ORDER.indexOf(b.kind)||(b.date||'').localeCompare(a.date||''));
+  const byKind={}; facts.forEach(f=>(byKind[f.kind] ||= []).push(f));
+  d.innerHTML = `<button type="button" class="close" data-close aria-label="Close">${XICON}</button>
+    <div class="hd" style="--tc:var(--t-${k})"><span class="tico">${icon(k)}</span><div><div class="role" style="color:var(--t-${k});font-weight:600;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase">${esc(typeName(e))}</div><h2>${esc(e.name)}</h2>${e.role?`<div class="role">${esc(e.role)}</div>`:''}</div></div>
+    ${(e.aliases||[]).length?`<div class="role mono" style="font-size:.73rem;margin-top:8px">also: ${esc(e.aliases.slice(0,6).join(' · '))}</div>`:''}
+    <p class="blurb">${esc(e.blurb)}</p>
+    <div class="acts"><button type="button" class="sbtn pri" data-askq="${esc('What should I know about '+e.name+'? Include balances, open items and who to talk to.')}">Ask about this</button><button type="button" class="sbtn" data-map="${e.id}">Show on map</button><button type="button" class="sbtn" data-req="${esc(e.name)}">Request info</button></div>
+    <h3>Connections <span class="mono" style="letter-spacing:0">${rels.length}</span></h3>
+    ${rels.length? rels.map(r=>{ const o=E[r.other]; return `<div class="rel"><span class="lbl">${r.dir==='out'?esc(r.label):INARROW+esc(r.label)}</span><div><button type="button" data-ent="${o.id}"><span style="width:8px;height:8px;border-radius:50%;background:${typeColor(o)};display:inline-block"></span>${esc(o.name)}</button>${r.note?`<span class="note">${esc(r.note)}</span>`:''}</div></div>`; }).join('') : '<div class="empty" style="padding:10px">No connections recorded.</div>'}
+    <h3>On record <span class="mono" style="letter-spacing:0">${facts.length}</span></h3>
+    ${KIND_ORDER.filter(k2=>byKind[k2]).map(k2=>`<div class="section-h" style="margin:12px 0 7px">${KIND_LABEL[k2]}s <span class="n">${byKind[k2].length}</span></div>${byKind[k2].map(f=>factCard(f,'',true)).join('')}`).join('') || '<div class="empty" style="padding:10px">Nothing recorded yet. Use “Request info”.</div>'}`;
+  d.scrollTop=0;
+}
+function selectEntity(id, fromMap){ state.sel=id; state.selFact=null; if(state.mode==='map'||fromMap){ mapSelect(id); } else { renderDetail(); $$('.ent').forEach(b=>b.classList.toggle('sel', b.dataset.ent===id)); } logQuery({q:'opened: '+ (E[id]?E[id].name:id), type:'open', ents:1, hit:true}); }
+function selectFact(id){ state.selFact=id; state.sel=null; renderDetail(); $$('.fact').forEach(b=>b.classList.toggle('sel', b.dataset.fact===id)); }
+/* ===================== map: d3 force graph ===================== */
+let sim=null, gRoot=null, nodeSel=null, linkSel=null, labelSel=null, linkLabelSel=null, zoomB=null, mapBuilt=false, hiddenTypes=new Set();
+const NODES = KB.entities.map(e=>({id:e.id, e, deg:(relsOf[e.id]||[]).length}));
+const LINKS = KB.rels.map((r,i)=>({i, source:r[0], target:r[1], label:r[2], note:r[3]}));
+const TYPE_LEGEND = [['person','People'],['vendor','Vendor partners'],['operator','Service partners'],['lessor','Fleet owners'],['truck','Trucks'],['contract','Contracts'],['market','Markets'],['system','Systems'],['internal','SupplyNow'],['advisor','WSC'],['supplier','Suppliers']];
+function nodeR(n){ return 5 + Math.min(14, Math.sqrt(n.deg)*2.4); }
+function buildMap(){
+  if(mapBuilt) return; if(!window.d3){ $('#mapdetail').innerHTML='<div class="empty">The map library did not load. Check the connection and reopen the Map tab.</div>'; return; } mapBuilt=true;
+  const svg=d3.select('#mapsvg'); const wrap=$('#mapwrap'); const W=wrap.clientWidth||900, H=wrap.clientHeight||600;
+  svg.attr('viewBox',`0 0 ${W} ${H}`);
+  gRoot=svg.append('g');
+  zoomB=d3.zoom().scaleExtent([0.25,4]).on('zoom',ev=>gRoot.attr('transform',ev.transform)); svg.call(zoomB);
+  linkSel=gRoot.append('g').selectAll('line').data(LINKS).join('line').attr('class','link').attr('stroke-width',1.2);
+  linkLabelSel=gRoot.append('g').selectAll('text').data(LINKS).join('text').attr('class','link-l').attr('text-anchor','middle').text(d=>d.label).style('display','none');
+  nodeSel=gRoot.append('g').selectAll('g').data(NODES).join('g').attr('class','node').call(d3.drag().on('start',(ev,d)=>{if(!ev.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;}).on('drag',(ev,d)=>{d.fx=ev.x;d.fy=ev.y;}).on('end',(ev,d)=>{if(!ev.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}));
+  nodeSel.append('circle').attr('r',nodeR).attr('fill',d=>typeColor(d.e));
+  nodeSel.append('title').text(d=>d.e.name+' — '+typeName(d.e));
+  nodeSel.on('click',(ev,d)=>{ev.stopPropagation(); selectEntity(d.id,true);});
+  labelSel=gRoot.append('g').selectAll('text').data(NODES).join('text').attr('class','node-l').attr('text-anchor','middle').text(d=>d.e.name.length>28?d.e.name.slice(0,26)+'…':d.e.name).style('display',d=>d.deg>=5?null:'none');
+  svg.on('click',()=>mapSelect(null));
+  sim=d3.forceSimulation(NODES).force('link',d3.forceLink(LINKS).id(d=>d.id).distance(l=>60+Math.min(40,(l.source.deg+l.target.deg))).strength(.5)).force('charge',d3.forceManyBody().strength(d=>-120-d.deg*12)).force('center',d3.forceCenter(W/2,H/2)).force('collide',d3.forceCollide(d=>nodeR(d)+10)).force('x',d3.forceX(W/2).strength(.04)).force('y',d3.forceY(H/2).strength(.05));
+  sim.on('tick',()=>{ linkSel.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y); linkLabelSel.attr('x',d=>(d.source.x+d.target.x)/2).attr('y',d=>(d.source.y+d.target.y)/2-4); nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`); labelSel.attr('x',d=>d.x).attr('y',d=>d.y+nodeR(d)+12); });
+  $('#legend').innerHTML = TYPE_LEGEND.map(([k,l])=>`<button type="button" data-type="${k}"><i style="background:var(--t-${k})"></i>${l}</button>`).join('');
+  $('#legend').addEventListener('click',ev=>{ const b=ev.target.closest('[data-type]'); if(!b) return; const k=b.dataset.type; if(hiddenTypes.has(k)) hiddenTypes.delete(k); else hiddenTypes.add(k); b.classList.toggle('off',hiddenTypes.has(k)); applyTypeFilter(); });
+  $('#mapfit').onclick=()=>svg.transition().duration(400).call(zoomB.transform,d3.zoomIdentity);
+  $('#mapclear').onclick=()=>mapSelect(null);
+  if(state.sel) mapSelect(state.sel);
+}
+function applyTypeFilter(){ nodeSel.classed('dim',d=>hiddenTypes.has(typeKey(d.e))); linkSel.style('display',d=>(hiddenTypes.has(typeKey(d.source.e))||hiddenTypes.has(typeKey(d.target.e)))?'none':null); labelSel.style('display',d=>hiddenTypes.has(typeKey(d.e))?'none':(d.deg>=5||state.mapSel===d.id?null:'none')); }
+function mapSelect(id){
+  state.mapSel=id; if(!mapBuilt) return; const wrap=$('#mapwrap');
+  if(!id){ wrap.classList.remove('focus'); nodeSel.classed('sel',false).classed('hl',false); linkSel.classed('hl',false); labelSel.classed('hl',false).style('display',d=>d.deg>=5?null:'none'); linkLabelSel.style('display','none'); $('#mapdetail').innerHTML='<div class="empty">Click any dot to see who it is, what it holds, and everything it connects to. Drag to move, scroll to zoom. Use the search box to jump to a name.</div>'; return; }
+  const nb=new Set([id].concat((relsOf[id]||[]).map(r=>r.other)));
+  wrap.classList.add('focus'); nodeSel.classed('sel',d=>d.id===id).classed('hl',d=>nb.has(d.id)); linkSel.classed('hl',d=>d.source.id===id||d.target.id===id); labelSel.classed('hl',d=>nb.has(d.id)).style('display',d=>nb.has(d.id)?null:(d.deg>=5?null:'none')); linkLabelSel.style('display',d=>(d.source.id===id||d.target.id===id)?null:'none');
+  const n=NODES.find(x=>x.id===id); if(n&&n.x!=null){ const W=$('#mapwrap').clientWidth, H=$('#mapwrap').clientHeight; d3.select('#mapsvg').transition().duration(450).call(zoomB.transform,d3.zoomIdentity.translate(W/2-n.x*1.25,H/2-n.y*1.25).scale(1.25)); }
+  // side card reuses detail renderer
+  const keep=state.sel; state.sel=id; state.selFact=null; const d=$('#detail'); renderDetail(); $('#mapdetail').innerHTML=d.innerHTML; $('#mapdetail').scrollTop=0; d.hidden=true; state.sel=keep||id;
+}
+/* ===================== sign-in, store, conversation, requests, activity ===================== */
+const OWNER_EMAIL='mike@supplynow.org';   let pendingMode=null;   // the only address that sees Requests and Activity
+function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){ return null; } }
+function lsDel(k){ try{ localStorage.removeItem(k);}catch(e){} }
+function toast(t){ const el=document.createElement('div'); el.className='toast'; el.textContent=t; document.body.appendChild(el); setTimeout(()=>el.remove(),2800); }
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+function userKey(email){ return String(email).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,180)||'anon'; }
+function nameFromEmail(email){ const l=String(email).split('@')[0].replace(/[._-]+/g,' ').trim(); return l.split(' ').filter(Boolean).map(w=>w[0].toUpperCase()+w.slice(1)).join(' ')||email; }
+function initials(name){ const p=name.split(' ').filter(Boolean); return ((p[0]||'?')[0]+(p[1]?p[1][0]:'')).toUpperCase(); }
+function setUser(email){
+  state.email=email.trim().toLowerCase(); state.user=nameFromEmail(state.email);
+  state.admin = state.email===OWNER_EMAIL;
+  ls('atlas.email',state.email);
+  applyRole();
+  $('#userchip').hidden=false; $('#uinit').textContent=initials(state.user); $('#uname').textContent=state.user;
+  $('#whomodal').hidden=true; startUsage(); maybeWatch(); renderGreeting();
+  if(pendingMode && (state.admin || !['requests','activity'].includes(pendingMode))){ const m=pendingMode; pendingMode=null; setMode(m); }
+}
+function applyRole(){
+  $$('#modes button').forEach(b=>{ const m=b.dataset.mode; if(m==='requests'||m==='activity') b.hidden=!state.admin; });
+  if(!state.admin){ $('#reqcount').hidden=true; if(state.mode==='requests'||state.mode==='activity') setMode('search'); }
+}
+function askWho(){ $('#whoemail').value=state.email||''; $('#whoerr').textContent=''; $('#whomodal').hidden=false; setTimeout(()=>$('#whoemail').focus(),80); }
+$('#whook').onclick=()=>{ const v=$('#whoemail').value.trim(); if(!EMAIL_RE.test(v)){ $('#whoerr').textContent='That does not look like an email address.'; $('#whoemail').focus(); return; } setUser(v); };
+$('#whoemail').addEventListener('keydown',ev=>{ if(ev.key==='Enter') $('#whook').click(); });
+$('#whoemail').addEventListener('input',()=>{ $('#whoerr').textContent=''; });
+$('#switchuser').onclick=()=>{ flushUsage(true); lsDel('atlas.email'); state.user=null; state.email=null; state.admin=false; dbWatched=false; $('#userchip').hidden=true; applyRole(); askWho(); };
+
+/* ---------- usage & scores ---------- */
+let activeMs=0, lastTick=Date.now(), dirty=false, usageLoaded=false;
+function startUsage(){ usage={name:state.user,email:state.email,totalMs:0,sessions:0,queries:[],asks:0,lastSeen:''}; usageLoaded=false; activeMs=0;
+  if(db){ db.doc('usage/'+userKey(state.email)).get().then(s=>{ if(s.exists) usage=Object.assign(usage,s.data()); usage.sessions=(usage.sessions||0)+1; usage.name=state.user; usage.email=state.email; usageLoaded=true; dirty=true; flushUsage(); }).catch(()=>{usageLoaded=true;}); } }
+setInterval(()=>{ const now=Date.now(); if(document.visibilityState==='visible') activeMs+=now-lastTick; lastTick=now; },5000);
+setInterval(()=>flushUsage(),60000);
+document.addEventListener('visibilitychange',()=>{ const now=Date.now(); if(document.visibilityState==='visible'){ lastTick=now; } else { activeMs+=now-lastTick; lastTick=now; flushUsage(); } });
+window.addEventListener('pagehide',()=>flushUsage());
+function flushUsage(force){ if(!db||!usage||!state.email) return; if(!usageLoaded && !force) return; if(!dirty && activeMs<1000) return;
+  usage.totalMs=(usage.totalMs||0)+activeMs; activeMs=0; usage.lastSeen=new Date().toISOString(); usage.name=state.user; usage.email=state.email;
+  if(usage.queries.length>300) usage.queries=usage.queries.slice(-300); dirty=false;
+  db.doc('usage/'+userKey(state.email)).set(usage).catch(()=>{}); }
+function normQ(q){ return toks(q).sort().join(' '); }
+let lastLogged={q:'',t:0};
+function logQuery(o){ if(!usage) return; const nq=normQ(o.q); if(o.type==='search' && nq===lastLogged.q && Date.now()-lastLogged.t<4000) return; lastLogged={q:nq,t:Date.now()};
+  usage.queries.push({q:o.q.slice(0,160),n:nq,ts:new Date().toISOString(),type:o.type,ents:o.ents||0,hit:!!o.hit,tk:toks(o.q).length}); if(o.type==='ask') usage.asks=(usage.asks||0)+1; dirty=true; }
+function scores(u){ const qs=(u.queries||[]); const n=qs.length; if(!n) return {simple:0,complex:0,redund:0,n:0};
+  const seen=new Set(); let red=0,simple=0,cx=0;
+  qs.forEach((q,i)=>{ if(q.type==='search'||q.type==='ask'){ if(seen.has(q.n)&&q.n) red++; seen.add(q.n); }
+    let c=0; if((q.tk||0)>=5) c++; if((q.ents||0)>=2) c++; if(q.type==='ask') c++;
+    const prev=qs[i-1]; if(prev && prev.n && q.n && (new Date(q.ts)-new Date(prev.ts))<120000 && q.n!==prev.n) c++; cx+=c/4;
+    if(q.type==='search'&&q.hit&&(q.tk||0)<=3) simple++; });
+  const searches=qs.filter(q=>q.type!=='open').length||1;
+  return {simple:Math.round(100*simple/searches),complex:Math.round(100*cx/n),redund:Math.round(100*red/searches),n}; }
+function fmtMs(ms){ const m=Math.round((ms||0)/60000); return m<60? m+' min' : Math.floor(m/60)+' h '+(m%60)+' min'; }
+function renderActivity(){
+  const box=$('#actlist');
+  if(!state.admin){ box.innerHTML='<div class="empty">Activity is only visible to '+esc(OWNER_EMAIL)+'.</div>'; return; }
+  if(!db){ box.innerHTML='<div class="empty">Activity needs the shared store, which is not available in this view.</div>'; return; }
+  box.innerHTML='<div class="empty">Loading…</div>';
+  const q = db.collection('usage').get();
+  q.then(snap=>{ const rows=snap.docs.map(d=>d.data()).filter(Boolean).sort((a,b)=>(b.totalMs||0)-(a.totalMs||0));
+    if(!rows.length){ box.innerHTML='<div class="empty">No activity recorded yet.</div>'; return; }
+    box.innerHTML = rows.map(u=>{
+      const s=scores(u); const recent=(u.queries||[]).slice(-12).reverse(); const me=(u.email||'')===state.email;
+      return `<div class="ucard"><h3><span class="av" style="width:26px;height:26px;font-size:.7rem">${esc(initials(u.name||'?'))}</span>${esc(u.name||'?')}${me?' <span class="tag k-definition">you</span>':''}</h3>
+        <div class="sub">${esc(u.email||'')} · ${u.sessions||0} sessions · last seen ${u.lastSeen?new Date(u.lastSeen).toLocaleString():'—'}</div>
+        <div class="stats"><div class="stat"><div class="k">Total time</div><div class="v">${fmtMs(u.totalMs)}</div><div class="s">active time on the atlas</div></div>
+        <div class="stat"><div class="k">Queries</div><div class="v">${s.n}</div><div class="s">${u.asks||0} asked in conversation</div></div>
+        <div class="stat"><div class="k">Simple information</div><div class="v">${s.simple}<span style="font-size:.9rem">%</span></div><div class="s">short searches answered directly</div><div class="meter"><i style="width:${s.simple}%"></i></div></div>
+        <div class="stat"><div class="k">Complexity</div><div class="v">${s.complex}<span style="font-size:.9rem">%</span></div><div class="s">long, multi-entity or asked</div><div class="meter"><i style="width:${s.complex}%"></i></div></div>
+        <div class="stat"><div class="k">Redundancy</div><div class="v">${s.redund}<span style="font-size:.9rem">%</span></div><div class="s">repeated — not retained</div><div class="meter"><i class="warn" style="width:${s.redund}%"></i></div></div></div>
+        <div class="qlist">${recent.map(q=>`<div><span>${new Date(q.ts).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</span>${q.type==='ask'?'asked · ':q.type==='open'?'opened · ':''}${esc(q.q)}</div>`).join('')}</div></div>`;
+    }).join('');
+  }).catch(()=>{ box.innerHTML='<div class="empty">Could not load activity.</div>'; });
+}
+
+/* ---------- requests (queue: owner only) and findings (answers: everyone) ---------- */
+let requests=[], dbWatched=false, unsubFind=null, unsubQueue=null;
+function maybeWatch(){ if(db && state.email && !dbWatched){ dbWatched=true; watchDb(); } }
+function watchDb(){
+  if(!db) return;
+  if(unsubFind){ unsubFind(); unsubFind=null; }
+  if(unsubQueue){ unsubQueue(); unsubQueue=null; }
+  // Everyone reads published answers. Only the owner can write them (db rule).
+  unsubFind = db.collection('findings').orderBy('answeredAt','desc').limit(200).onSnapshot(snap=>{
+    state.extraFacts = snap.docs.map(d=>{ const r=d.data()||{};
+      const src = 'Added by '+(r.answeredBy||'Mike')+(r.askedBy?', per '+r.askedBy+"'s request":'')+(r.askedAt?' of '+fmtDate(String(r.askedAt).slice(0,10)):'');
+      return {id:'R-'+d.id.slice(0,6), kind:'additional', date:String(r.answeredAt||'').slice(0,10), text:String(r.text||''), ents:mentions(String(r.query||'')+' '+String(r.text||'')).slice(0,8), src, tab:'Additional findings', by:r.askedBy}; });
+    buildDocs(); indexFactsOf();
+    if(state.mode==='search'){ renderSearch(); renderHint(); }
+  }, ()=>{});
+  // The queue itself is only ever fetched by the owner's browser.
+  if(!state.admin) return;
+  unsubQueue = db.collection('requests').orderBy('ts','desc').limit(300).onSnapshot(snap=>{
+    requests=snap.docs.map(d=>Object.assign({id:d.id},d.data()));
+    const open=requests.filter(r=>r.status==='open').length;
+    $('#reqcount').hidden=!open; $('#reqcount').textContent=open;
+    if(state.mode==='requests') renderRequests();
+  }, e=>{ $('#reqstatus').textContent='Live updates unavailable ('+e.code+').'; });
+}
+function renderRequests(){
+  const box=$('#reqlist');
+  if(!state.admin){ box.innerHTML='<div class="empty">This queue is only visible to '+esc(OWNER_EMAIL)+'.</div>'; return; }
+  if(!db){ box.innerHTML='<div class="empty">The request log needs the shared store, which is not available in this view.</div>'; return; }
+  if(!requests.length){ box.innerHTML='<div class="empty">Nothing requested yet. When a search or a question comes up empty, it lands here.</div>'; return; }
+  box.innerHTML=requests.map(r=>`<div class="req ${r.status}" data-id="${r.id}">
+    <div><div class="who">${esc(r.user||'?')}${r.email?' · '+esc(r.email):''} · ${r.ts?new Date(r.ts).toLocaleString():''} · ${r.kind==='chat'?'from a question':r.kind==='auto'?'from an empty search':'manual'}</div>
+    <div class="q">${esc(r.query)}</div>${r.specifics?`<div class="sp">${esc(r.specifics)}</div>`:''}
+    ${r.status==='answered'?`<div class="ans"><b>Additional finding · ${esc(r.answeredBy||'Mike')} · ${r.answeredAt?new Date(r.answeredAt).toLocaleDateString():''}</b>${esc(r.finding||'')}</div>`:(state.admin?`<textarea data-ans="${r.id}" placeholder="Write the finding here — it becomes searchable the moment you save it."></textarea>`:'')}</div>
+    <div class="side"><span class="tag ${r.status==='open'?'k-open':'k-decision'}">${r.status}</span>${state.admin&&r.status==='open'?`<button type="button" class="sbtn pri" data-answer="${r.id}">Save finding</button>`:''}${state.admin?`<button type="button" class="sbtn" data-del="${r.id}">Delete</button>`:''}</div></div>`).join('');
+}
+async function addRequest(o){
+  if(!db){ toast('Request log unavailable in this view.'); return; }
+  const doc={ts:new Date().toISOString(),user:state.user||'?',email:state.email||'',kind:o.kind||'manual',query:(o.query||'').slice(0,400),specifics:(o.specifics||'').slice(0,2000),status:'open',finding:'',answeredAt:'',answeredBy:''};
+  try{ await db.collection('requests').add(doc); toast('Sent to Mike · '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})); }
+  catch(e){ toast(e.code==='quota_exceeded'?'Request log is full — tell Mike.':'Could not send the request ('+e.code+').'); }
+}
+$('#reqlist').addEventListener('click',async ev=>{
+  const a=ev.target.closest('[data-answer]'); const d=ev.target.closest('[data-del]');
+  if(a){ const id=a.dataset.answer; const t=$(`[data-ans="${id}"]`); const v=(t&&t.value.trim())||''; if(!v){ toast('Write the finding first.'); return; }
+    const r=requests.find(x=>x.id===id)||{}; const at=new Date().toISOString();
+    try{
+      const ref=await db.collection('findings').add({text:v, query:r.query||'', askedBy:r.user||'', askedAt:r.ts||'', answeredAt:at, answeredBy:state.user});
+      await db.doc('requests/'+id).update({status:'answered',finding:v,answeredAt:at,answeredBy:state.user,findingId:ref.id});
+      toast('Published. It is searchable for everyone now.');
+    }catch(e){ toast('Could not save ('+e.code+').'); } }
+  if(d){ if(confirm('Delete this request?')){ try{ await db.doc('requests/'+d.dataset.del).delete(); }catch(e){ toast('Could not delete.'); } } }
+});
+function openReqModal(q,sp){ $('#reqq').value=q||state.q||''; $('#reqsp').value=sp||''; $('#reqmodal').hidden=false; setTimeout(()=>$(q?'#reqsp':'#reqq').focus(),60); }
+$('#newreq').onclick=()=>openReqModal('');
+$('#reqcancel').onclick=()=>$('#reqmodal').hidden=true;
+$('#reqsend').onclick=async()=>{ const q=$('#reqq').value.trim(); if(!q){ toast('Say what you were looking for.'); return; } await addRequest({kind:'manual',query:q,specifics:$('#reqsp').value.trim()}); $('#reqmodal').hidden=true; };
+
+/* ---------- the conversation ---------- */
+const RULES = `You are the assistant inside "SupplyNow Atlas", an index built from Mike Cook's Contract Facts Ledger (as of ${KB.asOf}). The people using you are SupplyNow and WSC teammates. Your job: answer from the CONTEXT below and connect the dots between entities.
+Rules:
+1. Use ONLY the CONTEXT. Never invent balances, dates, clauses or names. If the context does not contain the answer, say plainly "Not on record in the ledger" and do not guess.
+2. Be concise and plain-spoken: lead with the answer in one sentence, then 2-5 supporting facts as "- " bullets, each ending with its fact id in square brackets like [F61]. Use dates and dollar figures exactly as written.
+3. When useful, name who owns the item and what is still open.
+4. If anything the user needs is missing from the context, finish with one final line exactly in this form: REQUEST: <one sentence describing what is missing and why it matters>. Omit that line entirely when nothing is missing.
+5. No preamble, no apologies, no headers, no markdown tables.`;
+let turns=[], chatCtl=null, lastRole=null, msgCount=0;
+const SUGGESTIONS = ['What do we owe PA and what is disputed?','What is still open on Sigma?','Which contracts block the transfer to the NewCo?','Who owns truck 1008?','What has to happen before the pricing go-live?','What is Quality Supply and why is it a risk?'];
+function nowStamp(){ return new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }
+function renderGreeting(){
+  if(msgCount) return;
+  const name=state.user? state.user.split(' ')[0] : 'there';
+  $('#thread').classList.add('empty');
+  $('#tinner').innerHTML = `<div class="greet"><h2>Hi ${esc(name)}. <em>What do you need?</em></h2>
+    <p>Ask in plain words. Every answer comes from the ledger and shows the fact behind it. If the answer is not there, it goes straight to Mike's queue — no chasing.</p>
+    <div class="cards">
+      <button type="button" data-askq="${esc(SUGGESTIONS[0])}" style="--tc:var(--t-operator)"><i>${icon('operator',14)}</i><span>${esc(SUGGESTIONS[0])}</span></button>
+      <button type="button" data-askq="${esc(SUGGESTIONS[2])}" style="--tc:var(--t-contract)"><i>${icon('contract',14)}</i><span>${esc(SUGGESTIONS[2])}</span></button>
+      <button type="button" data-askq="${esc(SUGGESTIONS[3])}" style="--tc:var(--t-truck)"><i>${icon('truck',14)}</i><span>${esc(SUGGESTIONS[3])}</span></button>
+      <button type="button" data-askq="${esc(SUGGESTIONS[4])}" style="--tc:var(--t-vendor)"><i>${icon('vendor',14)}</i><span>${esc(SUGGESTIONS[4])}</span></button>
+    </div></div>`;
+  $('#sugrow').innerHTML = SUGGESTIONS.slice(1,6).map(s=>`<button type="button" class="chip" data-askq="${esc(s)}">${esc(s)}</button>`).join('');
+}
+function inlineFmt(s){ let x=esc(s); x=x.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>'); x=x.replace(/\[(F\d+|R-[A-Za-z0-9]+)\]/g,(m,id)=>`<button type="button" class="cite" data-fact="${id}">${id}</button>`); return x; }
+function fmtAnswer(text){
+  const t=String(text).replace(/\n?REQUEST:[\s\S]*$/,'').trim(); if(!t) return '';
+  const out=[]; let list=[];
+  const flush=()=>{ if(list.length){ out.push('<ul>'+list.map(x=>'<li>'+x+'</li>').join('')+'</ul>'); list=[]; } };
+  t.split('\n').forEach(ln=>{ const m=ln.match(/^\s*[-•*]\s+(.*)$/); if(m){ list.push(inlineFmt(m[1])); return; } flush(); if(ln.trim()) out.push('<div>'+inlineFmt(ln)+'</div>'); });
+  flush(); return out.join('');
+}
+function scrollThread(){ const t=$('#thread'); t.scrollTop=t.scrollHeight; }
+function clearGreeting(){ if(!msgCount){ $('#tinner').innerHTML=''; $('#thread').classList.remove('empty'); } }
+function addBubble(role, html){
+  clearGreeting(); msgCount++;
+  const me=role==='me';
+  const row=document.createElement('div');
+  row.className='row '+(me?'me':'bot')+(lastRole===role?' cont':'');
+  row.innerHTML = `<span class="av ${me?'':'bot'}">${me?esc(initials(state.user||'?')):''}</span><div class="stack"><div class="bub ${me?'me':'bot'}">${html}</div><div class="stamp">${nowStamp()}</div></div>`;
+  $('#tinner').appendChild(row); lastRole=role; scrollThread();
+  return row.querySelector('.bub');
+}
+function addNote(html, cls){ clearGreeting(); msgCount++; const el=document.createElement('div'); el.className=cls||'note-row'; el.innerHTML=html; $('#tinner').appendChild(el); lastRole=null; scrollThread(); return el; }
+async function ask(question){
+  question=(question||'').trim(); if(!question) return;
+  setMode('ask');
+  if(!sample){ addBubble('me',esc(question)); addNote('Asking is not available in this view — search still works, and you can <button type="button" class="sbtn" data-req="'+esc(question)+'" style="padding:4px 9px">request it from Mike</button>.'); return; }
+  addBubble('me',esc(question));
+  const {ctx,ents,nfacts}=buildContext(question);
+  logQuery({q:question,type:'ask',ents:ents.length,hit:nfacts>0});
+  const bub=addBubble('bot','<span class="typing"><i></i><i></i><i></i></span>');
+  const send=$('#send'); send.classList.add('stop'); send.setAttribute('aria-label','Stop'); send.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>';
+  chatCtl=new AbortController();
+  const userTurn=`CONTEXT (${nfacts} facts):\n${ctx}\n\nQUESTION: ${question}`;
+  const input=[{role:'user',content:RULES}].concat(turns.slice(-6),[{role:'user',content:userTurn}]);
+  try{
+    const res=await sample(input,{cache:false,signal:chatCtl.signal,onText:({text})=>{ bub.innerHTML=fmtAnswer(text)||'<span class="typing"><i></i><i></i><i></i></span>'; scrollThread(); }});
+    bub.innerHTML=fmtAnswer(res.text)||esc(res.text);
+    turns.push({role:'user',content:'QUESTION: '+question},{role:'assistant',content:res.text});
+    const m=res.text.match(/REQUEST:\s*(.+)$/m);
+    if(m){ const what=m[1].trim();
+      addNote(`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5M12 16.5v.01"/><circle cx="12" cy="12" r="9"/></svg><span><b>Sent to Mike.</b> ${esc(what)}</span>`,'flag');
+      addRequest({kind:'chat',query:question,specifics:what}); }
+    if(res.truncated) addNote('That answer was cut short. Ask for one thing at a time.');
+  }catch(e){
+    if(e.code==='cancelled'){ bub.innerHTML=fmtAnswer(e.text||'')||'<i style="color:var(--ink-3)">Stopped.</i>'; }
+    else if(['not_granted','sampling_disabled','not_declared','capability_disabled'].includes(e.code)){ bub.closest('.row').remove(); msgCount--; sample=null; addNote('Asking is not available for your account here. Search still works, and anything missing can be requested from Mike.'); }
+    else if(e.code==='rate_limited'){ bub.innerHTML=fmtAnswer(e.text||'')||'<i style="color:var(--ink-3)">Too many questions at once. Give it a moment.</i>'; }
+    else { bub.innerHTML=(e.text?fmtAnswer(e.text):'')+'<div style="color:var(--ink-3);font-style:italic;margin-top:6px">Interrupted ('+esc(e.code||'error')+'). Try again.</div>'; }
+  } finally{
+    send.classList.remove('stop'); send.setAttribute('aria-label','Send');
+    send.innerHTML='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    chatCtl=null; $('#chatin').focus();
+  }
+}
+function buildContext(question){
+  const r=search(question,''); const ents=new Set(r.mentioned); r.entities.slice(0,5).forEach(x=>ents.add(x.id));
+  const facts=new Map(); r.facts.slice(0,22).forEach(x=>facts.set(x.id,x.ref));
+  ents.forEach(id=>(factsOf[id]||[]).slice(0,10).forEach(f=>{ if(facts.size<40) facts.set(f.id,f); }));
+  let ctx='ENTITIES:\n';
+  ents.forEach(id=>{ const e=E[id]; if(!e) return; ctx+=`- ${e.name} (${typeName(e)}${e.role?', '+e.role:''}): ${e.blurb}\n`;
+    const rl=(relsOf[id]||[]).slice(0,14).map(x=>x.dir==='out'?`${e.name} ${x.label} ${E[x.other].name}${x.note?' ('+x.note+')':''}`:`${E[x.other].name} ${x.label} ${e.name}${x.note?' ('+x.note+')':''}`);
+    if(rl.length) ctx+='  connections: '+rl.join('; ')+'\n'; });
+  ctx+='\nFACTS:\n'; facts.forEach(f=>{ ctx+=`[${f.id}] (${KIND_LABEL[f.kind]||f.kind}${f.date?', '+fmtDate(f.date):''}) ${f.text} — source: ${f.src||''}\n`; });
+  if(ctx.length>42000) ctx=ctx.slice(0,42000)+'\n…(truncated)';
+  return {ctx, ents:[...ents], nfacts:facts.size};
+}
+function sendChat(){ const v=$('#chatin').value.trim(); if(!v||chatCtl) return; $('#chatin').value=''; autoGrow(); ask(v); }
+$('#send').onclick=()=>{ if(chatCtl){ chatCtl.abort(); return; } sendChat(); };
+$('#chatin').addEventListener('keydown',ev=>{ if(ev.key==='Enter'&&!ev.shiftKey){ ev.preventDefault(); sendChat(); } });
+function autoGrow(){ const t=$('#chatin'); t.style.height='auto'; t.style.height=Math.min(150,t.scrollHeight)+'px'; }
+$('#chatin').addEventListener('input',autoGrow);
+$('#thread').addEventListener('click',ev=>{ const c=ev.target.closest('.cite'); if(c){ setMode('search'); selectFact(c.dataset.fact); } });
+
+/* ---------- voice ---------- */
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+function wireMic(btn, onText){ if(!SR||!btn){ if(btn) btn.hidden=true; return; } btn.hidden=false; let rec=null;
+  btn.onclick=()=>{ if(rec){ rec.stop(); return; } rec=new SR(); rec.lang='en-US'; rec.interimResults=true; let final='';
+    rec.onresult=ev=>{ let s=''; for(const r of ev.results){ s+=r[0].transcript; if(r.isFinal) final=s; } onText(s,false); };
+    rec.onend=()=>{ btn.classList.remove('rec'); const f=final; rec=null; onText(f,true); };
+    rec.onerror=()=>{ btn.classList.remove('rec'); rec=null; toast('Could not hear that — check the microphone permission.'); };
+    btn.classList.add('rec'); try{ rec.start(); }catch(e){ btn.classList.remove('rec'); rec=null; } }; }
+wireMic($('#mic'),(t,done)=>{ $('#q').value=t; setQuery(t,!done); });
+wireMic($('#chatmic'),(t,done)=>{ $('#chatin').value=t; autoGrow(); if(done&&t.trim()) sendChat(); });
+function looksLikeQuestion(t){ return /\?\s*$/.test(t) || /^(who|what|when|where|why|how|does|do|is|are|can|should|which|explain|tell me|summar)/i.test(t.trim()); }
+
+/* ---------- modes & events ---------- */
+function setMode(m){
+  if((m==='requests'||m==='activity') && !state.admin) m='search';
+  state.mode=m;
+  $$('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+  ['search','ask','map','requests','activity'].forEach(v=>$('#view-'+v).hidden=v!==m);
+  $('#hero').hidden = !(m==='search'||m==='map');
+  if(m==='map'){ buildMap(); $('#q').placeholder='Jump to a name on the map…'; }
+  else $('#q').placeholder='Search a name, a truck number, a contract, an amount…';
+  if(m==='ask'){ renderGreeting(); setTimeout(()=>{ $('#chatin').focus(); scrollThread(); },60); }
+  if(m==='requests') renderRequests();
+  if(m==='activity') renderActivity();
+  if(m==='search'){ renderSearch(); renderDetail(); }
+  try{ history.replaceState(null,'','#'+m); }catch(e){}
+}
+$('#modes').addEventListener('click',ev=>{ const b=ev.target.closest('[data-mode]'); if(b) setMode(b.dataset.mode); });
+let debounce=null;
+function setQuery(q, interim){
+  state.q=q; if($('#q').value!==q) $('#q').value=q;
+  if(state.mode==='map'){ if(interim) return; const r=search(q,''); const top=r.mentioned[0]||(r.entities[0]&&r.entities[0].id); if(top) mapSelect(top); return; }
+  renderSearch();
+  if(!interim && q.trim()){ const r=lastSearch; logQuery({q,type:'search',ents:r?r.mentioned.length+Math.min(r.entities.length,3):0,hit:!!(r&&r.strong)}); }
+}
+$('#q').addEventListener('input',ev=>{ clearTimeout(debounce); const v=ev.target.value; debounce=setTimeout(()=>setQuery(v),150); });
+$('#q').addEventListener('keydown',ev=>{ if(ev.key==='Enter'){ clearTimeout(debounce); const v=ev.target.value; setQuery(v); if(looksLikeQuestion(v)) ask(v); } if(ev.key==='Escape'){ setQuery(''); } });
+$('#askbtn').onclick=()=>{ const v=$('#q').value.trim(); if(v) ask(v); else setMode('ask'); };
+document.addEventListener('click',ev=>{
+  const t=ev.target;
+  const kind=t.closest('[data-kind]'); if(kind){ state.kind = (kind.dataset.kind===state.kind && kind.closest('#hint')) ? '' : kind.dataset.kind; renderHint(); renderSearch(); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  const st=t.closest('[data-start]'); if(st){ const s=STARTERS[+st.dataset.start];
+    if(s.kind){ state.kind=s.kind; state.q=''; $('#q').value=''; renderHint(); renderSearch(); }
+    else { const list=KB.entities.filter(e=>s.bucket?e.bucket===s.bucket:e.type===s.type);
+      $('#results').innerHTML=`<div class="section-h">${s.t} <span class="n">${list.length}</span></div><div class="ent-row">${list.map(e=>entCard(e)).join('')}</div>`;
+      logQuery({q:'browsed: '+s.t,type:'search',ents:list.length,hit:true}); }
+    window.scrollTo({top:0,behavior:'smooth'}); return; }
+  const qq=t.closest('[data-q]'); if(qq){ setMode('search'); setQuery(qq.dataset.q); return; }
+  const aq=t.closest('[data-askq]'); if(aq){ ask(aq.dataset.askq); return; }
+  const rq=t.closest('[data-req]'); if(rq){ openReqModal(rq.dataset.req,''); return; }
+  const mp=t.closest('[data-map]'); if(mp){ setMode('map'); setTimeout(()=>mapSelect(mp.dataset.map),60); return; }
+  if(t.closest('[data-close]')){ state.sel=null; state.selFact=null; renderDetail(); $$('.ent.sel,.fact.sel').forEach(x=>x.classList.remove('sel')); return; }
+  const fc=t.closest('[data-fact]'); if(fc && !t.closest('[data-ent]') && !fc.classList.contains('cite')){ selectFact(fc.dataset.fact); return; }
+  const en=t.closest('[data-ent]'); if(en){ selectEntity(en.dataset.ent, !!t.closest('#mapdetail')); return; }
+  if(t.id==='askthis'){ ask(state.q); return; }
+  if(t.id==='reqthis'){ openReqModal(state.q,'Search returned nothing.'); return; }
+});
+document.addEventListener('keydown',ev=>{ if(ev.key==='Escape'){ if(!$('#reqmodal').hidden) $('#reqmodal').hidden=true; } });
+window.addEventListener('resize',()=>{ if(mapBuilt&&window.d3){ const w=$('#mapwrap'); d3.select('#mapsvg').attr('viewBox',`0 0 ${w.clientWidth} ${w.clientHeight}`); } });
+
+/* ---------- boot ---------- */
+function measureTop(){ const t=document.querySelector('.top'); if(t) document.documentElement.style.setProperty('--topbar', t.offsetHeight+'px'); }
+function boot(snap){
+  $('#asof').textContent='as of '+KB.asOf;
+  measureTop(); if(window.ResizeObserver){ new ResizeObserver(measureTop).observe(document.querySelector('.top')); } window.addEventListener('resize',measureTop); autoGrow();
+  buildDocs(); indexFactsOf(); renderHint();
+  applyRole();
+  const saved=ls('atlas.email'); if(saved && EMAIL_RE.test(saved)) setUser(saved); else askWho();
+  const m=(location.hash||'').replace('#','');
+  if(['requests','activity'].includes(m) && !state.admin) pendingMode=m;
+  setMode(['search','ask','map','requests','activity'].includes(m)?m:'search');
+  if(snap && snap.q) setQuery(snap.q); else if(state.mode==='search') renderSearch();
+  if(snap && snap.sel) selectEntity(snap.sel);
+  if(window.claude && window.claude.use){
+    claude.use('db').then(d=>{ db=d; if(db){ if(state.email) startUsage(); maybeWatch(); } else { $('#reqstatus').textContent='Shared store unavailable in this view.'; } }).catch(()=>{});
+    claude.use('sample').then(s=>{ sample=s; if(!s) $('#cfoot').textContent='Search works here; asking needs the Claude viewer.'; }).catch(()=>{});
+  } else { $('#cfoot').textContent='Search works here; asking and the request log need the Claude viewer.'; }
+  try{ window.claude?.hot?.snapshot?.(()=>({q:state.q, sel:state.sel, mode:state.mode})); }catch(e){}
+}
+if(window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data);
+</script>
