@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Price Comparison</title>
+<style>
+  :root{
+    --ink:#14181d; --muted:#5d6874; --line:#dde3ea; --bg:#fff; --panel:#f7f9fb;
+    --win:#0f7b4f; --win-bg:#e8f5ee; --lose:#a3341f; --accent:#1f4e79;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#eef1f5;color:var(--ink);
+    font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .sheet{max-width:8.5in;margin:24px auto;background:var(--bg);padding:0.55in 0.6in;
+    box-shadow:0 2px 18px rgba(16,24,40,.12);}
+  header{border-bottom:3px solid var(--accent);padding-bottom:14px;margin-bottom:22px;}
+  h1{margin:0 0 4px;font-size:25px;letter-spacing:-.01em;}
+  .sub{color:var(--muted);font-size:13.5px;}
+  .item-line{margin-top:12px;padding:10px 12px;background:var(--panel);
+    border-left:3px solid var(--accent);font-size:14px;}
+  .item-line b{display:block;font-size:16px;margin-bottom:2px;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .col{border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    display:flex;flex-direction:column;break-inside:avoid;}
+  .col h2{margin:0;padding:10px 14px;font-size:14px;text-transform:uppercase;
+    letter-spacing:.06em;background:var(--panel);border-bottom:1px solid var(--line);}
+  .shot{height:2.5in;display:flex;align-items:center;justify-content:center;
+    background:#fbfcfd;border-bottom:1px solid var(--line);padding:8px;}
+  .shot img{max-width:100%;max-height:100%;object-fit:contain;}
+  .shot .empty{color:#98a3b0;font-size:12.5px;text-align:center;line-height:1.6;}
+  .body{padding:12px 14px;flex:1;}
+  .price{font-size:32px;font-weight:700;letter-spacing:-.02em;margin:0 0 2px;}
+  .unit{color:var(--muted);font-size:13px;margin-bottom:12px;}
+  dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-size:13px;}
+  dt{color:var(--muted);}
+  dd{margin:0;word-break:break-word;}
+  dd a{color:var(--accent);}
+  .tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:99px;
+    font-size:11px;font-weight:700;vertical-align:6px;letter-spacing:.04em;}
+  .tag.win{background:var(--win-bg);color:var(--win);}
+
+  .verdict{margin-top:20px;border:1px solid var(--line);border-radius:6px;
+    padding:14px 16px;background:var(--panel);break-inside:avoid;}
+  .verdict h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);}
+  .verdict p{margin:0;font-size:15px;}
+  .verdict .big{font-size:20px;font-weight:700;color:var(--win);}
+  footer{margin-top:22px;padding-top:10px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:11.5px;display:flex;justify-content:space-between;gap:12px;}
+  .note{max-width:8.5in;margin:0 auto 24px;padding:12px 16px;background:#fff8e6;
+    border:1px solid #f0d99b;border-radius:6px;font-size:13px;color:#6b5312;}
+  .note code{background:#fff;padding:1px 5px;border-radius:3px;}
+
+  @media print{
+    @page{size:letter;margin:0.5in;}
+    html,body{background:#fff;}
+    .sheet{box-shadow:none;margin:0;padding:0;max-width:none;}
+    .note{display:none;}
+    a{text-decoration:none;}
+  }
+  @media (max-width:700px){ .grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<div class="note">
+  <strong>How to fill this in:</strong> edit the <code>DATA</code> block at the bottom of this file —
+  product name, each seller's price, pack size and screenshot path. Unit prices and the savings
+  verdict calculate themselves. Then open in a browser and <strong>Print → Save as PDF</strong>
+  (Letter, default margins). This yellow box does not print.
+</div>
+
+<div class="sheet">
+  <header>
+    <h1 id="doc-title">Price Comparison</h1>
+    <div class="sub" id="doc-date"></div>
+    <div class="item-line">
+      <b id="item-name">—</b>
+      <span id="item-desc"></span>
+    </div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="verdict">
+    <h3>Verdict</h3>
+    <p id="verdict">—</p>
+  </div>
+
+  <footer>
+    <span id="foot-note">Prices are as observed on the dates shown and exclude tax.</span>
+    <span id="foot-gen"></span>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   DATA — edit this block only.
+   Leave a value as null / "" and the field is simply omitted.
+   ============================================================ */
+const DATA = {
+  item: {
+    name: "",                 // exact item description name used to search
+    description: "",          // optional: brand, grade, spec notes
+    unitLabel: "unit"         // what a "unit" is: lb, oz, case, each, ...
+  },
+  sellers: [
+    {
+      label: "Seller A",
+      price: null,            // total price paid, e.g. 42.99
+      units: null,            // how many unitLabel in that price, e.g. 40
+      packSize: "",           // human text, e.g. "4 x 10 lb case"
+      itemNumber: "",
+      location: "",
+      observed: "",           // YYYY-MM-DD
+      link: "",
+      image: ""               // path or URL of the price screenshot
+    },
+    {
+      label: "Restaurant Depot",
+      price: null,
+      units: null,
+      packSize: "",
+      itemNumber: "",
+      location: "",
+      observed: "",
+      link: "",
+      image: ""
+    }
+  ],
+  footnote: "Prices are as observed on the dates shown and exclude tax."
+};
+/* ===================== end of DATA ========================== */
+
+const money = n => n == null ? null :
+  n.toLocaleString("en-US", {style:"currency", currency:"USD"});
+// One shared precision for every unit price, so the printed numbers
+// subtract to the printed difference instead of looking off by a rounding.
+let UNIT_DP = 2;
+const unitMoney = n => n == null ? null : "$" + n.toFixed(UNIT_DP);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const unitPrice = s =>
+  (typeof s.price === "number" && typeof s.units === "number" && s.units > 0)
+    ? s.price / s.units : null;
+
+const priced = DATA.sellers.filter(s => unitPrice(s) != null);
+if (priced.length && Math.min(...priced.map(unitPrice)) < 1) UNIT_DP = 4;
+
+const best = priced.length === 2 && unitPrice(priced[0]) !== unitPrice(priced[1])
+  ? priced.reduce((a, b) => unitPrice(a) <= unitPrice(b) ? a : b)
+  : null;
+
+document.getElementById("doc-title").textContent =
+  DATA.item.name ? "Price Comparison — " + DATA.item.name : "Price Comparison";
+document.getElementById("item-name").textContent = DATA.item.name || "[ item description name ]";
+document.getElementById("item-desc").textContent = DATA.item.description || "";
+document.getElementById("foot-note").textContent = DATA.footnote;
+
+const today = new Date().toLocaleDateString("en-US",
+  {year:"numeric", month:"long", day:"numeric"});
+document.getElementById("doc-date").textContent = "Side-by-side cost check · prepared " + today;
+document.getElementById("foot-gen").textContent = "Generated " + today;
+
+const row = (dt, dd) => dd ? `<dt>${esc(dt)}</dt><dd>${dd}</dd>` : "";
+const unitLabel = DATA.item.unitLabel || "unit";
+
+document.getElementById("grid").innerHTML = DATA.sellers.map(s => {
+  const up = unitPrice(s);
+  const isBest = best && s === best;
+  const shot = s.image
+    ? `<img src="${esc(s.image)}" alt="${esc(s.label)} price screenshot">`
+    : `<div class="empty">price screenshot<br>for ${esc(s.label)}<br>goes here</div>`;
+  return `
+  <section class="col">
+    <h2>${esc(s.label)}${isBest ? '<span class="tag win">lower cost</span>' : ""}</h2>
+    <div class="shot">${shot}</div>
+    <div class="body">
+      <p class="price">${money(s.price) ?? "—"}</p>
+      <div class="unit">${up != null
+        ? esc(unitMoney(up)) + " per " + esc(unitLabel)
+        : "unit price pending"}</div>
+      <dl>
+        ${row("Pack", esc(s.packSize))}
+        ${row("Item #", esc(s.itemNumber))}
+        ${row("Location", esc(s.location))}
+        ${row("Observed", esc(s.observed))}
+        ${row("Source", s.link
+          ? `<a href="${esc(s.link)}">${esc(s.link)}</a>` : "")}
+      </dl>
+    </div>
+  </section>`;
+}).join("");
+
+const verdict = document.getElementById("verdict");
+if (best) {
+  const other = priced.find(s => s !== best);
+  const bu = unitPrice(best), ou = unitPrice(other);
+  const pct = ((ou - bu) / ou * 100).toFixed(1);
+  const perUnitDiff = ou - bu;
+  verdict.innerHTML =
+    `<span class="big">${esc(best.label)} is ${pct}% cheaper per ${esc(unitLabel)}.</span><br>` +
+    `${esc(unitMoney(bu))} vs ${esc(unitMoney(ou))} — a difference of ` +
+    `${esc(unitMoney(perUnitDiff))} per ${esc(unitLabel)}` +
+    (typeof other.units === "number"
+      ? `, or ${esc(money(perUnitDiff * other.units))} across a ${esc(other.units)}-${esc(unitLabel)} buy.`
+      : ".");
+} else if (priced.length === 2) {
+  verdict.textContent = "Both sellers price the item identically per " + unitLabel + ".";
+} else {
+  verdict.textContent =
+    "Fill in price and units for both sellers in the DATA block to calculate the comparison.";
+}
+</script>
+</body>
+</html>
