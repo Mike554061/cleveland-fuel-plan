@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d1014">
-<title>Mike Cook · Depot Delivery</title>
-<meta name="description" content="Mike Cook, Depot Delivery. Get an instant quote, see how delivery works, and send feedback.">
+<title>Mike Cook · SupplyNow Dispatch</title>
+<meta name="description" content="Mike Cook, Dispatch at SupplyNow. Asset-based reefer and dry carrier out of Cleveland. Get an instant quote.">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <style>
 :root{
-  --bg:#0d1014; --card:#1a2028; --card-2:#202833; --line:#252d37;
-  --ink:#f2f5f8; --ink-2:#9aa7b4; --ink-3:#66727f;
-  --amber:#f0a03c; --green:#3fbf6a; --blue:#5aa9e6;
+  --bg:#0d1014; --card:#171d24; --card-2:#202833; --line:#27303a;
+  --ink:#f2f5f8; --ink-2:#a3afbb; --ink-3:#6c7885;
+  --brand:#00b4a6; --brand-2:#4c8dff; --gold:#e6c15a; --green:#3fbf6a;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
@@ -21,25 +21,25 @@ a{color:inherit;text-decoration:none}
 .wrap{max-width:520px;margin:0 auto;padding:36px 16px calc(40px + env(safe-area-inset-bottom,0px))}
 
 /* profile */
-.profile{text-align:center;margin-bottom:24px}
+.profile{text-align:center;margin-bottom:22px}
 .avatar{width:92px;height:92px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;
-  background:var(--card);border:2px solid var(--amber);font-size:32px;font-weight:700;color:var(--amber);letter-spacing:.02em;overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover}
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));font-size:32px;font-weight:800;color:#fff;letter-spacing:.02em}
 h1{margin:0;font-size:26px;line-height:1.15}
-.role{margin:6px 0 0;color:var(--amber);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
-.tag{margin:12px auto 0;color:var(--ink-2);max-width:380px}
+.role{margin:6px 0 0;color:var(--brand);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.tag{margin:12px auto 0;color:var(--ink-2);max-width:400px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+.pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--ink-2)}
 
-/* quick contact row */
-.quick{display:flex;gap:10px;margin:18px 0 22px}
+/* quick contact */
+.quick{display:flex;gap:10px;margin:18px 0 14px}
 .quick a{flex:1;text-align:center;padding:11px 8px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:14px}
 .quick a:active{background:var(--card-2)}
-.quick a[hidden]{display:none}
 
 /* primary CTA */
 .cta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-radius:16px;
-  background:var(--amber);color:#1a1205;font-weight:700;font-size:18px;box-shadow:0 6px 24px rgba(240,160,60,.22)}
+  background:linear-gradient(135deg,#e6c15a,#b8860b);color:#1a1205;font-weight:800;font-size:19px;box-shadow:0 6px 24px rgba(230,193,90,.2)}
 .cta small{display:block;font-weight:500;font-size:13px;opacity:.8;margin-top:2px}
-.cta span.arrow{font-size:24px}
+.cta .arrow{font-size:24px}
 .cta:active{transform:scale(.99)}
 
 h2{margin:30px 0 12px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
@@ -51,128 +51,132 @@ h2{margin:30px 0 12px;font-size:12px;letter-spacing:.14em;text-transform:upperca
 .ico{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;background:var(--card-2)}
 .branch h3{margin:0;font-size:16px}
 .branch p.sub{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
-.chev{margin-left:auto;color:var(--ink-3);transition:transform .2s}
+.chev{margin-left:auto;color:var(--ink-3);font-size:20px;transition:transform .2s}
 .branch[open] .chev{transform:rotate(90deg)}
 .body{padding:0 16px 16px 70px;color:var(--ink-2);font-size:14.5px}
+.body p{margin:0 0 12px}
 .body ul{margin:0 0 12px;padding-left:18px}
 .body li{margin:4px 0}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
 .btn{display:inline-block;padding:10px 16px;border-radius:10px;background:var(--card-2);border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:14px}
-.btn.amber{background:var(--amber);border-color:var(--amber);color:#1a1205}
-.btn[hidden]{display:none}
+.btn.gold{background:linear-gradient(135deg,#e6c15a,#b8860b);border-color:transparent;color:#1a1205}
+.lanes{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 12px}
+.lane{font-size:13px;font-weight:600;padding:5px 12px;border-radius:99px;background:rgba(0,180,166,.12);border:1px solid rgba(0,180,166,.35);color:#5fd9ce}
+.lane.home{background:var(--brand);border-color:var(--brand);color:#04201d}
 .steps{counter-reset:s;list-style:none;padding:0}
 .steps li{counter-increment:s;position:relative;padding-left:30px;margin:8px 0}
 .steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;
-  background:var(--card-2);color:var(--amber);font-size:12px;font-weight:700;display:grid;place-items:center}
+  background:var(--card-2);color:var(--brand);font-size:12px;font-weight:700;display:grid;place-items:center}
 
 /* feedback */
 form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
 label{display:block;font-size:13px;color:var(--ink-2);margin:12px 0 6px}
-label:first-child{margin-top:0}
-select,textarea,input[type=text],input[type=email]{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
+form>label:first-child{margin-top:0}
+select,textarea,input[type=text]{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
   background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
 textarea{min-height:100px;resize:vertical}
-select:focus,textarea:focus,input:focus{outline:2px solid var(--amber);outline-offset:1px}
-.stars{display:flex;gap:6px}
+.stars{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:6px}
 .stars input{position:absolute;opacity:0;pointer-events:none}
 .stars label{margin:0;font-size:30px;line-height:1;color:var(--line);cursor:pointer;padding:2px}
-.stars{flex-direction:row-reverse;justify-content:flex-end}
-.stars input:checked ~ label,.stars label:hover,.stars label:hover ~ label{color:var(--amber)}
-form .btn{width:100%;margin-top:14px;text-align:center;cursor:pointer;font-size:15px}
+.stars input:checked ~ label,.stars label:hover,.stars label:hover ~ label{color:var(--gold)}
+.stars input:focus-visible + label{outline:2px solid var(--brand);border-radius:6px}
+form button{width:100%;margin-top:14px;text-align:center;cursor:pointer;font:inherit;font-size:15px;font-weight:700}
 .note{margin:10px 0 0;font-size:12.5px;color:var(--ink-3);text-align:center}
 #thanks{display:none;text-align:center;color:var(--green);font-weight:600;margin-top:12px}
 
-footer{margin-top:34px;text-align:center;color:var(--ink-3);font-size:12.5px}
-:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+footer{margin-top:34px;text-align:center;color:var(--ink-3);font-size:12.5px;line-height:1.7}
+footer a{text-decoration:underline;text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 
-<!--
-  ===== EDIT ME =====
-  Anything left empty is simply hidden on the page.
--->
-<script>
-const CONFIG = {
-  name:        "Mike Cook",
-  role:        "Depot Delivery",
-  initials:    "MC",
-  photo:       "",                 // e.g. "mike.jpg" (optional; drop the file next to this page)
-  tagline:     "Reliable delivery straight from the depot to your site. Get a price in under a minute.",
-  quoteUrl:    "",                 // <- your instant-quote link
-  phone:       "",                 // e.g. "+12165551234"
-  email:       "mike@supplynow.org",
-  area:        "Cleveland, OH & surrounding area",
-  hours:       "",                 // e.g. "Mon–Sat, 6 am – 6 pm"
-  feedbackTo:  "mike@supplynow.org" // feedback form opens an email to this address
-};
-</script>
-
 <main class="wrap">
 
   <header class="profile">
-    <div class="avatar" id="avatar"></div>
-    <h1 id="name"></h1>
-    <p class="role" id="role"></p>
-    <p class="tag" id="tagline"></p>
+    <div class="avatar" aria-hidden="true">MC</div>
+    <h1>Mike Cook</h1>
+    <p class="role">Dispatch · SupplyNow</p>
+    <p class="tag">Asset-based reefer &amp; dry carrier out of Cleveland. Our trucks, our drivers, and a direct line to dispatch. No broker daisy-chain.</p>
+    <div class="pills">
+      <span class="pill">Reefer</span><span class="pill">Frozen</span><span class="pill">Dry</span><span class="pill">Live GPS + temp</span>
+    </div>
   </header>
 
-  <nav class="quick" aria-label="Contact">
-    <a id="callBtn" hidden>📞 Call</a>
-    <a id="textBtn" hidden>💬 Text</a>
-    <a id="mailBtn" hidden>✉️ Email</a>
+  <nav class="quick" aria-label="Contact Mike">
+    <a href="tel:+12165487070">📞 Call</a>
+    <a href="sms:+12165487070">💬 Text</a>
+    <a href="mailto:dispatch@supplynow.org">✉️ Email</a>
   </nav>
 
-  <a class="cta" id="quoteCta" href="#feedback">
-    <div>Get an Instant Quote<small>Takes about a minute. No obligation.</small></div>
+  <a class="cta" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">
+    <div>Get an Instant Quote<small>Price your load in about a minute</small></div>
     <span class="arrow">→</span>
   </a>
 
-  <h2>What I do</h2>
+  <h2>What we do</h2>
 
   <details class="branch">
-    <summary><div class="ico">🚚</div><div><h3>Depot Delivery</h3><p class="sub">Pickup at the depot, drop at your door</p></div><span class="chev">›</span></summary>
+    <summary><div class="ico">🚛</div><div><h3>Equipment &amp; capacity</h3><p class="sub">Reefer, dry box and sprinter vans</p></div><span class="chev">›</span></summary>
     <div class="body">
       <ul>
-        <li>Product loaded at the depot and delivered directly to your job site, yard or facility</li>
-        <li>Scheduled, same-day or recurring drops</li>
-        <li>Clear price up front, no surprises at the gate</li>
+        <li>Refrigerated trucks with live temperature control and logging</li>
+        <li>Dry box trucks, 16′–26′, with lift gate, pallet jack and load bars</li>
+        <li>Cargo / sprinter vans for expedited and small drops</li>
+        <li>Frozen, refrigerated and ambient · full and partial loads · multi-stop</li>
       </ul>
-      <a class="btn amber" data-quote>Quote this delivery</a>
+      <div class="btns"><a class="btn gold" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">Quote a load</a></div>
     </div>
   </details>
 
   <details class="branch">
-    <summary><div class="ico">⛽</div><div><h3>Route Fuel Map</h3><p class="sub">Cheapest diesel already on your route</p></div><span class="chev">›</span></summary>
+    <summary><div class="ico">🗺️</div><div><h3>Lanes &amp; coverage</h3><p class="sub">Home base Cleveland, five regional hubs</p></div><span class="chev">›</span></summary>
     <div class="body">
-      <ul>
-        <li>Plan a route and see the lowest-priced diesel stops along the way</li>
-        <li>Prices refresh daily</li>
-        <li>Works on your phone, install it to the home screen</li>
-      </ul>
-      <a class="btn" href="app.html">Open the fuel map</a>
-      <a class="btn" style="margin-left:6px" href="index.html">Today's report</a>
+      <p>We run everywhere. Cleveland is home base, and these hubs are where we're strongest:</p>
+      <div class="lanes">
+        <span class="lane home">Cleveland · Home base</span>
+        <span class="lane">Chicago</span><span class="lane">Detroit</span><span class="lane">Columbus</span>
+        <span class="lane">Pittsburgh</span><span class="lane">Wilkes-Barre</span>
+      </div>
+      <p>Not sure your lane is covered? Just ask.</p>
+      <div class="btns"><a class="btn" href="tel:+12165487070">Call dispatch</a></div>
     </div>
   </details>
 
   <details class="branch">
-    <summary><div class="ico">📅</div><div><h3>How it works</h3><p class="sub">From quote to delivery in four steps</p></div><span class="chev">›</span></summary>
+    <summary><div class="ico">📡</div><div><h3>Tracking &amp; cold chain</h3><p class="sub">See your freight in real time</p></div><span class="chev">›</span></summary>
+    <div class="body">
+      <ul>
+        <li><strong>Live GPS and live temperature</strong> link shared at pickup</li>
+        <li>On-time to retail and DC appointment windows</li>
+        <li>Digital proof of delivery</li>
+        <li>Foodservice and frozen is our core, not a side lane</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="branch">
+    <summary><div class="ico">📋</div><div><h3>Carrier packet &amp; onboarding</h3><p class="sub">Everything your compliance team needs</p></div><span class="chev">›</span></summary>
+    <div class="body">
+      <p>Supply Now Inc. · MC 1660872 · USDOT 3976910. Authority, insurance and COI are in the packet.</p>
+      <div class="btns">
+        <a class="btn gold" href="https://tinyurl.com/SupplyNow-Carrier-Packet" target="_blank" rel="noopener">Carrier packet</a>
+        <a class="btn" href="mailto:dispatch@supplynow.org?subject=Carrier%20onboarding">Request COI</a>
+      </div>
+    </div>
+  </details>
+
+  <details class="branch">
+    <summary><div class="ico">⚡</div><div><h3>How it works</h3><p class="sub">From quote to delivered in four steps</p></div><span class="chev">›</span></summary>
     <div class="body">
       <ol class="steps">
-        <li><strong>Get your quote.</strong> Tell me what you need and where it's going.</li>
-        <li><strong>Confirm.</strong> Pick a delivery window that works.</li>
-        <li><strong>Delivery.</strong> Loaded at the depot and on its way to you.</li>
-        <li><strong>Feedback.</strong> Tell me how it went, below.</li>
+        <li><strong>Quote.</strong> Enter pickup, drop and freight type for an instant price.</li>
+        <li><strong>Confirm.</strong> Dispatch locks in equipment and your pickup window.</li>
+        <li><strong>Track.</strong> Live GPS and temperature link at pickup.</li>
+        <li><strong>Deliver &amp; feedback.</strong> Digital POD, then tell us how we did below.</li>
       </ol>
-      <a class="btn amber" data-quote>Start with a quote</a>
-    </div>
-  </details>
-
-  <details class="branch">
-    <summary><div class="ico">📍</div><div><h3>Service area &amp; hours</h3><p class="sub">Where I deliver and when</p></div><span class="chev">›</span></summary>
-    <div class="body">
-      <ul id="areaList"></ul>
-      <a class="btn" data-contact>Ask about your address</a>
+      <div class="btns"><a class="btn gold" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">Start with a quote</a></div>
     </div>
   </details>
 
@@ -180,14 +184,14 @@ const CONFIG = {
   <form id="feedback" aria-labelledby="feedback-h">
     <label for="topic">What's it about?</label>
     <select id="topic">
-      <option>A recent delivery</option>
+      <option>A recent shipment</option>
       <option>Instant quote</option>
-      <option>Route Fuel Map</option>
-      <option>Service area / scheduling</option>
+      <option>Lane or capacity request</option>
+      <option>Carrier onboarding / paperwork</option>
       <option>Something else</option>
     </select>
 
-    <label id="rateLabel">How did I do?</label>
+    <label id="rateLabel">How did we do?</label>
     <div class="stars" role="radiogroup" aria-labelledby="rateLabel">
       <input type="radio" name="rate" id="r5" value="5"><label for="r5" title="5 stars">★</label>
       <input type="radio" name="rate" id="r4" value="4"><label for="r4" title="4 stars">★</label>
@@ -197,65 +201,39 @@ const CONFIG = {
     </div>
 
     <label for="msg">Your feedback or idea</label>
-    <textarea id="msg" required placeholder="What worked, what didn't, what should I add?"></textarea>
+    <textarea id="msg" required placeholder="What worked, what didn't, what should we add?"></textarea>
 
-    <label for="from">Your name or email (optional)</label>
+    <label for="from">Your name, company or email (optional)</label>
     <input type="text" id="from" autocomplete="email">
 
-    <button type="submit" class="btn amber">Send feedback</button>
+    <button type="submit" class="btn gold">Send feedback</button>
     <p class="note">Opens your email app with the message ready to send.</p>
     <div id="thanks" role="status">Thank you! Your message is ready to send.</div>
   </form>
 
-  <footer>© <span id="yr"></span> <span id="foot"></span></footer>
+  <footer>
+    Supply Now Inc. · MC 1660872 · USDOT 3976910<br>
+    2800 Euclid Ave, Suite 310, Cleveland, OH 44115<br>
+    <a href="tel:+12165487070">216-548-7070</a> · <a href="mailto:dispatch@supplynow.org">dispatch@supplynow.org</a> · <a href="https://www.supplynow.org">supplynow.org</a>
+  </footer>
 </main>
 
 <script>
 (function(){
-  const $ = id => document.getElementById(id), C = CONFIG;
-  document.title = C.name + " · " + C.role;
-  $("name").textContent = C.name;
-  $("role").textContent = C.role;
-  $("tagline").textContent = C.tagline;
-  $("foot").textContent = C.name + " · " + C.role;
-  $("yr").textContent = new Date().getFullYear();
-
-  const av = $("avatar");
-  if (C.photo) { const i = new Image(); i.src = C.photo; i.alt = C.name; av.appendChild(i); }
-  else av.textContent = C.initials;
-
-  const show = (el, href) => { el.href = href; el.hidden = false; };
-  if (C.phone) { show($("callBtn"), "tel:" + C.phone); show($("textBtn"), "sms:" + C.phone); }
-  if (C.email) show($("mailBtn"), "mailto:" + C.email);
-
-  // quote links: external quote if set, otherwise jump to the contact/feedback form
-  document.querySelectorAll("[data-quote]").forEach(a => { a.href = C.quoteUrl || "#feedback"; });
-  if (C.quoteUrl) { const q = $("quoteCta"); q.href = C.quoteUrl; q.target = "_blank"; q.rel = "noopener";
-    document.querySelectorAll("[data-quote]").forEach(a => { a.target = "_blank"; a.rel = "noopener"; }); }
-
-  document.querySelectorAll("[data-contact]").forEach(a => {
-    a.href = C.phone ? "tel:" + C.phone : (C.email ? "mailto:" + C.email : "#feedback");
-  });
-
-  const list = $("areaList");
-  [C.area && "Serving: " + C.area, C.hours && "Hours: " + C.hours].filter(Boolean).forEach(t => {
-    const li = document.createElement("li"); li.textContent = t; list.appendChild(li);
-  });
-  if (!list.children.length) list.remove();
-
+  const $ = id => document.getElementById(id);
+  const TO = "dispatch@supplynow.org";
   $("feedback").addEventListener("submit", e => {
     e.preventDefault();
-    if (!C.feedbackTo) return;
     const rate = (document.querySelector("input[name=rate]:checked") || {}).value;
+    const from = $("from").value;
     const body = [
       "Topic: " + $("topic").value,
       rate ? "Rating: " + rate + "/5" : "",
       "",
       $("msg").value,
-      "",
-      $("from").value ? "From: " + $("from").value : ""
+      from ? "\nFrom: " + from : ""
     ].join("\n");
-    location.href = "mailto:" + C.feedbackTo + "?subject=" + encodeURIComponent("Feedback: " + $("topic").value) +
+    location.href = "mailto:" + TO + "?subject=" + encodeURIComponent("Feedback: " + $("topic").value) +
       "&body=" + encodeURIComponent(body);
     $("thanks").style.display = "block";
   });
