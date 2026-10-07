@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d1014">
+<title>Mike Cook · Depot Delivery</title>
+<meta name="description" content="Mike Cook, Depot Delivery. Get an instant quote, see how delivery works, and send feedback.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#0d1014; --card:#1a2028; --card-2:#202833; --line:#252d37;
+  --ink:#f2f5f8; --ink-2:#9aa7b4; --ink-3:#66727f;
+  --amber:#f0a03c; --green:#3fbf6a; --blue:#5aa9e6;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:520px;margin:0 auto;padding:36px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+
+/* profile */
+.profile{text-align:center;margin-bottom:24px}
+.avatar{width:92px;height:92px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;
+  background:var(--card);border:2px solid var(--amber);font-size:32px;font-weight:700;color:var(--amber);letter-spacing:.02em;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+h1{margin:0;font-size:26px;line-height:1.15}
+.role{margin:6px 0 0;color:var(--amber);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.tag{margin:12px auto 0;color:var(--ink-2);max-width:380px}
+
+/* quick contact row */
+.quick{display:flex;gap:10px;margin:18px 0 22px}
+.quick a{flex:1;text-align:center;padding:11px 8px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600;font-size:14px}
+.quick a:active{background:var(--card-2)}
+.quick a[hidden]{display:none}
+
+/* primary CTA */
+.cta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-radius:16px;
+  background:var(--amber);color:#1a1205;font-weight:700;font-size:18px;box-shadow:0 6px 24px rgba(240,160,60,.22)}
+.cta small{display:block;font-weight:500;font-size:13px;opacity:.8;margin-top:2px}
+.cta span.arrow{font-size:24px}
+.cta:active{transform:scale(.99)}
+
+h2{margin:30px 0 12px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+
+/* branches */
+.branch{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.branch>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:16px}
+.branch>summary::-webkit-details-marker{display:none}
+.ico{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:20px;background:var(--card-2)}
+.branch h3{margin:0;font-size:16px}
+.branch p.sub{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
+.chev{margin-left:auto;color:var(--ink-3);transition:transform .2s}
+.branch[open] .chev{transform:rotate(90deg)}
+.body{padding:0 16px 16px 70px;color:var(--ink-2);font-size:14.5px}
+.body ul{margin:0 0 12px;padding-left:18px}
+.body li{margin:4px 0}
+.btn{display:inline-block;padding:10px 16px;border-radius:10px;background:var(--card-2);border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:14px}
+.btn.amber{background:var(--amber);border-color:var(--amber);color:#1a1205}
+.btn[hidden]{display:none}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding-left:30px;margin:8px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:22px;height:22px;border-radius:50%;
+  background:var(--card-2);color:var(--amber);font-size:12px;font-weight:700;display:grid;place-items:center}
+
+/* feedback */
+form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+label{display:block;font-size:13px;color:var(--ink-2);margin:12px 0 6px}
+label:first-child{margin-top:0}
+select,textarea,input[type=text],input[type=email]{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
+textarea{min-height:100px;resize:vertical}
+select:focus,textarea:focus,input:focus{outline:2px solid var(--amber);outline-offset:1px}
+.stars{display:flex;gap:6px}
+.stars input{position:absolute;opacity:0;pointer-events:none}
+.stars label{margin:0;font-size:30px;line-height:1;color:var(--line);cursor:pointer;padding:2px}
+.stars{flex-direction:row-reverse;justify-content:flex-end}
+.stars input:checked ~ label,.stars label:hover,.stars label:hover ~ label{color:var(--amber)}
+form .btn{width:100%;margin-top:14px;text-align:center;cursor:pointer;font-size:15px}
+.note{margin:10px 0 0;font-size:12.5px;color:var(--ink-3);text-align:center}
+#thanks{display:none;text-align:center;color:var(--green);font-weight:600;margin-top:12px}
+
+footer{margin-top:34px;text-align:center;color:var(--ink-3);font-size:12.5px}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!--
+  ===== EDIT ME =====
+  Anything left empty is simply hidden on the page.
+-->
+<script>
+const CONFIG = {
+  name:        "Mike Cook",
+  role:        "Depot Delivery",
+  initials:    "MC",
+  photo:       "",                 // e.g. "mike.jpg" (optional; drop the file next to this page)
+  tagline:     "Reliable delivery straight from the depot to your site. Get a price in under a minute.",
+  quoteUrl:    "",                 // <- your instant-quote link
+  phone:       "",                 // e.g. "+12165551234"
+  email:       "mike@supplynow.org",
+  area:        "Cleveland, OH & surrounding area",
+  hours:       "",                 // e.g. "Mon–Sat, 6 am – 6 pm"
+  feedbackTo:  "mike@supplynow.org" // feedback form opens an email to this address
+};
+</script>
+
+<main class="wrap">
+
+  <header class="profile">
+    <div class="avatar" id="avatar"></div>
+    <h1 id="name"></h1>
+    <p class="role" id="role"></p>
+    <p class="tag" id="tagline"></p>
+  </header>
+
+  <nav class="quick" aria-label="Contact">
+    <a id="callBtn" hidden>📞 Call</a>
+    <a id="textBtn" hidden>💬 Text</a>
+    <a id="mailBtn" hidden>✉️ Email</a>
+  </nav>
+
+  <a class="cta" id="quoteCta" href="#feedback">
+    <div>Get an Instant Quote<small>Takes about a minute. No obligation.</small></div>
+    <span class="arrow">→</span>
+  </a>
+
+  <h2>What I do</h2>
+
+  <details class="branch">
+    <summary><div class="ico">🚚</div><div><h3>Depot Delivery</h3><p class="sub">Pickup at the depot, drop at your door</p></div><span class="chev">›</span></summary>
+    <div class="body">
+      <ul>
+        <li>Product loaded at the depot and delivered directly to your job site, yard or facility</li>
+        <li>Scheduled, same-day or recurring drops</li>
+        <li>Clear price up front, no surprises at the gate</li>
+      </ul>
+      <a class="btn amber" data-quote>Quote this delivery</a>
+    </div>
+  </details>
+
+  <details class="branch">
+    <summary><div class="ico">⛽</div><div><h3>Route Fuel Map</h3><p class="sub">Cheapest diesel already on your route</p></div><span class="chev">›</span></summary>
+    <div class="body">
+      <ul>
+        <li>Plan a route and see the lowest-priced diesel stops along the way</li>
+        <li>Prices refresh daily</li>
+        <li>Works on your phone, install it to the home screen</li>
+      </ul>
+      <a class="btn" href="app.html">Open the fuel map</a>
+      <a class="btn" style="margin-left:6px" href="index.html">Today's report</a>
+    </div>
+  </details>
+
+  <details class="branch">
+    <summary><div class="ico">📅</div><div><h3>How it works</h3><p class="sub">From quote to delivery in four steps</p></div><span class="chev">›</span></summary>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Get your quote.</strong> Tell me what you need and where it's going.</li>
+        <li><strong>Confirm.</strong> Pick a delivery window that works.</li>
+        <li><strong>Delivery.</strong> Loaded at the depot and on its way to you.</li>
+        <li><strong>Feedback.</strong> Tell me how it went, below.</li>
+      </ol>
+      <a class="btn amber" data-quote>Start with a quote</a>
+    </div>
+  </details>
+
+  <details class="branch">
+    <summary><div class="ico">📍</div><div><h3>Service area &amp; hours</h3><p class="sub">Where I deliver and when</p></div><span class="chev">›</span></summary>
+    <div class="body">
+      <ul id="areaList"></ul>
+      <a class="btn" data-contact>Ask about your address</a>
+    </div>
+  </details>
+
+  <h2 id="feedback-h">Feedback</h2>
+  <form id="feedback" aria-labelledby="feedback-h">
+    <label for="topic">What's it about?</label>
+    <select id="topic">
+      <option>A recent delivery</option>
+      <option>Instant quote</option>
+      <option>Route Fuel Map</option>
+      <option>Service area / scheduling</option>
+      <option>Something else</option>
+    </select>
+
+    <label id="rateLabel">How did I do?</label>
+    <div class="stars" role="radiogroup" aria-labelledby="rateLabel">
+      <input type="radio" name="rate" id="r5" value="5"><label for="r5" title="5 stars">★</label>
+      <input type="radio" name="rate" id="r4" value="4"><label for="r4" title="4 stars">★</label>
+      <input type="radio" name="rate" id="r3" value="3"><label for="r3" title="3 stars">★</label>
+      <input type="radio" name="rate" id="r2" value="2"><label for="r2" title="2 stars">★</label>
+      <input type="radio" name="rate" id="r1" value="1"><label for="r1" title="1 star">★</label>
+    </div>
+
+    <label for="msg">Your feedback or idea</label>
+    <textarea id="msg" required placeholder="What worked, what didn't, what should I add?"></textarea>
+
+    <label for="from">Your name or email (optional)</label>
+    <input type="text" id="from" autocomplete="email">
+
+    <button type="submit" class="btn amber">Send feedback</button>
+    <p class="note">Opens your email app with the message ready to send.</p>
+    <div id="thanks" role="status">Thank you! Your message is ready to send.</div>
+  </form>
+
+  <footer>© <span id="yr"></span> <span id="foot"></span></footer>
+</main>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id), C = CONFIG;
+  document.title = C.name + " · " + C.role;
+  $("name").textContent = C.name;
+  $("role").textContent = C.role;
+  $("tagline").textContent = C.tagline;
+  $("foot").textContent = C.name + " · " + C.role;
+  $("yr").textContent = new Date().getFullYear();
+
+  const av = $("avatar");
+  if (C.photo) { const i = new Image(); i.src = C.photo; i.alt = C.name; av.appendChild(i); }
+  else av.textContent = C.initials;
+
+  const show = (el, href) => { el.href = href; el.hidden = false; };
+  if (C.phone) { show($("callBtn"), "tel:" + C.phone); show($("textBtn"), "sms:" + C.phone); }
+  if (C.email) show($("mailBtn"), "mailto:" + C.email);
+
+  // quote links: external quote if set, otherwise jump to the contact/feedback form
+  document.querySelectorAll("[data-quote]").forEach(a => { a.href = C.quoteUrl || "#feedback"; });
+  if (C.quoteUrl) { const q = $("quoteCta"); q.href = C.quoteUrl; q.target = "_blank"; q.rel = "noopener";
+    document.querySelectorAll("[data-quote]").forEach(a => { a.target = "_blank"; a.rel = "noopener"; }); }
+
+  document.querySelectorAll("[data-contact]").forEach(a => {
+    a.href = C.phone ? "tel:" + C.phone : (C.email ? "mailto:" + C.email : "#feedback");
+  });
+
+  const list = $("areaList");
+  [C.area && "Serving: " + C.area, C.hours && "Hours: " + C.hours].filter(Boolean).forEach(t => {
+    const li = document.createElement("li"); li.textContent = t; list.appendChild(li);
+  });
+  if (!list.children.length) list.remove();
+
+  $("feedback").addEventListener("submit", e => {
+    e.preventDefault();
+    if (!C.feedbackTo) return;
+    const rate = (document.querySelector("input[name=rate]:checked") || {}).value;
+    const body = [
+      "Topic: " + $("topic").value,
+      rate ? "Rating: " + rate + "/5" : "",
+      "",
+      $("msg").value,
+      "",
+      $("from").value ? "From: " + $("from").value : ""
+    ].join("\n");
+    location.href = "mailto:" + C.feedbackTo + "?subject=" + encodeURIComponent("Feedback: " + $("topic").value) +
+      "&body=" + encodeURIComponent(body);
+    $("thanks").style.display = "block";
+  });
+})();
+</script>
+</body>
+</html>
