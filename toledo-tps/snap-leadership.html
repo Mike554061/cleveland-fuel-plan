@@ -1,0 +1,285 @@
+<title>Toledo Corridor Coverage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+/* Layout: single narrative column — thesis, corridor drawn to scale, proof tiles, coverage roster. */
+:root{
+  --paper:#FAF8F5;
+  --card:#FFFFFF;
+  --ink:#10161F;
+  --ink-2:#39485C;
+  --ink-3:#73819A;
+  --road:#1E2A38;
+  --signal:#D4541E;
+  --signal-soft:#FBEADF;
+  --confirm:#2E6B4F;
+  --rule:#E2DED6;
+  --rule-2:#F0EDE7;
+  --shadow:0 1px 2px rgba(16,22,31,.05),0 10px 30px -18px rgba(16,22,31,.35);
+  --f-display:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Source Serif 4",Georgia,serif;
+  --f-data:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1218; --card:#151D26; --ink:#EEF1F5; --ink-2:#B3BECD; --ink-3:#7D8A9C;
+    --road:#CBD5E2; --signal:#F2793E; --signal-soft:#36190E;
+    --confirm:#64B98E; --rule:#27323F; --rule-2:#1C242E;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -18px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1218; --card:#151D26; --ink:#EEF1F5; --ink-2:#B3BECD; --ink-3:#7D8A9C;
+  --road:#CBD5E2; --signal:#F2793E; --signal-soft:#36190E;
+  --confirm:#64B98E; --rule:#27323F; --rule-2:#1C242E;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--f-body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1020px;margin:0 auto;padding-inline:20px;padding-block:44px 72px;
+  display:flex;flex-direction:column;gap:44px}
+
+h1,h2,h3,.num{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.5rem,6vw,4.1rem);font-weight:800;line-height:1.02;letter-spacing:-.02em}
+h2{font-size:clamp(1.3rem,2.6vw,1.65rem);font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+.eyebrow{font-family:var(--f-data);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--signal);font-weight:600}
+.lede{font-size:clamp(1.1rem,2vw,1.3rem);color:var(--ink-2);max-width:60ch}
+.mono{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+
+/* ---- masthead ---- */
+header{display:flex;flex-direction:column;gap:18px;
+  border-bottom:3px solid var(--ink);padding-bottom:28px}
+.rule-row{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--f-data);
+  font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.rule-row b{color:var(--ink);font-weight:600}
+
+/* ---- corridor figure ---- */
+figure{margin:0;display:flex;flex-direction:column;gap:14px}
+.fig-box{background:var(--card);border:1px solid var(--rule);border-radius:2px;
+  padding:26px 22px 20px;box-shadow:var(--shadow);overflow-x:auto}
+.fig-box svg{display:block;width:100%;min-width:600px;height:auto;max-width:100%}
+figcaption{font-size:.92rem;color:var(--ink-3);max-width:70ch}
+
+/* ---- big stat band ---- */
+.band{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.stat{background:var(--card);padding:22px 20px;display:flex;flex-direction:column;gap:5px}
+.stat .num{font-size:3rem;font-weight:800;line-height:.9;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat.lead .num{color:var(--signal);font-size:3.6rem}
+.stat .lab{font-family:var(--f-data);font-size:.66rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3)}
+.stat .say{font-size:.95rem;color:var(--ink-2);line-height:1.45}
+
+/* ---- split: already vs added ---- */
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+.panel{background:var(--card);border:1px solid var(--rule);border-radius:2px;padding:24px;
+  display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel.now{border-top:5px solid var(--road)}
+.panel.add{border-top:5px solid var(--signal)}
+.panel .cap{font-family:var(--f-data);font-size:.66rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3)}
+.panel p{color:var(--ink-2);font-size:.98rem}
+.ledger{display:flex;flex-direction:column;gap:0;margin-top:2px}
+.ledger div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:9px 0;border-bottom:1px solid var(--rule-2);font-size:.95rem}
+.ledger div:last-child{border-bottom:none}
+.ledger span:last-child{font-family:var(--f-data);font-variant-numeric:tabular-nums;
+  font-weight:500;white-space:nowrap}
+
+/* ---- pull quote ---- */
+.pull{background:var(--signal-soft);border-left:5px solid var(--signal);
+  border-radius:2px;padding:26px 28px;display:flex;flex-direction:column;gap:8px}
+.pull p{font-family:var(--f-display);font-weight:600;font-size:clamp(1.25rem,2.6vw,1.7rem);
+  line-height:1.25;color:var(--ink);text-wrap:balance}
+.pull .sub{font-family:var(--f-body);font-weight:400;font-size:1rem;color:var(--ink-2);line-height:1.55}
+
+/* ---- roster ---- */
+.roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.school{background:var(--card);padding:13px 16px;display:flex;align-items:baseline;gap:10px;min-width:0}
+.school .id{font-family:var(--f-data);font-size:.72rem;color:var(--signal);font-weight:600;flex:none}
+.school .nm{font-size:.93rem;color:var(--ink);min-width:0;overflow-wrap:anywhere}
+
+section{display:flex;flex-direction:column;gap:16px}
+.sec-h{display:flex;flex-direction:column;gap:6px}
+
+footer{border-top:1px solid var(--rule);padding-top:20px;color:var(--ink-3);font-size:.85rem;
+  display:flex;flex-direction:column;gap:6px}
+footer b{color:var(--ink-2);font-weight:600}
+@media (max-width:420px){ .stat .num{font-size:2.4rem} .stat.lead .num{font-size:2.9rem} }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">SupplyNow 3PL &middot; Prepared for SNAP Gourmet Foods leadership</span>
+    <h1>The Toledo run is already on the road.</h1>
+    <p class="lede">Our truck runs the Cleveland&ndash;Toledo corridor for SNAP. Twelve Toledo Public Schools sit inside that same loop. Serving them is not a new trip &mdash; it is stops on a trip already underway.</p>
+    <div class="rule-row">
+      <span>CORRIDOR <b>Cleveland &rarr; Toledo</b></span>
+      <span>VEHICLE <b>One 26&prime; reefer</b></span>
+      <span>POINTS SERVED <b>2 &rarr; 14</b></span>
+    </div>
+  </header>
+
+  <figure>
+    <div class="fig-box">
+      <svg viewBox="0 0 900 300" role="img" aria-label="The Cleveland to Toledo corridor drawn to scale. Of 258 total miles, 229 are already being driven; 29 miles of city driving connect the twelve schools.">
+        <!-- already-running segment -->
+        <rect x="48" y="150" width="660" height="26" fill="var(--road)"/>
+        <!-- added city segment -->
+        <rect x="708" y="150" width="84" height="26" fill="var(--signal)"/>
+        <!-- endpoint ticks -->
+        <rect x="46" y="136" width="4" height="54" fill="var(--ink)"/>
+        <rect x="790" y="136" width="4" height="54" fill="var(--ink)"/>
+
+        <!-- labels under the road -->
+        <text x="48" y="212" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="var(--ink)">CLEVELAND</text>
+        <text x="794" y="212" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="var(--ink)">TOLEDO</text>
+
+        <text x="378" y="240" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="var(--ink-2)">229 miles already in motion</text>
+        <text x="378" y="262" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--ink-3)">89% of the trip</text>
+
+        <text x="750" y="240" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" font-weight="600" fill="var(--signal)">+29 mi</text>
+        <text x="750" y="262" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--ink-3)">city driving</text>
+
+        <!-- bracket from the added segment up to the school cluster -->
+        <path d="M708 146 L708 128 L792 128 L792 146" fill="none" stroke="var(--signal)" stroke-width="2"/>
+        <path d="M750 128 L750 112" fill="none" stroke="var(--signal)" stroke-width="2"/>
+
+        <!-- twelve school pins, 4 across x 3 down, centred over the added segment -->
+        <g fill="var(--signal)">
+          <circle cx="678" cy="96" r="9"/><circle cx="702" cy="96" r="9"/><circle cx="726" cy="96" r="9"/>
+          <circle cx="750" cy="96" r="9"/><circle cx="774" cy="96" r="9"/><circle cx="798" cy="96" r="9"/>
+          <circle cx="678" cy="70" r="9"/><circle cx="702" cy="70" r="9"/><circle cx="726" cy="70" r="9"/>
+          <circle cx="750" cy="70" r="9"/><circle cx="774" cy="70" r="9"/><circle cx="798" cy="70" r="9"/>
+        </g>
+        <text x="738" y="42" text-anchor="middle" font-family="Archivo, sans-serif" font-size="17" font-weight="800" fill="var(--ink)">12 schools</text>
+
+        <!-- the two SLA points already on the corridor -->
+        <circle cx="676" cy="163" r="8" fill="var(--card)" stroke="var(--road)" stroke-width="3"/>
+        <circle cx="700" cy="163" r="8" fill="var(--card)" stroke="var(--road)" stroke-width="3"/>
+        <text x="652" y="140" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="var(--ink-2)">2 stops today</text>
+      </svg>
+    </div>
+    <figcaption>The corridor drawn to scale. The dark run is the drive our truck already makes. The orange tail is every mile the twelve schools add to it.</figcaption>
+  </figure>
+
+  <div class="band">
+    <div class="stat lead">
+      <span class="num">89%</span>
+      <span class="lab">of the miles already in motion</span>
+      <span class="say">The long haul is on the road regardless of whether the schools are served.</span>
+    </div>
+    <div class="stat">
+      <span class="num">2.4</span>
+      <span class="lab">city miles per school</span>
+      <span class="say">The twelve buildings sit in four adjacent ZIP codes, minutes apart.</span>
+    </div>
+    <div class="stat">
+      <span class="num">12</span>
+      <span class="lab">schools reached</span>
+      <span class="say">Added to the corridor without a second vehicle or a second trip.</span>
+    </div>
+    <div class="stat">
+      <span class="num">1</span>
+      <span class="lab">truck, one loop</span>
+      <span class="say">One reefer covers every point from load-out to return.</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-h">
+      <h2>What the schools actually add</h2>
+      <p class="lede" style="font-size:1.05rem">The distance to Toledo does not change. What changes is the driving between buildings and the time spent at each door.</p>
+    </div>
+    <div class="split">
+      <div class="panel now">
+        <span class="cap">Already on the road</span>
+        <h3>The corridor</h3>
+        <p>Cleveland out to Toledo and back is the bulk of the day, and it runs the same whether the truck serves two points or fourteen.</p>
+        <div class="ledger">
+          <div><span>Corridor distance</span><span>229 mi</span></div>
+          <div><span>Share of total trip</span><span>89%</span></div>
+          <div><span>Points served today</span><span>2</span></div>
+        </div>
+      </div>
+      <div class="panel add">
+        <span class="cap">What the schools add</span>
+        <h3>Stop-to-stop driving and time at the door</h3>
+        <p>Short hops between buildings, then twenty minutes on the ground at each one to hand off and capture proof of delivery.</p>
+        <div class="ledger">
+          <div><span>City miles between schools</span><span>29 mi</span></div>
+          <div><span>Driving between stops</span><span>~1 hr</span></div>
+          <div><span>Time at the door</span><span>20 min each</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pull">
+    <p>Twelve schools for twenty-nine miles.</p>
+    <p class="sub">Because the truck is already making the trip, the schools are reached on stop time and short city hops rather than on another run to Toledo.</p>
+  </div>
+
+  <section>
+    <div class="sec-h">
+      <h2>Coverage</h2>
+      <p class="lede" style="font-size:1.05rem">Twelve Toledo Public Schools buildings, clustered across four adjacent ZIP codes on the west and south sides.</p>
+    </div>
+    <div class="roster">
+      <div class="school"><span class="id">124</span><span class="nm">Hawkins</span></div>
+      <div class="school"><span class="id">213</span><span class="nm">McTigue</span></div>
+      <div class="school"><span class="id">149</span><span class="nm">Reynolds</span></div>
+      <div class="school"><span class="id">127</span><span class="nm">Keyser</span></div>
+      <div class="school"><span class="id">117</span><span class="nm">Escuela SMART</span></div>
+      <div class="school"><span class="id">136</span><span class="nm">Marshall</span></div>
+      <div class="school"><span class="id">100</span><span class="nm">Arlington</span></div>
+      <div class="school"><span class="id">104</span><span class="nm">Burroughs</span></div>
+      <div class="school"><span class="id">182</span><span class="nm">Glendale-Feilbach</span></div>
+      <div class="school"><span class="id">102</span><span class="nm">Beverly</span></div>
+      <div class="school"><span class="id">217</span><span class="nm">Byrnedale</span></div>
+      <div class="school"><span class="id">113</span><span class="nm">Crossgates</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>How it runs</h2></div>
+    <div class="split">
+      <div class="panel">
+        <span class="cap">Sequence</span>
+        <h3>West to south, in one pass</h3>
+        <p>The schools are ordered by ZIP cluster so the truck works through them in a single direction and never doubles back. Four of the legs between buildings are under a mile.</p>
+      </div>
+      <div class="panel">
+        <span class="cap">Handling</span>
+        <h3>One school, one pallet</h3>
+        <p>Each building's order is built, labeled and wrapped to its own pallet and loaded in reverse order of delivery, so nothing is broken down or sorted at the door.</p>
+      </div>
+      <div class="panel">
+        <span class="cap">Accountability</span>
+        <h3>Proof at every drop</h3>
+        <p>Temperature-controlled the whole way, with a photographed proof of delivery captured at each school and a named operations contact for the route.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>SupplyNow 3PL</b> &mdash; refrigerated and frozen distribution for SNAP Gourmet Foods across the Cleveland, Akron, Columbus and Toledo markets.</p>
+    <p>Distances and run times are measured from our own completed Cleveland&ndash;Toledo deliveries, not estimated.</p>
+  </footer>
+
+</div>
