@@ -53,14 +53,19 @@ section{padding-block:64px}
 /* top bar */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--hero);color:var(--hero-ink);border-bottom:1px solid rgba(255,255,255,.08)}
 .bar .wrap{display:flex;align-items:center;gap:20px;min-height:60px}
-.logo{display:flex;align-items:center;gap:10px;font:700 24px/1 var(--display);letter-spacing:.03em}
-.mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#4c8dff);display:grid;place-items:center;font-size:16px;font-weight:700}
+.logo{display:flex;align-items:center}
+.logo img{display:block;height:28px;width:auto}
 .bar nav{display:flex;gap:22px;margin-left:auto;font-size:15px;font-weight:600;color:var(--hero-ink-2)}
 .bar nav a:hover{color:#fff}
 .bar .btn{min-height:38px;padding:0 14px;font-size:14px}
 
 /* hero */
-.hero{background:radial-gradient(900px 400px at 85% -10%,var(--hero-2),transparent 70%),var(--hero);color:var(--hero-ink);padding-block:56px 64px}
+.hero{position:relative;isolation:isolate;overflow:hidden;background:var(--hero);color:var(--hero-ink);padding-block:88px 200px}
+.hero-media{position:absolute;inset:0;z-index:-2}
+.hero-media canvas,.hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.hero-media video{opacity:0;transition:opacity .8s ease}
+.hero-media video.on{opacity:1}
+.hero-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(6,13,19,.86) 0%,rgba(6,13,19,.55) 42%,rgba(6,13,19,.12) 100%),linear-gradient(180deg,rgba(6,13,19,.5) 0%,rgba(6,13,19,0) 40%)}
 .hero .grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:48px;align-items:center}
 .hero h1{font-size:clamp(42px,7vw,76px);font-weight:700;text-transform:uppercase;letter-spacing:.01em}
 .hero h1 em{font-style:normal;color:var(--brand)}
@@ -75,14 +80,17 @@ section{padding-block:64px}
 .avatar{flex:none;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--brand),#4c8dff);color:#fff;display:grid;place-items:center;font:700 26px/1 var(--display)}
 .card .who b{display:block;font:700 26px/1.05 var(--display)}
 .card .who span{font-size:14px;color:var(--ink-2)}
-.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.three a{text-align:center;padding:10px 4px;border-radius:10px;background:var(--tint);color:var(--brand-ink);font-weight:700;font-size:14px}
-.links{display:grid;gap:8px}
-.links a{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 14px;border-radius:10px;border:1.5px solid var(--line);font-weight:600;font-size:16px}
-.links a.primary{background:linear-gradient(135deg,var(--gold-a),var(--gold-b));border-color:transparent;color:var(--gold-ink);font-weight:700}
-.links a span:last-child{font-size:20px;line-height:1}
-.card .plain{margin-top:14px;font-size:14px;color:var(--ink-2);overflow-wrap:anywhere}
-.card .plain b{color:var(--ink)}
+.connect{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.connect a{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:10px;background:var(--tint);color:var(--brand-ink);font-weight:700;font-size:15px}
+.connect svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* hero card: frosted glass so the scene shows through */
+.hero .card{background:rgba(8,18,26,.58);color:var(--hero-ink);border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.4);
+  -webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+.hero .card .who span{color:var(--hero-ink-2)}
+.hero .card .eyebrow{margin-bottom:14px}
+.hero .connect a{background:rgba(255,255,255,.08);color:#bff3ee}
+.hero .connect a:hover{background:rgba(255,255,255,.14)}
 
 /* proof strip */
 .strip{background:var(--surface);border-bottom:1px solid var(--line)}
@@ -185,13 +193,15 @@ footer a{text-decoration:underline;text-underline-offset:3px}
   .strip .wrap{grid-template-columns:repeat(2,1fr)}
   .stat:nth-child(3){border-left:0;padding-left:0}
   .bar nav{display:none}
+  .hero-shade{background:linear-gradient(180deg,rgba(6,13,19,.35) 0%,rgba(6,13,19,.82) 34%,rgba(6,13,19,.92) 100%)}
   .bar .btn{margin-left:auto}
 }
 @media (max-width:560px){
   section{padding-block:48px}
   .map text{font-size:23px}.map text.cap{font-size:15px}
   .sol,.track,.steps{grid-template-columns:minmax(0,1fr)}
-  .hero{padding-block:36px 44px}
+  .hero{padding-block:44px 48px}
+  .logo img{height:22px}
   .dock{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:30;
     padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:var(--hero);border-top:1px solid rgba(255,255,255,.1)}
   .dock a{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:10px;font-weight:700;color:var(--hero-ink);border:1.5px solid rgba(255,255,255,.3)}
@@ -204,46 +214,47 @@ footer a{text-decoration:underline;text-underline-offset:3px}
 
 <header class="bar">
   <div class="wrap">
-    <a class="logo" href="#top" aria-label="SupplyNow home"><span class="mark">SN</span>SupplyNow</a>
+    <a class="logo" href="#top"><img src="assets/supplynow-wordmark-light.png" alt="SupplyNow" width="438" height="67"></a>
     <nav aria-label="Sections">
       <a href="#solutions">Solutions</a><a href="#lanes">Lanes</a><a href="#how">How it works</a><a href="#carrier">Carrier packet</a><a href="#faq">FAQ</a><a href="#feedback">Feedback</a>
     </nav>
-    <a class="btn gold" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">Instant quote</a>
+    <a class="btn gold" href="tel:+14405542222">Talk to a specialist</a>
   </div>
 </header>
 
 <main id="top">
 
 <div class="hero">
+  <div class="hero-media" aria-hidden="true">
+    <canvas id="hero-canvas"></canvas>
+    <!-- To use a real clip: add assets/hero.mp4 (muted, under ~8 MB) and set data-src="assets/hero.mp4" -->
+    <video id="hero-video" muted loop playsinline preload="none" data-src=""></video>
+  </div>
+  <div class="hero-shade" aria-hidden="true"></div>
   <div class="wrap grid">
     <div>
       <p class="eyebrow">Transportation-based solutions · Cleveland, OH</p>
       <h1>Your freight, on <em>our</em> trucks, with our drivers.</h1>
       <p class="sub">SupplyNow runs refrigerated, frozen and dry freight with live GPS and temperature on every load. Home base is Cleveland, with hubs in Chicago, Detroit, Columbus, Pittsburgh and Wilkes-Barre.</p>
       <div class="ctas">
-        <a class="btn gold" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">Get an instant quote</a>
+        <a class="btn gold" href="tel:+14405542222">Talk to a specialist today</a>
         <a class="btn ghost" href="#solutions">See solutions</a>
       </div>
       <p class="quiet">Asset-based. No broker daisy-chain.</p>
     </div>
 
-    <aside class="card" aria-label="Mike Cook, contact card">
+    <aside class="card" id="connect" aria-label="Connect with Mike Cook">
+      <p class="eyebrow">Connect</p>
       <div class="who">
         <div class="avatar" aria-hidden="true">MC</div>
         <div><b>Mike Cook</b><span>Chief Operating Officer, SupplyNow</span></div>
       </div>
-      <div class="three">
-        <a href="tel:+12165487070">Call</a>
-        <a href="sms:+12165487070">Text</a>
-        <a href="mailto:mike@supplynow.org">Email</a>
+      <div class="connect">
+        <a href="tel:+14405542222"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>Call</a>
+        <a href="sms:+14405542222"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Text</a>
+        <a href="mailto:mike@supplynow.org"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg>Email</a>
+        <a href="https://www.linkedin.com/in/michael-cook-98550b146" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 10v6M8 7.5v.01M12 16v-6M12 12.5a2.5 2.5 0 0 1 5 0V16"/></svg>LinkedIn</a>
       </div>
-      <div class="links">
-        <a class="primary" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener"><span>Get an instant quote</span><span aria-hidden="true">→</span></a>
-        <a href="https://tinyurl.com/SupplyNow-Carrier-Packet" target="_blank" rel="noopener"><span>Carrier packet</span><span aria-hidden="true">→</span></a>
-        <a href="https://www.supplynow.org" target="_blank" rel="noopener"><span>supplynow.org</span><span aria-hidden="true">→</span></a>
-        <a href="#feedback"><span>Send feedback</span><span aria-hidden="true">→</span></a>
-      </div>
-      <p class="plain"><b>216-548-7070</b> · mike@supplynow.org</p>
     </aside>
   </div>
 </div>
@@ -397,7 +408,6 @@ footer a{text-decoration:underline;text-underline-offset:3px}
         <div class="kv"><span>Operating authority</span><b>MC 1660872 · Active</b></div>
         <div class="kv"><span>USDOT</span><b>3976910</b></div>
         <div class="kv"><span>Cargo insurance</span><b>Motor Truck Cargo</b></div>
-        <div class="kv"><span>Address</span><b>2800 Euclid Ave, Suite 310, Cleveland, OH 44115</b></div>
       </div>
       <div>
         <p class="lede" style="margin-top:0">The carrier packet has our authority, insurance and equipment details in one place. Need a certificate of insurance? Ask and we'll send it.</p>
@@ -470,15 +480,15 @@ footer a{text-decoration:underline;text-underline-offset:3px}
 
 <footer>
   <div class="wrap">
-    <div><b>Supply Now Inc.</b><br>MC 1660872 · USDOT 3976910<br>2800 Euclid Ave, Suite 310, Cleveland, OH 44115</div>
-    <div><b>Mike Cook, COO</b><br><a href="tel:+12165487070">216-548-7070</a><br><a href="mailto:mike@supplynow.org">mike@supplynow.org</a></div>
-    <div><b>Links</b><br><a href="https://www.supplynow.org">supplynow.org</a><br><a href="https://tinyurl.com/SupplyNow-Carrier-Packet">Carrier packet</a></div>
+    <div><img src="assets/supplynow-lockup-light.png" alt="SupplyNow Logistics Solutions" width="438" height="122" style="height:44px;width:auto;display:block;margin-bottom:10px"><b>Supply Now Inc.</b><br>MC 1660872 · USDOT 3976910<br>Cleveland, OH</div>
+    <div><b>Mike Cook, COO</b><br><a href="tel:+14405542222">440-554-2222</a><br><a href="mailto:mike@supplynow.org">mike@supplynow.org</a><br><a href="https://www.linkedin.com/in/michael-cook-98550b146" target="_blank" rel="noopener">LinkedIn</a></div>
+    <div><b>Links</b><br><a href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">Get an instant quote</a><br><a href="https://tinyurl.com/SupplyNow-Carrier-Packet" target="_blank" rel="noopener">Carrier packet</a><br><a href="https://www.supplynow.org" target="_blank" rel="noopener">supplynow.org</a><br><a href="#feedback">Send feedback</a></div>
   </div>
 </footer>
 
 <nav class="dock" aria-label="Quick actions">
-  <a href="tel:+12165487070">Call</a>
-  <a href="sms:+12165487070">Text</a>
+  <a href="tel:+14405542222">Call</a>
+  <a href="sms:+14405542222">Text</a>
   <a class="gold" href="https://tinyurl.com/SNInstant-Quote" target="_blank" rel="noopener">Instant quote</a>
 </nav>
 
@@ -493,6 +503,135 @@ footer a{text-decoration:underline;text-underline-offset:3px}
     location.href = "mailto:mike@supplynow.org?subject=" + encodeURIComponent("Feedback: " + $("topic").value) + "&body=" + encodeURIComponent(body);
     $("thanks").style.display = "block";
   });
+})();
+</script>
+<script>
+/* Hero background: an animated night highway (light trails heading into a hub city).
+   If data-src on #hero-video points at a clip (e.g. assets/hero.mp4), the clip fades in and replaces it. */
+(function(){
+  var hero = document.querySelector(".hero"), cv = document.getElementById("hero-canvas"), vid = document.getElementById("hero-video");
+  if (!hero || !cv || !cv.getContext) return;
+  var ctx = cv.getContext("2d");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var stopped = false, visible = true, raf = 0, last = 0, time = 0;
+
+  var src = vid && vid.getAttribute("data-src");
+  if (src && !reduce) {
+    vid.addEventListener("canplay", function(){ vid.classList.add("on"); var p = vid.play(); if (p) p.catch(function(){}); stopped = true; }, { once: true });
+    vid.addEventListener("error", function(){ vid.remove(); });
+    vid.src = src;
+  }
+
+  var seed = 11; function R(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+  var skyline = []; for (var i = 0; i < 46; i++) skyline.push({ x: R(), w: 0.004 + R() * 0.014, h: 3 + R() * R() * 52, lit: R() });
+
+  var W, H, vx, vy, RW;
+  function size(){
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = hero.clientWidth; H = hero.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var narrow = W < 700;
+    vx = W * 0.5; vy = narrow ? Math.min(H * 0.24, 260) : H * 0.38;
+    RW = W * (narrow ? 2.6 : 2.3);
+  }
+  function P(f, t){ var bx = vx + (f - 0.5) * RW; return [vx + (bx - vx) * t, vy + (H - vy) * t]; }
+  function seg(f, t1, t2){ var a = P(f, t1), b = P(f, t2); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); }
+
+  var ON = [1/12, 3/12, 5/12], AWAY = [7/12, 9/12, 11/12], cars = [];
+  function spawn(c, first){
+    if (c.on) { c.f = ON[(R() * 3) | 0]; c.z = first ? 1 + R() * 40 : 30 + R() * 15; c.v = -(9 + R() * 7); }
+    else      { c.f = AWAY[(R() * 3) | 0]; c.z = first ? 0.8 + R() * 30 : 0.7; c.v = 2 + R() * 4; }
+    c.f += (R() - 0.5) * 0.03;
+  }
+  for (i = 0; i < 26; i++) { var c = { on: i < 13 }; spawn(c, true); cars.push(c); }
+  var reefer = { on: false, f: 7/12, z: 2.2, v: 1.3, reefer: true };
+
+  function light(f, z1, z2, rgb, w){
+    if (z1 < 0.55) z1 = 0.55; if (z2 <= z1) return;
+    var t = 1 / z1, a = Math.min(1, 0.45 + t * 3);
+    ctx.lineWidth = Math.max(3, w * t * 3.6); ctx.strokeStyle = "rgba(" + rgb + "," + (a * 0.28) + ")"; seg(f, 1 / z1, 1 / z2);
+    ctx.lineWidth = Math.max(1.2, w * t);     ctx.strokeStyle = "rgba(" + rgb + "," + a + ")";          seg(f, 1 / z1, 1 / z2);
+  }
+
+  function draw(){
+    var g = ctx.createLinearGradient(0, 0, 0, vy);
+    g.addColorStop(0, "#060d13"); g.addColorStop(1, "#16303e");
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, vy + 1);
+    ctx.fillStyle = "#060c11"; ctx.fillRect(0, vy, W, H - vy);
+    var glow = ctx.createRadialGradient(vx, vy, 0, vx, vy, W * 0.45);
+    glow.addColorStop(0, "rgba(233,200,100,.28)"); glow.addColorStop(1, "rgba(233,200,100,0)");
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+    // skyline at the vanishing point
+    var span = Math.min(W * 0.5, 520), x0 = vx - span * 0.55;
+    skyline.forEach(function(b){
+      var x = x0 + b.x * span, w = Math.max(3, b.w * span), h = b.h * (span / 520);
+      ctx.fillStyle = "#0a161e"; ctx.fillRect(x, vy - h, w, h);
+      if (b.lit > 0.55 && h > 12) { ctx.fillStyle = "rgba(233,200,100,.55)"; ctx.fillRect(x + w * 0.35, vy - h * 0.7, 1.2, 1.2); }
+    });
+
+    // road surface and markings
+    var bl = P(-0.02, 1.3), br = P(1.02, 1.3);
+    ctx.fillStyle = "rgba(255,255,255,.03)";
+    ctx.beginPath(); ctx.moveTo(vx, vy); ctx.lineTo(bl[0], bl[1]); ctx.lineTo(br[0], br[1]); ctx.closePath(); ctx.fill();
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "rgba(255,255,255,.18)"; ctx.lineWidth = 1.5; seg(0, 0.01, 1.3); seg(1, 0.01, 1.3);
+    ctx.strokeStyle = "rgba(233,200,100,.4)"; seg(0.493, 0.01, 1.3); seg(0.507, 0.01, 1.3);
+    var period = 3.2, len = 1.2, phase = (time * 7) % period;
+    [1/6, 2/6, 4/6, 5/6].forEach(function(f){
+      for (var k = 0; k < 16; k++) {
+        var z = 0.6 + k * period - phase; if (z < 0.6) continue;
+        var t = 1 / z; ctx.lineWidth = Math.max(0.6, 3.5 * t);
+        ctx.strokeStyle = "rgba(255,255,255," + (0.4 * Math.min(1, t * 4)) + ")";
+        seg(f, t, 1 / (z + len));
+      }
+    });
+
+    // traffic light trails
+    ctx.globalCompositeOperation = "lighter";
+    cars.concat([reefer]).forEach(function(c){
+      if (c.on) { light(c.f - 0.028, c.z, c.z + 2.4, "255,240,215", 3); light(c.f + 0.028, c.z, c.z + 2.4, "255,240,215", 3); }
+      else      { var rgb = "255,60,50"; light(c.f - 0.03, c.z - 1.4, c.z, rgb, 2.6); light(c.f + 0.03, c.z - 1.4, c.z, rgb, 2.6); }
+    });
+
+    // the tracked reefer: live GPS ping + temperature tag
+    ctx.globalCompositeOperation = "source-over";
+    var t = 1 / reefer.z;
+    if (W >= 700 && t > 0.08 && t < 0.75) {
+      var p = P(reefer.f, t), y = p[1] - 26 * t - 6, pulse = (time % 1.6) / 1.6;
+      ctx.strokeStyle = "rgba(0,180,166," + (1 - pulse) + ")"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(p[0], y, 5 + pulse * 18, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = "#00b4a6"; ctx.beginPath(); ctx.arc(p[0], y, 4, 0, Math.PI * 2); ctx.fill();
+      var label = "REEFER  34°F  LIVE GPS";
+      ctx.font = "700 11px 'Source Sans 3', Arial, sans-serif";
+      var tw = ctx.measureText(label).width, lx = p[0] - (tw + 16) / 2, ly = y + 16;
+      ctx.fillStyle = "rgba(6,13,19,.82)"; ctx.strokeStyle = "rgba(0,180,166,.8)"; ctx.lineWidth = 1;
+      ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(lx, ly, tw + 16, 20, 10); else ctx.rect(lx, ly, tw + 16, 20); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#bff3ee"; ctx.fillText(label, lx + 8, ly + 14);
+    }
+  }
+
+  function step(dt){
+    time += dt;
+    cars.forEach(function(c){ c.z += c.v * dt; if (c.on ? c.z < 0.55 : c.z > 45) spawn(c, false); });
+    reefer.z += reefer.v * dt; if (reefer.z > 14) reefer.z = 1.6;
+  }
+  function frame(ts){
+    raf = 0;
+    if (stopped || !visible || document.hidden) return;
+    var dt = last ? Math.min((ts - last) / 1000, 0.05) : 0.016; last = ts;
+    step(dt); draw(); raf = requestAnimationFrame(frame);
+  }
+  function kick(){ if (!raf && !reduce && !stopped) { last = 0; raf = requestAnimationFrame(frame); } }
+
+  size(); step(0); draw();
+  window.addEventListener("resize", function(){ size(); draw(); });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function(e){ visible = e[0].isIntersecting; if (visible) kick(); }).observe(hero);
+  document.addEventListener("visibilitychange", kick);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  kick();
 })();
 </script>
 </body>
