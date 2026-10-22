@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Live Tracking · SupplyNow</title>
+<meta name="description" content="Follow your SupplyNow load live on the map.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b1b27">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b1b27'/%3E%3Cpath d='M50 18c-14 0-25 11-25 25 0 19 25 39 25 39s25-20 25-39c0-14-11-25-25-25z' fill='%2300b4a6'/%3E%3Ccircle cx='50' cy='43' r='9' fill='%230b1b27'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Customer-facing live tracking page: wraps a Samsara live-share link in SupplyNow branding.
+   Link params, in the hash (preferred, never sent to the server) or the query string:
+     s     Samsara share token, the last part of the viewer URL (required)
+     until ISO end time; after it the map is removed (e.g. 2026-10-23T03:00:00Z)
+     ref   load / PO label shown to the customer (optional)
+     o     Samsara org id (defaults to SupplyNow's) */
+:root{
+  --bg:#f5f8f8; --surface:#ffffff; --ink:#0e1b26; --ink-2:#4a5a67; --ink-3:#6d7c88;
+  --line:#dbe3e6; --brand:#00b4a6; --brand-ink:#0b766d; --tint:#e6f5f3;
+  --hero:#0b1b27; --hero-2:#12293a; --hero-ink:#f2f6f8; --hero-ink-2:#a9bcc8;
+  --gold-a:#e9c864; --gold-b:#b8860b; --gold-ink:#1a1205;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a1117; --surface:#111b23; --ink:#eef3f5; --ink-2:#a2b2bd; --ink-3:#7b8b97;
+  --line:#22303a; --brand-ink:#4fd6c9; --tint:#10282a; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0a1117; --surface:#111b23; --ink:#eef3f5; --ink-2:#a2b2bd; --ink-3:#7b8b97;
+  --line:#22303a; --brand-ink:#4fd6c9; --tint:#10282a; color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+p{margin:0}
+[hidden]{display:none!important}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding-inline:16px}
+h1{font:700 clamp(36px,6vw,58px)/1.02 var(--display);text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance}
+.eyebrow{font:700 13px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:12px}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:10px;
+  font:700 15px/1 var(--body);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap}
+.btn.gold{background:linear-gradient(135deg,var(--gold-a),var(--gold-b));border-color:transparent;color:var(--gold-ink)}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.3);color:var(--hero-ink)}
+.btn svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn:active{transform:translateY(1px)}
+
+/* top bar + hero share the navy so the brand reads as one block */
+.bar{background:var(--hero);color:var(--hero-ink);border-bottom:1px solid rgba(255,255,255,.08)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.logo img{display:block;height:26px;width:auto}
+.hero{background:radial-gradient(1200px 400px at 85% -40%,rgba(0,180,166,.22),transparent 60%),var(--hero);color:var(--hero-ink);padding:36px 0 96px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-top:18px;color:var(--hero-ink-2);font-size:16px}
+.meta b{color:var(--hero-ink);font-weight:700}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font:700 13px/1 var(--body);
+  letter-spacing:.1em;text-transform:uppercase;background:rgba(0,180,166,.16);color:#7fe6dc;border:1px solid rgba(0,180,166,.4)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 0 rgba(0,180,166,.7);animation:pulse 1.8s infinite}
+.pill.off{background:rgba(255,255,255,.08);color:var(--hero-ink-2);border-color:rgba(255,255,255,.18)}
+.pill.off i{background:var(--hero-ink-2);animation:none}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(0,180,166,0)}100%{box-shadow:0 0 0 0 rgba(0,180,166,0)}}
+@media (prefers-reduced-motion:reduce){.pill i{animation:none}}
+
+/* map card overlaps the hero */
+main.wrap{margin-top:-72px;padding-bottom:48px}
+#leftText{white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px rgba(6,13,19,.18);overflow:hidden}
+.map{display:block;width:100%;height:clamp(380px,64vh,720px);border:0;background:var(--tint)}
+.mapbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding:12px 16px;border-top:1px solid var(--line);font-size:14.5px;color:var(--ink-3)}
+.mapbar a{font-weight:700;color:var(--brand-ink)}
+.notice{padding:40px 24px;text-align:center}
+.notice h2{font:700 30px/1.1 var(--display);text-transform:uppercase;margin:0 0 8px}
+.notice p{color:var(--ink-2);max-width:48ch;margin:0 auto}
+.notice .row{justify-content:center;margin-top:20px}
+
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.tile b{display:block;font:700 22px/1.1 var(--display);margin-bottom:6px}
+.tile p{color:var(--ink-2);font-size:16px}
+.tile.contact{border-top:3px solid var(--brand)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.row a{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 14px;border-radius:10px;background:var(--tint);color:var(--brand-ink);font-weight:700;font-size:15px}
+.row svg{width:17px;height:17px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+footer{border-top:1px solid var(--line);padding:22px 0 calc(22px + env(safe-area-inset-bottom,0px));font-size:14px;color:var(--ink-3)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+footer a{color:var(--brand-ink);font-weight:600}
+
+@media (max-width:760px){
+  .tiles{grid-template-columns:minmax(0,1fr)}
+  .hero{padding:28px 0 88px}
+  .bar .btn span{display:none}
+  .bar .btn{padding:0 14px}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="https://www.supplynow.org"><img src="assets/supplynow-wordmark-light.png" alt="SupplyNow" width="438" height="67"></a>
+    <a class="btn gold" href="tel:+14405542222" aria-label="Call SupplyNow at 440-554-2222">
+      <svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+      <span>440-554-2222</span>
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Live shipment tracking</p>
+    <h1 id="title">Your load is on the road</h1>
+    <div class="meta">
+      <span class="pill" id="status"><i></i><span id="statusText">Live</span></span>
+      <span id="ref" hidden>Load <b id="refText"></b></span>
+      <span id="window" hidden>Tracking available until <b id="untilText"></b> <span id="leftText"></span></span>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="card" id="mapCard" hidden>
+    <iframe class="map" id="map" title="Live truck location map" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>
+    <div class="mapbar">
+      <span>The map updates on its own. No need to refresh.</span>
+      <a id="openFull" href="#" target="_blank" rel="noopener noreferrer">Map not showing? Open the full-screen map ↗</a>
+    </div>
+  </div>
+
+  <div class="card notice" id="notice" hidden>
+    <h2 id="noticeTitle"></h2>
+    <p id="noticeText"></p>
+    <div class="row">
+      <a href="tel:+14405542222"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
+      <a href="sms:+14405542222"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text</a>
+      <a href="mailto:mike@supplynow.org?subject=Load%20status"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>Email</a>
+    </div>
+  </div>
+
+  <div class="tiles" id="tiles">
+    <div class="tile">
+      <b>Live GPS</b>
+      <p>You're watching the truck's real position, straight from the cab.</p>
+    </div>
+    <div class="tile">
+      <b>Proof of delivery</b>
+      <p>A signed digital POD is emailed to you as soon as the load is delivered.</p>
+    </div>
+    <div class="tile contact">
+      <b>Questions about this load?</b>
+      <p>Mike Cook, Chief Operating Officer</p>
+      <div class="row">
+        <a href="tel:+14405542222"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>Call</a>
+        <a href="sms:+14405542222"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Text</a>
+        <a href="mailto:mike@supplynow.org?subject=Load%20status"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>Email</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>SupplyNow Logistics Solutions · Cleveland, Ohio</span>
+    <a href="https://www.supplynow.org">supplynow.org</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var DEFAULT_ORG = "8001436";
+  var cfg = window.SN_TRACK || {};
+  var params = new URLSearchParams(location.search);
+  new URLSearchParams(location.hash.slice(1)).forEach(function(v, k){ params.set(k, v); });
+  function get(k){ return params.get(k) || cfg[k] || ""; }
+
+  var $ = function(id){ return document.getElementById(id); };
+  var token = get("s"), org = get("o") || DEFAULT_ORG;
+  var ref = get("ref").trim().slice(0, 40);
+  var end = get("until") ? new Date(get("until")) : null;
+  if (end && isNaN(end.getTime())) end = null;
+
+  if (ref) { $("refText").textContent = ref; $("ref").hidden = false; }
+
+  function notice(title, heading, text){
+    $("title").textContent = title;
+    $("status").classList.add("off");
+    $("statusText").textContent = "Ended";
+    $("window").hidden = true;
+    $("map").src = "about:blank";
+    $("mapCard").hidden = true;
+    $("tiles").hidden = true;
+    $("noticeTitle").textContent = heading;
+    $("noticeText").textContent = text;
+    $("notice").hidden = false;
+  }
+
+  // Tokens and org ids are plain IDs; anything else is a broken or tampered link.
+  if (!/^[A-Za-z0-9_-]{8,64}$/.test(token) || !/^\d{1,12}$/.test(org)) {
+    notice("We couldn't open this link", "Tracking link incomplete",
+      "Part of this tracking link is missing. Reach out and we'll send you a fresh one.");
+    return;
+  }
+
+  var url = "https://cloud.samsara.com/o/" + org + "/fleet/viewer/" + token;
+
+  function expired(){
+    notice("Tracking has ended", "This tracking link has ended",
+      "For security, live tracking turns off after the delivery window. Need a status update? We're a call away.");
+  }
+
+  if (end) {
+    var tz = { timeZone: "America/New_York" };
+    var time = end.toLocaleTimeString("en-US", Object.assign({ hour: "numeric", minute: "2-digit" }, tz));
+    var day = end.toLocaleDateString("en-US", Object.assign({ weekday: "short", month: "short", day: "numeric" }, tz));
+    $("untilText").textContent = time + " ET, " + day;
+    $("window").hidden = false;
+  }
+
+  function tick(){
+    if (!end) return false;
+    var ms = end.getTime() - Date.now();
+    if (ms <= 0) { expired(); return true; }
+    var mins = Math.ceil(ms / 60000), h = Math.floor(mins / 60), m = mins % 60;
+    $("leftText").textContent = "(" + (h ? h + " hr " : "") + m + " min left)";
+    return false;
+  }
+
+  if (tick()) return;
+  $("openFull").href = url;
+  $("map").src = url;
+  $("mapCard").hidden = false;
+  var timer = setInterval(function(){ if (tick()) clearInterval(timer); }, 30000);
+})();
+</script>
+</body>
+</html>
